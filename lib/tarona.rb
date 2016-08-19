@@ -14,6 +14,7 @@ require 'lib/tarona/version'
 
 require 'lib/tarona/act'
 require 'lib/tarona/play'
+require 'lib/tarona/doorman'
 
 # The main namespace for the gem
 module Tarona

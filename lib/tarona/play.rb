@@ -15,9 +15,9 @@ module Tarona
   #   acts = { main: MyAct }
   #   play = Tarona::Play.new io: MyIO.new, acts: acts, first_act: :main
   # @!attribute [r] acts
-  #   @see Tarona::Doorman
+  #   @see Tarona::Doorman#new
   # @!attribute [r] first_act
-  #   @see Tarona::Doorman
+  #   @see Tarona::Doorman#new
   # @!attribute [r] io
   #   @return an object which can be used as input/output. It will be passed to
   #     the acts.
