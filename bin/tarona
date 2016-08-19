@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/tarona'
+ENV['RACK_ENV'] = 'production'
+require_relative '../game/game'

@@ -1,8 +1,10 @@
-/doc/
-/.yardoc/
-/.byebug_history
-/Gemfile.lock
-/*.gem
+/.bundle/
 /.idea/
-/tarona.iml
+/.yardoc/
+/doc/
 /coverage/
+/vendor/
+/.byebug_history
+/*.gem
+/Gemfile.lock
+/tarona.iml
