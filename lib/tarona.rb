@@ -15,6 +15,8 @@ require 'lib/tarona/version'
 require 'lib/tarona/act'
 require 'lib/tarona/play'
 require 'lib/tarona/doorman'
+require 'lib/tarona/web_server'
+require 'lib/tarona/web_socket'
 
 # The main namespace for the gem
 module Tarona
