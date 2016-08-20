@@ -20,6 +20,8 @@ require 'lib/tarona/doorman'
 require 'lib/tarona/web_server'
 require 'lib/tarona/web_socket'
 
+require 'lib/tarona/act_types/text_act'
+
 # The main namespace for the gem
 module Tarona
 end
