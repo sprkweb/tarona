@@ -1,9 +1,11 @@
-project_root = File.expand_path('..', File.dirname(__FILE__))
-Dir.chdir project_root
-$LOAD_PATH.unshift project_root
+PROJECT_ROOT = File.expand_path('..', File.dirname(__FILE__))
+Dir.chdir PROJECT_ROOT
+$LOAD_PATH.unshift PROJECT_ROOT
 
 require 'rubygems'
 require 'bundler/setup'
+
+require 'json'
 
 require 'tardvig'
 require 'rack'
