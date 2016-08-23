@@ -53,5 +53,14 @@ RSpec.describe Tarona::Play do
       end
       play.call
     end
+
+    let(:toolkit) { double }
+
+    it 'passes toolkit as an option if it is' do
+      expect(TestAct.ended).to receive(:<<).exactly(3).times do |act|
+        expect(act.tk).to be(toolkit)
+      end
+      play.call tk: toolkit
+    end
   end
 end
