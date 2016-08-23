@@ -2,16 +2,14 @@ RSpec.describe Tarona::Doorman do
   let(:io) { double }
   let(:server) { double }
   let(:game) { double }
-  let(:acts) { double }
-  let(:first_act) { double }
+  let(:options) { { valid: true } }
   let(:env) { double }
   let :doorman do
     described_class.new(
         io: io,
         server: server,
         game: game,
-        acts: acts,
-        first_act: first_act
+        game_options: options
     )
   end
 
@@ -28,8 +26,7 @@ RSpec.describe Tarona::Doorman do
       expect(io).to receive(:new).with(env).ordered { io_instance }
       expect(game).to receive(:new).with(hash_including(
           io: io_instance,
-          acts: acts,
-          first_act: first_act
+          valid: true
       ))
       doorman.call env
     end
