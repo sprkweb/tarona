@@ -14,10 +14,10 @@ module Tarona
   #
   #   acts = { main: MyAct }
   #   play = Tarona::Play.new io: MyIO.new, acts: acts, first_act: :main
-  # @!attribute [r] acts
-  #   @see Tarona::Doorman#new
-  # @!attribute [r] first_act
-  #   @see Tarona::Doorman#new
+  # @!attribute [r] acts hash containing your acts as values and their
+  #   identificators as keys.
+  # @!attribute [r] first_act identificator of the act which must be
+  #   executed first.
   # @!attribute [r] io
   #   @return an object which can be used as input/output. It will be passed to
   #     the acts.
