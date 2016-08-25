@@ -1,5 +1,9 @@
 module Tarona
   class WebServer < Sinatra::Application
+    class << self
+      attr_accessor :tk
+    end
+
     configure do
       set :server, :puma
       set :root, PROJECT_ROOT

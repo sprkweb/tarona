@@ -6,4 +6,13 @@ RSpec.describe Tarona::WebServer do
   it 'is Sinatra application' do
     expect(described_class.ancestors).to include(Sinatra::Base)
   end
+
+  let(:toolkit) { double }
+
+  it 'supports toolkit' do
+    old_value = described_class.tk
+    described_class.tk = toolkit
+    expect(described_class.tk).to be toolkit
+    described_class.tk = old_value
+  end
 end
