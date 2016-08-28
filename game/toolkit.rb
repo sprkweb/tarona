@@ -26,8 +26,8 @@ module Tarona
       settings
     end
 
-    tool :i18n do |_, params|
-      i18n_input = params[:i18n] || "game/i18n/#{settings['language']}.yml"
+    tool :i18n do |tk, params|
+      i18n_input = params[:i18n] || "game/i18n/#{tk.settings['language']}.yml"
       Tardvig::SavedHash.new i18n_input
     end
   end
