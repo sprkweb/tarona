@@ -1,4 +1,9 @@
+require 'rack/test'
+
+ENV['RACK_ENV'] = 'test'
+
 require_relative '../lib/tarona.rb'
+require 'game/game'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

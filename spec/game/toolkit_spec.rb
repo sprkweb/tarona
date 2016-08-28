@@ -1,5 +1,3 @@
-require 'game/toolkit'
-
 describe Tarona::Toolkit do
   def construct_io(settings)
     io = double
