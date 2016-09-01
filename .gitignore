@@ -1,10 +1,11 @@
 /.bundle/
-/.idea/
+/.sass-cache/
 /.yardoc/
 /doc/
 /coverage/
+/player/
+/public/vendor/
 /vendor/
 /.byebug_history
 /*.gem
 /Gemfile.lock
-/tarona.iml
