@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= options[:title] %></title>
+  
+  <% options[:styles].each do |style| %>
+  <link rel="stylesheet" href="<%= style %>">
+  <% end unless options[:styles].nil? %>
+  
+  <% options[:scripts][:before].each do |script| %>
+  <script type="text/javascript" src="<%= script %>"></script>
+  <% end unless options[:scripts].nil? || options[:scripts][:before].nil? %>
+</head>
+<body>
+  <%= yield %>
+  
+  <% options[:scripts][:after].each do |script| %>
+  <script type="text/javascript" src="<%= script %>"></script>
+  <% end unless options[:scripts].nil? || options[:scripts][:after].nil? %>
+</body>
+</html>

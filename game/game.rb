@@ -1,6 +1,6 @@
 require 'game/toolkit'
 require 'game/acts/introduction'
-# require 'game/pages'
+require 'game/pages'
 
 toolkit = Tarona::Toolkit.new
 Tarona::WebServer.tk = toolkit
@@ -14,4 +14,4 @@ doorman = Tarona::Doorman.new(
     tk: toolkit
   }
 )
-run doorman unless ENV['RACK_ENV'] == 'test'
+Rack::Server.start app: doorman unless ENV['RACK_ENV'] == 'test'

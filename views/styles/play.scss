@@ -1,0 +1,117 @@
+@import 'main';
+
+.page {
+  flex-direction: column;
+  > div {
+    flex-grow: 0;
+  }
+}
+
+#text {
+  width: 50%;
+  margin: 2em auto;
+}
+
+.ui {
+  @include shadow(2px 2px 10px 0 rgba(50, 50, 50, 0.3));
+
+  padding: 3px 6px;
+  background-color: rgb(250, 250, 250);
+}
+
+#area {
+  @include flexbox;
+  flex-grow: 1;
+  overflow: hidden;
+
+  #field {
+    margin: auto;
+  }
+}
+
+#field svg {
+  #borders use {
+    $hex-border-width: 1px;
+    stroke-width: $hex-border-width;
+    stroke: transparent;
+    fill: transparent;
+
+    &.inside {
+      stroke-width: $hex-border-width * 2;
+      clip-path: url(#hexclip);
+    }
+    
+    &.reachable {
+      @extend .inside;
+      stroke: #9FEE00;
+      stroke-opacity: 0.5;
+    }
+
+    &.focused {
+      @extend .inside;
+      stroke: #FF0000;
+      stroke-opacity: 1;
+    }
+
+    &.hovered_path {
+      @extend .inside;
+      stroke: #008500;
+      stroke-opacity: 1;
+    }
+  }
+}
+
+.blocking_panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+}
+
+.message {
+  @include shadow(2px 2px 10px 0 rgba(50, 50, 50, 0.3));
+  @include rounded(2px);
+
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 1em;
+  background: white;
+  overflow: hidden;
+  box-sizing: content-box;
+
+  .message_content {
+    overflow: auto;
+  }
+  
+  .close {
+    display: inline-block;
+    float: right;
+    width: 25px;
+    height: 25px;
+    margin-top: -1em;
+    margin-right: -1em;
+    padding-right: 3px;
+    padding-top: 3px;
+    text-align: center;
+    
+    &:before {
+      cursor: pointer;
+      font-size: 25px;
+      line-height: 25px;
+      display: inline-block;
+      content: '+';
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+}

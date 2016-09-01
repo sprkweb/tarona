@@ -1,0 +1,170 @@
+@import "../vendor/styles/normalize.css";
+@import "../vendor/fonts/firasans/firasans.css";
+
+$font: Fira Sans, sans-serif;
+$font-size: 16px;
+$line-height: 1.5;
+$text-color: #414A4C;
+$link-color: #5DA130;
+
+@mixin flexbox {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin shadow($shadow) {
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  box-shadow: $shadow;
+}
+
+@mixin rounded($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin bent($shadow-color, $color, $depth) {
+  background-color: $color;
+  @include shadow(0 $depth 0 0 $shadow-color);
+}
+
+@mixin button($shadow-color, $color, $depth) {
+  @include bent($shadow-color, $color, $depth);
+  line-height: 1;
+  position: relative;
+  border: 0 none;
+  margin-top: 0;
+  margin-bottom: $depth;
+
+  &:active {
+    background-color: $shadow-color;
+    @include shadow(none);
+    margin-top: $depth;
+    margin-bottom: 0;
+  }
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font: #{$font-size}/#{$line-height} $font;
+  color: $text-color;
+  margin: 0;
+}
+
+.link, a {
+  color: $link-color;
+  text-decoration: none;
+  &:hover, &:active, &:focus {
+    text-decoration: underline;
+  }
+}
+
+
+.page {
+  @include flexbox;
+  height: 100%;
+}
+
+.content {
+  max-width: 1000px;
+  width: 100%;
+  margin: auto;
+}
+
+h1 {
+  margin: {
+    top: 0;
+    bottom: 1em;
+  }
+  font-size: $font-size * 2;
+}
+
+p {
+  margin: {
+    top: 0;
+    bottom: 1em;
+  }
+}
+
+nav.menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li a {
+
+    &.disabled, &.disabled:hover {
+      cursor: default;
+      color: $text-color;
+      text-decoration: none;
+    }
+  }
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+.center {
+  text-align: center;
+}
+
+.clear {
+  clear: both;
+}
+
+.isolated {
+  margin: 1em;
+}
+
+.not_very_isolated {
+  margin: 0.5em;
+}
+
+.hidden {
+  display: none;
+}
+
+.full_width {
+  width: 100%;
+}
+
+.button {
+  @include rounded(2px);
+  @include button(rgb(210, 210, 210), rgb(230, 230, 230), 3px);
+  padding: 5px;
+  font-size: $font-size * 0.9;
+}
+
+input[type="text"], textarea {
+  @include rounded(2px);
+  border: 1px solid rgb(230, 230, 230);
+  background: white;
+  padding: 3px;
+}
+
+.select {
+  @include rounded(2px);
+  border: 1px solid rgb(230, 230, 230);
+  padding: 0.5em;
+  box-sizing: content-box;
+  line-height: 1.5em;
+  max-height: 7.5em;
+  overflow: auto;
+
+  li {
+    cursor: pointer;
+  }
+}

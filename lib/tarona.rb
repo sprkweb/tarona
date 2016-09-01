@@ -10,7 +10,7 @@ require 'json'
 require 'tardvig'
 require 'rack'
 require 'faye/websocket'
-require 'sinatra'
+require 'sinatra/base'
 
 require 'lib/tarona/version'
 
