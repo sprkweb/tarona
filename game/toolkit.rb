@@ -13,7 +13,7 @@ module Tarona
   #     You can see translations inside the /game/i18n directory.
   class Toolkit < Tardvig::Toolkit
     # @see #settings
-    DEFAULT_SETTINGS_PATH = 'player/default_settings.yml'.freeze
+    DEFAULT_SETTINGS_PATH = 'game/default_settings.yml'.freeze
     # @see #settings
     SETTINGS_PATH = 'player/settings.yml'.freeze
 
