@@ -1,12 +1,21 @@
 # Tarona
 
-## Description
+## FAQ
+#### ???
+It is going to be a game.
 
-## Getting Started
+#### What kind of game? Genre? Plot?
+It is a secret.
 
-## You can also see...
-`Rakefile` - Rake tasks for contribution
+#### "It is going to be"?
+It is in development now.
 
-`tarona.gemspec` - here you can see my name and email and this gem's depencies
+#### Stage of development?
+There is no game now, but the base of the engine must work.
 
-`LICENSE` - this gem's license
+## Installation
+See `CONTRIBUTING.md` if you want to contribute. Otherwise, you should not
+install this project, because it is not production-ready.
+
+## License
+See the `LICENSE` file

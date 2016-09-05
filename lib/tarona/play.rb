@@ -18,7 +18,7 @@ module Tarona
   #   @return [Hash] hash containing your acts as values and their
   #   identificators as keys.
   # @!attribute [r] first_act
-  #   @return [Object]i dentificator of the act which must be executed first.
+  #   @return [Object] identificator of the act which must be executed first.
   # @!attribute [r] io
   #   @return an object which can be used as input/output. It will be passed to
   #     the acts.

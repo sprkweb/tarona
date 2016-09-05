@@ -1,4 +1,5 @@
 module Tarona
+  # This is a Rack application which handles HTTP requests
   class WebServer < Sinatra::Application
     class << self
       # @return [Tardvig::Toolkit] toolkit
