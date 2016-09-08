@@ -1,7 +1,6 @@
-require 'rubygems'
-require 'bundler/setup'
-
 require_jasmine = proc do
+  require 'rubygems'
+  require 'bundler/setup'
   require 'jasmine'
   load 'jasmine/tasks/jasmine.rake'
   task :js_spec do
