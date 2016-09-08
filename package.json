@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "jsdoc": "~3.4",
+    "bower": "~1.7"
+  }
+}

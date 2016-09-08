@@ -12,7 +12,7 @@ require_jasmine = proc do
 end
 
 task default: [:build]
-task build: [:gems, :assets, :check]
+task build: [:gems, :js_deps, :assets, :check]
 task check: [:spec, :doc, :js_spec, :js_doc]
 
 task :spec do
@@ -27,6 +27,12 @@ task :doc do
   puts ''
 end
 
+task :js_doc do
+  puts 'Generating JavaScript documentation...'
+  sh './node_modules/.bin/jsdoc game_engine.js -d jsdoc'
+  puts ''
+end
+
 task :gems do
   puts 'Installing required rubygems...'
   sh 'bundle install --path vendor/bundle'
@@ -34,10 +40,15 @@ task :gems do
   require_jasmine.call
 end
 
+task :js_deps do
+  puts 'Installing JavaScript dependencies...'
+  sh 'npm install'
+  puts ''
+end
+
 task :assets do
   puts 'Installing front-end dependencies...'
-  # TODO: I need something to install front-end dependencies, such as Bower,
-  # but without Node.js
+  sh './node_modules/.bin/bower install'
   puts ''
 end
 

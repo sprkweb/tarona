@@ -1,7 +1,9 @@
 /.bundle/
 /.sass-cache/
 /.yardoc/
+/node_modules/
 /doc/
+/js_doc/
 /coverage/
 /player/
 /public/vendor/

@@ -17,7 +17,10 @@ module Tarona
         title: tk.i18n['game_name'],
         styles: ['styles/play'],
         scripts: {
-          # after: %w[vendor/scripts/underscore.js scripts/game_engine.js]
+          after: %w[
+            vendor/underscore/underscore-min.js
+            scripts/game_engine.js
+          ]
         }
       }
       erb :game, layout: :index, locals: { options: page_options }
