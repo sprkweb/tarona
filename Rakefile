@@ -38,7 +38,6 @@ task :gems do
   puts 'Installing required rubygems...'
   sh 'bundle install --path vendor/bundle'
   puts ''
-  require_jasmine.call
 end
 
 task :js_deps do
