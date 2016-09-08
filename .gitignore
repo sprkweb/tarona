@@ -3,7 +3,7 @@
 /.yardoc/
 /node_modules/
 /doc/
-/js_doc/
+/jsdoc/
 /coverage/
 /player/
 /public/vendor/

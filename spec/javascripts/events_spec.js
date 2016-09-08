@@ -64,8 +64,8 @@ describe('Events', function() {
 
     it('executes all the event listeners', function() {
       subject.happen('another_event');
-      expect(listener2).toHaveBeenCalled();
-      expect(listener).not.toHaveBeenCalled();
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener2).not.toHaveBeenCalled();
     });
 
     it('do nothing when there is no listeners', function() {
