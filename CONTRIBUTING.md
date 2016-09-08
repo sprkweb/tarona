@@ -1,6 +1,6 @@
 # Contributing
 ## Dependencies
-It requires Ruby >2, git for development.
+It requires Ruby >2, git, npm for development.
 
 ### Installation
 You need to install the `bundler` and `rake` gems first:
@@ -22,15 +22,16 @@ you can write an issue if you do not want/can to do it yourself.
 ## Code style
 Required:
 - BDD (coverage as full as possible)
-- YARD docs
+- Docs
 
 Optional:
-- No warnings from `rubocop`
+- No warnings from `rubocop` (for Ruby)
 
 ## Rake tasks
 See `Rakefile`
 
 ## Code guide
+### Back-end
 First, you need to read the documentation of the tardvig gem, because the
 structure of this project is based on it.
 
