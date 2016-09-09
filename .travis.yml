@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 2.0.0
+  - ruby-head
+  - jruby-head
+  - rbx
+dist: trusty
+sudo: false
+install: ''
