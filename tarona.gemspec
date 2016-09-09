@@ -22,7 +22,7 @@ DOC
   s.add_runtime_dependency 'sass', '~> 3.4'
   s.add_runtime_dependency 'erubis', '~> 2.7'
 
-  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rake', '>= 10.0.0'
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'yard', '~> 0.8'
