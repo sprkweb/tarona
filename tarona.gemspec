@@ -20,6 +20,7 @@ DOC
   s.add_runtime_dependency 'sinatra', '~> 1.4'
   s.add_runtime_dependency 'faye-websocket', '~> 0.10'
   s.add_runtime_dependency 'sass', '~> 3.4'
+  s.add_runtime_dependency 'erubis', '~> 2.7'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'bundler'
