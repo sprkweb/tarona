@@ -1,5 +1,5 @@
 # Tarona
-
+[![Build Status](https://travis-ci.org/sprkweb/tarona.svg?branch=master)](https://travis-ci.org/sprkweb/tarona)
 ## FAQ
 #### ???
 It is going to be a game.

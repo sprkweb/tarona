@@ -7,3 +7,4 @@ rvm:
 dist: trusty
 sudo: false
 install: ''
+script: 'rake'
