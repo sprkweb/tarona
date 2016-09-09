@@ -21,7 +21,8 @@ DOC
   s.add_runtime_dependency 'faye-websocket', '~> 0.10'
   s.add_runtime_dependency 'sass', '~> 3.4'
 
-  s.add_development_dependency 'rake', '~> 11.2'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'bundler'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'yard', '~> 0.8'
   s.add_development_dependency 'redcarpet', '~> 3.3'
