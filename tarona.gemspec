@@ -26,7 +26,7 @@ DOC
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'yard', '~> 0.8'
-  s.add_development_dependency 'redcarpet', '~> 3.3'
+  s.add_development_dependency 'kramdown', '~> 1.12'
   s.add_development_dependency 'simplecov', '~> 0.12'
   s.add_development_dependency 'jasmine', '~> 2.4'
   s.add_development_dependency 'rack-test', '~> 0.6'

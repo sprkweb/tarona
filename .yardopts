@@ -2,5 +2,5 @@
 --title 'Tarona API Documentation'
 --charset utf-8
 --markup markdown
---markup-provider redcarpet
+--markup-provider kramdown
 'lib/**/*.rb' 'game/**/*.rb' - LICENSE
