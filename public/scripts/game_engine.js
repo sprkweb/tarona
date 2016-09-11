@@ -32,6 +32,8 @@ var Events = {
   },
   /**
    * Executes all the listeners attached to the given event.
+   * The `this` keyword inside the listeners will be the object that has got
+   * this event.
    *
    * @param event - All the listeners with this identificator will be executed
    * @param eventData - Whatever you want. It will be passed as an argument to
@@ -70,3 +72,46 @@ var Events = {
     return target;
   }
 };
+
+/**
+ * Constructs event-driven WebSocket connection. Events which are triggered on
+ * the server side will also be triggered on the client side and vise versa.
+ *
+ * @param {string} url - URL of the WebSocket server
+ * @constructor
+ * @mixes Events
+ */
+function Messenger(url) {
+  Events.addEventsTo(this);
+
+  try {
+    /**
+     * This is JavaScript standard WS object.
+     * @type {WebSocket}
+     */
+    this.socket = new WebSocket(url);
+  } catch (exception) {
+    // FIXME: Handle the error
+  }
+
+  this.socket.onclose = function() {
+    // FIXME: Handle the error
+  };
+
+  var pure_happen = this.happen;
+  var event2output = function (event, eventData) {
+    this.socket.send(JSON.stringify([event, eventData]))
+  };
+  this.happen = function() {
+    event2output.apply(this, arguments);
+    pure_happen.apply(this, arguments);
+  };
+
+  var self = this;
+  this.socket.onmessage = function(msg) {
+    var msg_content = JSON.parse(msg.data);
+    self.listeners(msg_content[0]).forEach(function(listener) {
+      if (listener) listener.apply(self, [msg_content[1]])
+    });
+  };
+}
