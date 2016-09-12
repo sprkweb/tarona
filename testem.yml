@@ -1,0 +1,5 @@
+framework: jasmine2
+src_files:
+  - public/vendor/underscore/underscore-min.js
+  - public/scripts/game_engine.js
+  - spec/javascripts/**/*_spec.js

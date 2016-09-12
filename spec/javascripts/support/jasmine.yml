@@ -1,8 +1,0 @@
-src_dir: public
-src_files:
-  - vendor/underscore/underscore-min.js
-  - scripts/game_engine.js
-#helpers:
-#  - 'helpers/**/*.js'
-spec_files:
-  - '**/*_spec.js'
