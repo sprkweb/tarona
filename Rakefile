@@ -2,23 +2,8 @@ def make_task(name, description)
   task_proc = Proc.new
   task name do
     puts description + '...'
-    run_task task_proc
-    puts
-  end
-end
-
-def run_task(task_proc)
-  failed = 0
-  begin
     task_proc.call
-  rescue Exception => e
-    failed += 1
-    if failed < 3
-      puts 'Failed. Try again...'
-      retry
-    else
-      raise e
-    end
+    puts
   end
 end
 
