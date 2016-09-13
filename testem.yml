@@ -1,4 +1,5 @@
-framework: jasmine2
+framework: custom
+test_page: spec/javascripts/support/test.mustache
 src_files:
   - public/vendor/underscore/underscore-min.js
   - public/scripts/game_engine.js
