@@ -3,6 +3,7 @@
     "jsdoc": "~3.4",
     "bower": "~1.7",
     "testem": "~1.12",
-    "jasmine-core": "~2.5"
+    "jasmine-core": "~2.5",
+    "phantomjs-prebuilt": "~2.1"
   }
 }

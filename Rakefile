@@ -18,9 +18,7 @@ make_task :spec, 'Running specs' do
 end
 
 make_task :js_spec, 'Running JavaScript specs' do
-  # I do not know why, but Firefox does not work with Testem (13.09.16)
-  # ("Browser "firefox..." exited unexpectedly with exit code 0")
-  sh NODEJS_BIN_PATH + 'testem ci -s Firefox'
+  sh NODEJS_BIN_PATH + 'testem ci -l PhantomJS'
 end
 
 make_task :doc, 'Generating documentation' do
