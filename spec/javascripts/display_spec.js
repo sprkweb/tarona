@@ -3,7 +3,7 @@ describe('Display', function() {
   beforeEach(function() {
     generator = jasmine.createSpy('generator');
     generator_name = 'foo';
-    selector = 'body';
+    selector = '#test_area';
     display = new Display();
     display.addGenerator(generator_name, generator);
     data = { area_selector: selector };
@@ -13,15 +13,15 @@ describe('Display', function() {
     display.generate(generator_name, data);
     expect(generator).toHaveBeenCalled();
   });
-  
+
   it('clears created DOM before next act', function() {
     display.generate(generator_name, data);
-    document.querySelector(selector).appendChild('div');
-    expect(document.querySelector(selector)).not.toBeNull();
+    document.querySelector(selector).appendChild(document.createElement('div'));
+    expect(document.querySelector(selector).innerHTML).not.toEqual('');
     display.generate(generator_name, data);
-    expect(document.querySelector(selector)).toBeNull();
+    expect(document.querySelector(selector).innerHTML).toEqual('');
   });
-  
+
   it('passes area object and given data as arguments to generator', function() {
     display.generate(generator_name, data);
     var area = document.querySelector(selector);
