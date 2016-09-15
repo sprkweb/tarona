@@ -100,7 +100,7 @@ function Messenger(url) {
 
   var pure_happen = this.happen;
   var event2output = function (event, eventData) {
-    this.socket.send(JSON.stringify([event, eventData]))
+    this.socket.send(JSON.stringify([event, eventData]));
   };
   this.happen = function() {
     event2output.apply(this, arguments);
@@ -111,7 +111,48 @@ function Messenger(url) {
   this.socket.onmessage = function(msg) {
     var msg_content = JSON.parse(msg.data);
     self.listeners(msg_content[0]).forEach(function(listener) {
-      if (listener) listener.apply(self, [msg_content[1]])
+      if (listener) listener.apply(self, [msg_content[1]]);
     });
   };
 }
+
+/**
+ * Its instances generates HTML tags for acts. 
+ * It is powered by custom "generators", which are functions creating and 
+ * managing DOMs for acts (one generator per act).
+ * 
+ * @constructor
+ */
+function Display() {
+  var generators = {};
+  
+  var clean = function(area) {
+    area.innerHTML = '';
+  };
+  
+  /**
+   * Adds your generator to the list of generators.
+   * 
+   * @param name - identificator of your generator
+   * @param {function} func - generator itself
+   * @see generate
+   */
+  this.addGenerator = function(name, func) {
+    generators[name] = func;
+  };
+  
+  /**
+   * Constructs DOM for your act.
+   * 
+   * @param generator_name - identificator of a previously added generator
+   * @param {object} data - information about your act.
+   *   This object will be passed to the generator as an argument.
+   *   It must contain attribute `area_selector` which is CSS selector (string)
+   *   for the HTML tag which is the root of your act's markup.
+   */
+  this.generate = function(generator_name, data) {
+    var area = document.querySelector(data.area_selector);
+    clean(area);
+    generators[generator_name](area, data);
+  };
+};
