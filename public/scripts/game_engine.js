@@ -84,17 +84,15 @@ var Events = {
 function Messenger(url) {
   Events.addEventsTo(this);
 
-  try {
-    /**
-     * This is JavaScript standard WS object.
-     * @type {WebSocket}
-     */
-    this.socket = new WebSocket(url);
-  } catch (exception) {
-    // FIXME: Handle the error
-  }
-
+  /**
+   * This is JavaScript standard WS object.
+   * @type {WebSocket}
+   */
+  this.socket = new WebSocket(url);
   this.socket.onclose = function() {
+    // FIXME: Handle the error
+  };
+  this.socket.onerror = function() {
     // FIXME: Handle the error
   };
 

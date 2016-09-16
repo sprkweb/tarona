@@ -1,9 +1,10 @@
 describe('Messenger', function() {
+  WebSocket = jasmine.createSpy('WebSocket');
+
   it('uses standard WebSocket object', function() {
     var messenger = new Messenger('ws://foo');
     var socket = messenger.socket;
-    expect(socket instanceof WebSocket).toBeTruthy();
-    expect(socket.url).toMatch('foo');
+    expect(WebSocket).toHaveBeenCalledWith('ws://foo');
   });
 
   var messenger;
