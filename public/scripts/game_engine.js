@@ -155,6 +155,10 @@ function Display() {
   };
 }
 
+/**
+ * Generator of text acts for Display
+ * @see Display
+ */
 function TextGenerator(area, data) {
   var container = area.appendChild(document.createElement('div'));
   container.setAttribute('id', 'text');
