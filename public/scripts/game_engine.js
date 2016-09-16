@@ -153,4 +153,10 @@ function Display() {
     clean(area);
     generators[generator_name](area, data);
   };
-};
+}
+
+function TextGenerator(area, data) {
+  var container = area.appendChild(document.createElement('div'));
+  container.setAttribute('id', 'text');
+  container.innerHTML = data.text;
+}
