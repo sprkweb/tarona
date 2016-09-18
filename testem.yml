@@ -2,5 +2,5 @@ framework: custom
 test_page: spec/javascripts/support/test.mustache
 src_files:
   - public/vendor/underscore/underscore-min.js
-  - public/scripts/game_engine.js
+  - public/scripts/**/*.js
   - spec/javascripts/**/*_spec.js
