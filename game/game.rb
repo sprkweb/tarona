@@ -14,4 +14,14 @@ doorman = Tarona::Doorman.new(
     tk: toolkit
   }
 )
-Rack::Server.start app: doorman unless ENV['RACK_ENV'] == 'test'
+
+unless ENV['RACK_ENV'] == 'test'
+  ENV['RACK_ENV'] = 'production'
+  rack_options = {
+    app: doorman,
+    server: :puma
+  }
+  rack_options[:Port] = ENV['PORT'] if ENV['PORT']
+  rack_options[:Host] = ENV['IP'] if ENV['IP']
+  Rack::Server.start rack_options
+end
