@@ -122,7 +122,12 @@ function Messenger(url) {
  * @constructor
  */
 function Display() {
-  var generators = {};
+  /**
+   * List of generators which you have previously added:
+   * @example
+   * { generator_name: function() {} }
+   */
+  this.generators = {};
   
   var clean = function(area) {
     area.innerHTML = '';
@@ -136,7 +141,7 @@ function Display() {
    * @see generate
    */
   this.addGenerator = function(name, func) {
-    generators[name] = func;
+    this.generators[name] = func;
   };
   
   /**
@@ -151,7 +156,7 @@ function Display() {
   this.generate = function(generator_name, data) {
     var area = document.querySelector(data.area_selector);
     clean(area);
-    generators[generator_name](area, data);
+    this.generators[generator_name](area, data);
   };
 }
 

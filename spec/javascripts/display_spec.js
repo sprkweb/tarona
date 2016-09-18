@@ -27,4 +27,10 @@ describe('Display', function() {
     var area = document.querySelector(selector);
     expect(generator).toHaveBeenCalledWith(area, data);
   });
+
+  it('can list you generators', function() {
+    var generators = {};
+    generators[generator_name] = generator;
+    expect(display.generators).toEqual(generators);
+  });
 });
