@@ -26,6 +26,7 @@ RSpec.describe Tarona::WebSocket do
       @listeners ||= []
       @listeners << [event, block]
     end
+    allow(socket).to receive(:rack_response) { 'foo' }
     allow(Faye::WebSocket).to receive(:new) { socket }
   end
 
@@ -45,6 +46,12 @@ RSpec.describe Tarona::WebSocket do
     socket.listeners.each do |listener|
       next unless listener[0] == :message
       listener[1].call event
+    end
+  end
+  
+  describe '#response' do
+    it 'returns rack response to make the connection' do
+      expect(io.response).to eq('foo')
     end
   end
 end

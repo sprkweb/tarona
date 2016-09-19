@@ -17,6 +17,11 @@ module Tarona
     end
 
     alias trigger happen
+    
+    # @return Rack response to make the connection.
+    def response
+      @socket.rack_response
+    end
 
     private
 

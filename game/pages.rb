@@ -20,6 +20,7 @@ module Tarona
           after: %w[
             vendor/underscore/underscore-min.js
             scripts/game_engine.js
+            scripts/runner.js
           ]
         }
       }

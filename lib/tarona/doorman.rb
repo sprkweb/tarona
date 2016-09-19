@@ -28,7 +28,8 @@ module Tarona
       if @params[:io].player?(env)
         io = @params[:io].new env
         options = @params[:game_options].merge io: io
-        @params[:game].new options
+        Thread.new { @params[:game].call options }
+        io.response
       else
         @params[:server].call env
       end

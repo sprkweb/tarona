@@ -24,11 +24,12 @@ RSpec.describe Tarona::Doorman do
       io_instance = double
       expect(io).to receive(:player?).with(env).ordered { true }
       expect(io).to receive(:new).with(env).ordered { io_instance }
-      expect(game).to receive(:new).with(hash_including(
+      expect(game).to receive(:call).with(hash_including(
           io: io_instance,
           valid: true
       ))
-      doorman.call env
+      expect(io_instance).to receive(:response) { 'foo' }
+      expect(doorman.call(env)).to eq('foo')
     end
   end
 end
