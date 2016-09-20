@@ -27,15 +27,18 @@ module Tarona
   #   @return [Toolkit] your toolkit (optional)
   #   @see Tardvig::Toolkit
   class Play < Tardvig::Command
+    attr_reader :thread
 
     private
 
     def process
-      @next_act = @acts[@first_act]
-      until @next_act.nil?
-        switch_act
-        wait_for_next_act do
-          execute_act
+      @thread = Thread.new do
+        @next_act = @acts[@first_act]
+        until @next_act.nil?
+          switch_act
+          wait_for_next_act do
+            execute_act
+          end
         end
       end
     end

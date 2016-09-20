@@ -1,5 +1,6 @@
 RSpec.describe Tarona::Doorman do
   let(:io) { double }
+  let(:io_instance) { double }
   let(:server) { double }
   let(:game) { double }
   let(:options) { { valid: true } }
@@ -12,6 +13,16 @@ RSpec.describe Tarona::Doorman do
         game_options: options
     )
   end
+  
+  before :example do
+    allow(io_instance).to receive(:on) do |event, &block|
+      if event == :open
+        block.call
+      else
+        raise "Unexpected event: #{event.inspect}"
+      end
+    end
+  end
 
   describe '#call' do
     it 'gives care of connection to the server if it is not WebSocket' do
@@ -21,7 +32,6 @@ RSpec.describe Tarona::Doorman do
     end
 
     it 'starts a new game if it is WebSocket' do
-      io_instance = double
       expect(io).to receive(:player?).with(env).ordered { true }
       expect(io).to receive(:new).with(env).ordered { io_instance }
       expect(game).to receive(:call).with(hash_including(

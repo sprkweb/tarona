@@ -9,8 +9,14 @@ module Tarona
     def initialize(env)
       @socket = Faye::WebSocket.new env
       @socket.on :message, &method(:input2event)
+      @socket.on(:open) { classic_happen :open }
     end
 
+    alias classic_happen happen
+    private :classic_happen
+
+    # It is the same `happen` method, but it also triggers event on the other
+    # side of WebSocket.
     def happen(event, data)
       event2output(event, data)
       super(event, data)
@@ -32,9 +38,7 @@ module Tarona
     def input2event(event)
       input = JSON.parse event.data
       return if input.size != 2 || input[0].class != String
-      listeners(input[0].to_sym).each do |listener|
-        listener.call input[1]
-      end
+      classic_happen input[0].to_sym, input[1]
     end
   end
 end

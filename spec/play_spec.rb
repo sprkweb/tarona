@@ -40,18 +40,24 @@ RSpec.describe Tarona::Play do
   let(:play) { described_class.new io: io, acts: acts, first_act: :first }
 
   describe '#call' do
+    it 'creates a new thread for it' do
+      instance = play.call
+      expect(instance.thread).to be_a(Thread)
+      instance.thread.join
+    end
+
     it 'executes every act' do
       expect(TestAct.ended).to receive(:<<).with(kind_of(FirstAct)).ordered
       expect(TestAct.ended).to receive(:<<).with(kind_of(SecondAct)).ordered
       expect(TestAct.ended).to receive(:<<).with(kind_of(ThirdAct)).ordered
-      play.call
+      play.call.thread.join
     end
 
     it 'passes io as an option' do
       expect(TestAct.ended).to receive(:<<).exactly(3).times do |act|
         expect(act.io).to be(io)
       end
-      play.call
+      play.call.thread.join
     end
 
     let(:toolkit) { double }
@@ -60,7 +66,7 @@ RSpec.describe Tarona::Play do
       expect(TestAct.ended).to receive(:<<).exactly(3).times do |act|
         expect(act.tk).to be(toolkit)
       end
-      play.call tk: toolkit
+      play.call(tk: toolkit).thread.join
     end
   end
 end

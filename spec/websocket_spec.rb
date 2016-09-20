@@ -54,4 +54,15 @@ RSpec.describe Tarona::WebSocket do
       expect(io.response).to eq('foo')
     end
   end
+  
+  it 'triggers the `open` event when a connection is opened' do
+    listener = proc {}
+    io.on :open, &listener
+    expect(listener).to receive(:call)
+    old_threads = Thread.list
+    socket.listeners.each do |listener|
+      next unless listener[0] == :open
+      listener[1].call
+    end
+  end
 end
