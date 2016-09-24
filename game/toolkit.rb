@@ -11,11 +11,17 @@ module Tarona
   #   @return [Tardvig::SavedHash] hash containing translations for some phrases
   #     for the current language (it is taken from the settings).
   #     You can see translations inside the /game/i18n directory.
+  # @!attribute [r] config
+  #   @return [Tardvig::SavedHash] hash containing configuration of this game,
+  #     that is some constants which should not be hardcoded, so they are stored
+  #     in a separate file.
   class Toolkit < Tardvig::Toolkit
     # @see #settings
     DEFAULT_SETTINGS_PATH = 'game/default_settings.yml'.freeze
     # @see #settings
     SETTINGS_PATH = 'player/settings.yml'.freeze
+    # @see #config
+    CONFIG_PATH = 'game/config.yml'.freeze
 
     tool :settings do |_, params|
       default_settings = params[:default_settings] || DEFAULT_SETTINGS_PATH
@@ -29,6 +35,11 @@ module Tarona
     tool :i18n do |tk, params|
       i18n_input = params[:i18n] || "game/i18n/#{tk.settings['language']}.yml"
       Tardvig::SavedHash.new i18n_input
+    end
+    
+    tool :config do |_, params|
+      cfg_input = params[:config] || CONFIG_PATH
+      Tardvig::SavedHash.new cfg_input
     end
   end
 end
