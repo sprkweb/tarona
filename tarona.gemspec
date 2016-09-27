@@ -14,7 +14,7 @@ DOC
 
   s.required_ruby_version = '>= 2.0.0'
 
-  s.add_runtime_dependency 'tardvig', '>= 0.2.1'
+  s.add_runtime_dependency 'tardvig', '>= 0.2.2'
   s.add_runtime_dependency 'rack', '~> 1.4'
   s.add_runtime_dependency 'puma', '~> 3.6'
   s.add_runtime_dependency 'sinatra', '~> 1.4'

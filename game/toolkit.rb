@@ -23,23 +23,30 @@ module Tarona
     # @see #config
     CONFIG_PATH = 'game/config.yml'.freeze
 
-    tool :settings do |_, params|
-      default_settings = params[:default_settings] || DEFAULT_SETTINGS_PATH
-      settings = Tardvig::SavedHash.new default_settings
-      if params[:settings] || File.exist?(SETTINGS_PATH)
-        settings.load(params[:settings] || SETTINGS_PATH)
+    class << self
+      def load_hash(from)
+        hash = Tardvig::HashContainer.new
+        hash.load from
+        yield hash if block_given?
+        hash
       end
-      settings
+      private :load_hash
+    end
+
+    tool :settings do |_, params|
+      load_hash(params[:default_settings] || DEFAULT_SETTINGS_PATH) do |hash|
+        if params[:settings] || File.exist?(SETTINGS_PATH)
+          hash.load(params[:settings] || SETTINGS_PATH)
+        end
+      end
     end
 
     tool :i18n do |tk, params|
-      i18n_input = params[:i18n] || "game/i18n/#{tk.settings['language']}.yml"
-      Tardvig::SavedHash.new i18n_input
+      load_hash(params[:i18n] || "game/i18n/#{tk.settings['language']}.yml")
     end
-    
+
     tool :config do |_, params|
-      cfg_input = params[:config] || CONFIG_PATH
-      Tardvig::SavedHash.new cfg_input
+      load_hash(params[:config] || CONFIG_PATH)
     end
   end
 end
