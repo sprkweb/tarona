@@ -35,11 +35,10 @@ RSpec.describe Tarona::Play::RunActs do
   end
 
 
-  let(:io) { double }
-  let(:tk) { double }
+  let(:act_params) { { valid: true } }
   let(:acts) { { first: FirstAct, second: SecondAct, third: ThirdAct } }
   let :subject do 
-    described_class.new io: io, acts: acts, first_act: :first, tk: tk
+    described_class.new act_params: act_params, acts: acts, first_act: :first
   end
 
   describe '#call' do
@@ -56,20 +55,11 @@ RSpec.describe Tarona::Play::RunActs do
       subject.call.thread.join
     end
 
-    it 'passes io as an option' do
+    it 'passes act_params as an option to acts' do
       expect(TestAct.ended).to receive(:<<).exactly(3).times do |act|
-        expect(act.io).to be(io)
+        expect(act.valid).to be true
       end
       subject.call.thread.join
-    end
-
-    let(:toolkit) { double }
-
-    it 'passes toolkit as an option if it is' do
-      expect(TestAct.ended).to receive(:<<).exactly(3).times do |act|
-        expect(act.tk).to be(toolkit)
-      end
-      subject.call(tk: toolkit).thread.join
     end
   end
 end
