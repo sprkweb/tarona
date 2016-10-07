@@ -27,4 +27,10 @@ function Runner() {
   });
 }
 
-new Runner();
+if (typeof environment === 'undefined') {
+  var environment = 'production';
+}
+
+if (environment !== 'test') {
+  new Runner();
+}
