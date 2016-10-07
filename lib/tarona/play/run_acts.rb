@@ -1,15 +1,15 @@
 module Tarona
   class Play
     # Part of the Play command which is responsible for sequently running acts.
-  #   @!attribute [r] acts
-  #     @return [Hash] hash containing your acts as values and their
-  #       identificators as keys.
-  #   @!attribute [r] first_act
-  #     @return [Object] identificator of the act which must be executed
-  #       first.
-  #   @!attribute [r] act_params
-  #     @return [Object] this object will be passed to acts when they are
-  #       initialized
+    # @!attribute [r] acts
+    #   @return [Hash] hash containing your acts as values and their
+    #     identificators as keys.
+    # @!attribute [r] first_act
+    #   @return [Object] identificator of the act which must be executed
+    #     first.
+    # @!attribute [r] act_params
+    #   @return [Object] this object will be passed to acts when they are
+    #     initialized
     class RunActs < Tardvig::Command
       attr_reader :thread
   

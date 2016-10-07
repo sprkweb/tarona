@@ -25,6 +25,7 @@ RSpec.describe Tarona::Doorman do
   end
 
   describe '#call' do
+    # TODO: Refactor
     it 'gives care of connection to the server if it is not WebSocket' do
       expect(io).to receive(:player?).with(env) { false }
       expect(server).to receive(:call).with(env)
