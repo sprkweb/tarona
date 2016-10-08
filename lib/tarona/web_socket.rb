@@ -17,7 +17,7 @@ module Tarona
 
     # It is the same `happen` method, but it also triggers event on the other
     # side of WebSocket.
-    def happen(event, data)
+    def happen(event, data = nil)
       event2output(event, data)
       super(event, data)
     end
@@ -36,7 +36,7 @@ module Tarona
     end
 
     def input2event(event)
-      input = JSON.parse event.data
+      input = JSON.parse event.data, symbolize_names: true
       return if input.size != 2 || input[0].class != String
       classic_happen input[0].to_sym, input[1]
     end

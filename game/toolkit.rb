@@ -11,24 +11,42 @@ module Tarona
   #   @return [Tardvig::SavedHash] hash containing translations for some phrases
   #     for the current language (it is taken from the settings).
   #     You can see translations inside the /game/i18n directory.
+  # @!attribute [r] config
+  #   @return [Tardvig::SavedHash] hash containing configuration of this game,
+  #     that is some constants which should not be hardcoded, so they are stored
+  #     in a separate file.
   class Toolkit < Tardvig::Toolkit
     # @see #settings
     DEFAULT_SETTINGS_PATH = 'game/default_settings.yml'.freeze
     # @see #settings
     SETTINGS_PATH = 'player/settings.yml'.freeze
+    # @see #config
+    CONFIG_PATH = 'game/config.yml'.freeze
+
+    class << self
+      def load_hash(from)
+        hash = Tardvig::HashContainer.new
+        hash.load from
+        yield hash if block_given?
+        hash
+      end
+      private :load_hash
+    end
 
     tool :settings do |_, params|
-      default_settings = params[:default_settings] || DEFAULT_SETTINGS_PATH
-      settings = Tardvig::SavedHash.new default_settings
-      if params[:settings] || File.exist?(SETTINGS_PATH)
-        settings.load(params[:settings] || SETTINGS_PATH)
+      load_hash(params[:default_settings] || DEFAULT_SETTINGS_PATH) do |hash|
+        if params[:settings] || File.exist?(SETTINGS_PATH)
+          hash.load(params[:settings] || SETTINGS_PATH)
+        end
       end
-      settings
     end
 
     tool :i18n do |tk, params|
-      i18n_input = params[:i18n] || "game/i18n/#{tk.settings['language']}.yml"
-      Tardvig::SavedHash.new i18n_input
+      load_hash(params[:i18n] || "game/i18n/#{tk.settings['language']}.yml")
+    end
+
+    tool :config do |_, params|
+      load_hash(params[:config] || CONFIG_PATH)
     end
   end
 end

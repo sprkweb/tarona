@@ -120,8 +120,10 @@ function Messenger(url) {
  * managing DOMs for acts (one generator per act).
  * 
  * @constructor
+ * @param area_selector - CSS selector of the container tag. Generators will
+ *  create tags only inside this tag.
  */
-function Display() {
+function Display(area_selector) {
   /**
    * List of generators which you have previously added:
    * @example
@@ -154,7 +156,7 @@ function Display() {
    *   for the HTML tag which is the root of your act's markup.
    */
   this.generate = function(generator_name, data) {
-    var area = document.querySelector(data.area_selector);
+    var area = document.querySelector(area_selector);
     clean(area);
     this.generators[generator_name](area, data);
   };
@@ -167,5 +169,5 @@ function Display() {
 function TextGenerator(area, data) {
   var container = area.appendChild(document.createElement('div'));
   container.setAttribute('id', 'text');
-  container.innerHTML = data.text;
+  container.innerHTML = data.subject;
 }

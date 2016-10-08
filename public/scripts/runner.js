@@ -13,7 +13,7 @@ function Runner() {
    *
    * @type Display
    */
-  this.display = new Display();
+  this.display = new Display('#area');
   this.display.addGenerator('text', TextGenerator);
 
   /**
@@ -23,8 +23,14 @@ function Runner() {
    */
   this.messenger = new Messenger(location.origin.replace(/^http/, 'ws'));
   this.messenger.on('act_start', function(act) {
-    runner.display.generate(act.type, act.subject);
+    runner.display.generate(act.type, act);
   });
 }
 
-new Runner();
+if (typeof environment === 'undefined') {
+  var environment = 'production';
+}
+
+if (environment !== 'test') {
+  new Runner();
+}

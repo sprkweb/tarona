@@ -2,8 +2,8 @@ require 'game/toolkit'
 require 'game/acts/introduction'
 require 'game/pages'
 
-toolkit = Tarona::Toolkit.new
-Tarona::WebServer.tk = toolkit
+toolkit = Tarona::Toolkit
+Tarona::WebServer.tk = toolkit.new
 doorman = Tarona::Doorman.new(
   io: Tarona::WebSocket,
   server: Tarona::WebServer,
