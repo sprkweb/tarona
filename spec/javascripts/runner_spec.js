@@ -24,7 +24,8 @@ describe('JS Engine runner', function() {
 
   it('runs the generator when an act is started', function() {
     spyOn(runner.display, 'generate');
-    runner.messenger.happen('act_start', { type: 'foo', subject: 'bar' });
-    expect(runner.display.generate).toHaveBeenCalledWith('foo', 'bar');
+    var act = { type: 'foo', subject: 'bar' };
+    runner.messenger.happen('act_start', act);
+    expect(runner.display.generate).toHaveBeenCalledWith(act.type, act);
   });
 });

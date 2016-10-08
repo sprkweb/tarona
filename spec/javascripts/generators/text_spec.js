@@ -5,8 +5,7 @@ describe('TextGenerator', function() {
     selector = '#test_area';
     area = document.querySelector(selector);
     text = 'foo';
-    data = { area_selector: selector, text: text };
-    TextGenerator(area, data);
+    TextGenerator(area, { subject: text });
   });
 
   it('creates container for text', function() {

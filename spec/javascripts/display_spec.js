@@ -4,21 +4,21 @@ describe('Display', function() {
     generator = jasmine.createSpy('generator');
     generator_name = 'foo';
     selector = '#test_area';
-    display = new Display();
+    display = new Display(selector);
     display.addGenerator(generator_name, generator);
-    data = { area_selector: selector };
+    data = { valid: true };
   });
 
   it('keeps records of generators and invokes them', function() {
-    display.generate(generator_name, data);
+    display.generate(generator_name);
     expect(generator).toHaveBeenCalled();
   });
 
   it('clears created DOM before next act', function() {
-    display.generate(generator_name, data);
+    display.generate(generator_name);
     document.querySelector(selector).appendChild(document.createElement('div'));
     expect(document.querySelector(selector).innerHTML).not.toEqual('');
-    display.generate(generator_name, data);
+    display.generate(generator_name);
     expect(document.querySelector(selector).innerHTML).toEqual('');
   });
 
