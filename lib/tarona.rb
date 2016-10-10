@@ -22,6 +22,7 @@ require 'lib/tarona/web_server'
 require 'lib/tarona/web_socket'
 
 require 'lib/tarona/act_types/text_act'
+require 'lib/tarona/act_types/action'
 
 # The main namespace for the gem
 module Tarona
