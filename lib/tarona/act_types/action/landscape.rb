@@ -31,7 +31,7 @@ module Tarona
       # @param x [Integer] x coordinate
       # @param y [Integer] y coordinate
       # @return [nil, Hash] place with given coordinates
-      #   or `nil` if there are no such place.
+      #   or `nil` if there is no such place.
       def get(x, y)
         return unless @landscape[x].respond_to?(:[])
         @landscape[x][y]
