@@ -16,7 +16,7 @@ describe Tarona::Action::HexGeometry do
   end
 
   it 'can create a SVG line of a hex' do
-    expect(modul.get_line([0, 0], 10)).to eq('M 8.6602540378 5.0 L 0.0 10.0 L -8.6602540378 5.0 L -8.6602540378 -5.0 L 0.0 -10.0 L 8.6602540378 -5.0 Z')
-    expect(modul.get_line([10, 15], 20)).to eq('M 27.3205080757 25.0 L 10.0 35.0 L -7.3205080757 25.0 L -7.3205080757 5.0 L 10.0 -5.0 L 27.3205080757 5.0 Z')
+    expect(modul.get_line([0, 0], 10)).to eq('M 8.6602540378 5 L 0 10 L -8.6602540378 5 L -8.6602540378 -5 L 0 -10 L 8.6602540378 -5 Z')
+    expect(modul.get_line([10, 15], 20)).to eq('M 27.3205080757 25 L 10 35 L -7.3205080757 25 L -7.3205080757 5 L 10 -5 L 27.3205080757 5 Z')
   end
 end

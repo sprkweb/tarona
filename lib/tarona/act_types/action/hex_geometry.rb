@@ -74,7 +74,12 @@ module Tarona
       end
 
       def point_to_s(point)
-        "#{point[0].round(10)} #{point[1].round(10)}"
+        x, y = point.map do |i|
+          i = i.round(10)
+          i = i.to_i if i.to_i == i
+          i
+        end
+        "#{x} #{y}"
       end
     end
   end
