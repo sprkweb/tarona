@@ -54,7 +54,7 @@ module Tarona
       #     A and B are points (centers of hexagons). c is vertical distance
       #     between them. c is returned.
       def vertical_space(size)
-        size * 3 / 2
+        size.to_f * 3 / 2
       end
 
       private

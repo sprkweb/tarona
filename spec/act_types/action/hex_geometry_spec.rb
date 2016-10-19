@@ -12,7 +12,7 @@ describe Tarona::Action::HexGeometry do
 
   it 'can calculate how much vertical space does a hex take in a pattern' do
     expect(modul.vertical_space(4)).to eq(6)
-    expect(modul.vertical_space(6)).to eq(9)
+    expect(modul.vertical_space(5)).to eq(7.5)
   end
 
   it 'can create a SVG line of a hex' do
