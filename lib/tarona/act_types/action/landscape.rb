@@ -8,8 +8,8 @@ module Tarona
     # [there](http://www.redblobgames.com/grids/hexagons/#coordinates))
     class Landscape
       NEIGHBORS = {
-        even_row: [[-1, -1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0]],
-        odd_row: [[-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0], [1, 1]]
+        even_row: [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0]],
+        odd_row: [[-1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
       }.freeze
 
       def initialize

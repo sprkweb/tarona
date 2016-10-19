@@ -57,7 +57,7 @@ describe Tarona::Action::Landscape do
         result + size[1].map { |col| [row, col] }
       end
       landscape.add(*places)
-      expected_neighbors = [[1, 1], [1, 2], [2, 1], [2, 3], [3, 1], [3, 2]]
+      expected_neighbors = [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 2]]
       expect(landscape.neighbors(2, 2)).to eq(expected_neighbors)
     end
   end
