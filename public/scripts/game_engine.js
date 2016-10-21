@@ -115,29 +115,32 @@ function Messenger(url) {
 }
 
 /**
- * Its instances generates HTML tags for acts. 
- * It is powered by custom "generators", which are functions creating and 
+ * Its instances generates HTML tags for acts.
+ * It is powered by custom "generators", which are functions creating and
  * managing DOMs for acts (one generator per act).
- * 
+ *
  * @constructor
  * @param area_selector - CSS selector of the container tag. Generators will
  *  create tags only inside this tag.
+ * @mixes Events
  */
 function Display(area_selector) {
+  Events.addEventsTo(this);
+
   /**
    * List of generators which you have previously added:
    * @example
    * { generator_name: function() {} }
    */
   this.generators = {};
-  
+
   var clean = function(area) {
     area.innerHTML = '';
   };
-  
+
   /**
    * Adds your generator to the list of generators.
-   * 
+   *
    * @param name - identificator of your generator
    * @param {function} func - generator itself
    * @see generate
@@ -145,17 +148,27 @@ function Display(area_selector) {
   this.addGenerator = function(name, func) {
     this.generators[name] = func;
   };
-  
+
   /**
    * Constructs DOM for your act.
-   * 
+   *
    * @param generator_name - identificator of a previously added generator
    * @param {object} data - information about your act.
    *   This object will be passed to the generator as an argument.
    *   It must contain attribute `area_selector` which is CSS selector (string)
    *   for the HTML tag which is the root of your act's markup.
+   * @fires Display#event:before_act
    */
   this.generate = function(generator_name, data) {
+    /**
+     * This event is happened before an act is generated.
+     *
+     * @event Display#event:before_act
+     * @type {object}
+     * @property type - name of the used generator
+     * @property data - properties of the act which are passed to the generator
+     */
+    this.happen('before_act', { type: generator_name, data: data })
     var area = document.querySelector(area_selector);
     clean(area);
     this.generators[generator_name](area, data);

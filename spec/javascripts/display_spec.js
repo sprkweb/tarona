@@ -33,4 +33,16 @@ describe('Display', function() {
     generators[generator_name] = generator;
     expect(display.generators).toEqual(generators);
   });
+
+  it('triggers an event before an act is generated', function() {
+    var before_generator = true;
+    var triggered = false;
+    display.on('before_act', function() {
+      expect(before_generator).toBeTruthy();
+      triggered = true;
+    })
+    display.addGenerator('bar', function() { before_generator = false });
+    display.generate('bar', before_generator);
+    expect(triggered).toBeTruthy();
+  });
 });
