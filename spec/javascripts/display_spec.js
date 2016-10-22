@@ -1,10 +1,11 @@
 describe('Display', function() {
-  var generator, generator_name, display, selector, data;
+  var generator, generator_name, display, selector, env, data;
   beforeEach(function() {
     generator = jasmine.createSpy('generator');
     generator_name = 'foo';
     selector = '#test_area';
-    display = new Display(selector);
+    env = { area_selector: selector };
+    display = new Display(env);
     display.addGenerator(generator_name, generator);
     data = { valid: true };
   });
@@ -22,10 +23,11 @@ describe('Display', function() {
     expect(document.querySelector(selector).innerHTML).toEqual('');
   });
 
-  it('passes area object and given data as arguments to generator', function() {
+  it('passes some arguments to generator', function() {
     display.generate(generator_name, data);
     var area = document.querySelector(selector);
-    expect(generator).toHaveBeenCalledWith(area, data);
+    var extended_env = _.extend(_.clone(env), { area: area });
+    expect(generator).toHaveBeenCalledWith(extended_env, data);
   });
 
   it('can list you generators', function() {

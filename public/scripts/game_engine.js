@@ -120,11 +120,13 @@ function Messenger(url) {
  * managing DOMs for acts (one generator per act).
  *
  * @constructor
- * @param area_selector - CSS selector of the container tag. Generators will
- *  create tags only inside this tag.
+ * @param {object} env - object containing environment objects which are needed
+ *   to generators (e. g. I/O object, tag selector, etc.)
+ * @param {string} env.area_selector - CSS selector of the container tag.
+ *   Generators will create tags only inside this tag.
  * @mixes Events
  */
-function Display(area_selector) {
+function Display(env) {
   Events.addEventsTo(this);
 
   /**
@@ -169,9 +171,10 @@ function Display(area_selector) {
      * @property data - properties of the act which are passed to the generator
      */
     this.happen('before_act', { type: generator_name, data: data })
-    var area = document.querySelector(area_selector);
+    var area = document.querySelector(env.area_selector);
+    var extended_env = _.extend(_.clone(env), { area: area });
     clean(area);
-    this.generators[generator_name](area, data);
+    this.generators[generator_name](extended_env, data);
   };
 }
 
@@ -179,8 +182,8 @@ function Display(area_selector) {
  * Generator of text acts for Display
  * @see Display
  */
-function TextGenerator(area, data) {
-  var container = area.appendChild(document.createElement('div'));
+function TextGenerator(env, data) {
+  var container = env.area.appendChild(document.createElement('div'));
   container.setAttribute('id', 'text');
   container.innerHTML = data.subject;
 }
