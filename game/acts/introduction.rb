@@ -4,5 +4,9 @@ module Tarona
     def display_format
       tk.i18n['game']['intro']
     end
+
+    def next_act
+      :pholder
+    end
   end
 end

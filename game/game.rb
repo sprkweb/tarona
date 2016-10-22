@@ -1,5 +1,6 @@
 require 'game/toolkit'
 require 'game/acts/introduction'
+require 'game/acts/placeholder'
 require 'game/pages'
 
 toolkit = Tarona::Toolkit
@@ -9,7 +10,7 @@ doorman = Tarona::Doorman.new(
   server: Tarona::WebServer,
   game: Tarona::Play,
   game_options: {
-    acts: { intro: Tarona::Introduction },
+    acts: { intro: Tarona::Introduction, pholder: Tarona::Placeholder },
     first_act: :intro,
     tk: toolkit
   }

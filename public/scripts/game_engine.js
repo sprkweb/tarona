@@ -186,4 +186,12 @@ function TextGenerator(env, data) {
   var container = env.area.appendChild(document.createElement('div'));
   container.setAttribute('id', 'text');
   container.innerHTML = data.subject;
+
+  var heRead = function() {
+    document.removeEventListener('keyup', heRead);
+    env.area.removeEventListener('click', heRead);
+    env.io.happen('read');
+ };
+  document.addEventListener('keyup', heRead);
+  env.area.addEventListener('click', heRead);
 }
