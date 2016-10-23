@@ -41,7 +41,7 @@ describe Tarona::Action::Landscape do
     end
 
     it 'does not return neighbors when there is no place' do
-      landscape.add(3, 3)
+      landscape.add([3, 3])
       expect(landscape.neighbors(3, 4)).to eq([])
     end
 

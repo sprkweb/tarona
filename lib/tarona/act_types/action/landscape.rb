@@ -13,7 +13,7 @@ module Tarona
       }.freeze
 
       def initialize
-        @landscape = {}
+        @landscape = []
       end
 
       # Add places to the landscape. They are empty hashes by default.
@@ -43,6 +43,7 @@ module Tarona
       #   Neighbors are hexagons which are placed around the given place (see
       #   class description about the coordinate system)
       def neighbors(x, y)
+        return [] unless get(x, y)
         row = (y.odd? ? :odd_row : :even_row)
         all_neighbors = NEIGHBORS[row].map { |a| [a[0] + x, a[1] + y] }
         clear_coords all_neighbors
@@ -52,7 +53,7 @@ module Tarona
 
       def add_place(coords)
         x, y = coords
-        @landscape[x] = {} unless @landscape[x].respond_to?(:[])
+        @landscape[x] = [] unless @landscape[x].respond_to?(:[])
         @landscape[x][y] = {}
       end
 
