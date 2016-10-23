@@ -1,0 +1,31 @@
+<div id="field">
+  <%
+  action = Tarona::Action
+  cols = hexes.size
+  rows = hexes.max { |a, b| a.size <=> b.size }.size
+  height = action::HexPattern.height(rows, hex_size)
+  width = action::HexPattern.width(cols, hex_size)
+  %>
+  <svg height="<%= height %>" width="<%= width %>"
+    viewBox="0 0 <%= height %> <%= width %>">
+    <defs>
+      <path id="hex" d="<%= action::HexGeometry.get_line [0, 0], hex_size %>">
+      <clipPath id="hexclip"><use xlink:href="#hex" y="0" x="0"></clipPath>
+      <%= resources %>
+    </defs>
+
+    <%
+    hexes.each_index do |col|
+      hexes[col].each_index do |row|
+        x, y = action::HexPattern.get_pos [col, row], hex_size
+        hex_data = hexes[col][row]
+    %>
+    <use xlink:href="#hex" class="hex"
+      x="<%= x %>" y="<%= y %>"
+      fill="url(#)" stroke="url(#)">
+    <%
+      end
+    end
+    %>
+  </svg>
+</div>

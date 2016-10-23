@@ -30,31 +30,22 @@
 }
 
 #field svg {
-  #borders use {
+  .hex {
     $hex-border-width: 1px;
-    stroke-width: $hex-border-width;
-    stroke: transparent;
-    fill: transparent;
+    stroke-width: $hex-border-width * 2;
+    clip-path: url(#hexclip);
 
-    &.inside {
-      stroke-width: $hex-border-width * 2;
-      clip-path: url(#hexclip);
-    }
-    
     &.reachable {
-      @extend .inside;
       stroke: #9FEE00;
       stroke-opacity: 0.5;
     }
 
     &.focused {
-      @extend .inside;
       stroke: #FF0000;
       stroke-opacity: 1;
     }
 
     &.hovered_path {
-      @extend .inside;
       stroke: #008500;
       stroke-opacity: 1;
     }
@@ -89,7 +80,7 @@
   .message_content {
     overflow: auto;
   }
-  
+
   .close {
     display: inline-block;
     float: right;
@@ -100,7 +91,7 @@
     padding-right: 3px;
     padding-top: 3px;
     text-align: center;
-    
+
     &:before {
       cursor: pointer;
       font-size: 25px;
