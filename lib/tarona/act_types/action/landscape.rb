@@ -12,8 +12,10 @@ module Tarona
         odd_row: [[-1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
       }.freeze
 
-      def initialize
-        @landscape = []
+      # @param raw [Array<Array<Hash>>] matrix containing landscape places.
+      #   The object will be created from it.
+      def initialize(raw = nil)
+        @landscape = raw || []
       end
 
       # Add places to the landscape. They are empty hashes by default.

@@ -61,4 +61,10 @@ describe Tarona::Action::Landscape do
       expect(landscape.neighbors(2, 2)).to eq(expected_neighbors)
     end
   end
+
+  it 'can be created from an array' do
+    arr = [[:a, :b], [:c, :d]]
+    subj = described_class.new arr
+    expect(subj.get(0, 1)).to be(:b)
+  end
 end
