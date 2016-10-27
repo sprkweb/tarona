@@ -20,8 +20,6 @@ module Tarona
     DEFAULT_SETTINGS_PATH = 'game/default_settings.yml'.freeze
     # @see #settings
     SETTINGS_PATH = 'player/settings.yml'.freeze
-    # @see #config
-    CONFIG_PATH = 'game/config.yml'.freeze
 
     class << self
       def load_hash(from)
@@ -43,10 +41,6 @@ module Tarona
 
     tool :i18n do |tk, params|
       load_hash(params[:i18n] || "game/i18n/#{tk.settings['language']}.yml")
-    end
-
-    tool :config do |_, params|
-      load_hash(params[:config] || CONFIG_PATH)
     end
   end
 end

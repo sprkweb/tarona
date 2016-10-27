@@ -57,13 +57,4 @@ describe Tarona::Toolkit do
       expect(tk.i18n[:hello]).to eq('Привет')
     end
   end
-  
-  describe '#config' do
-    let(:cfg_io) { construct_io game?: true }
-    
-    it 'loads game\'s configuration from YAML' do
-      tk = toolkit config: cfg_io
-      expect(tk.config[:game?]).to be true
-    end
-  end
 end
