@@ -195,3 +195,196 @@ function TextGenerator(env, data) {
   document.addEventListener('keyup', heRead);
   env.area.addEventListener('click', heRead);
 }
+
+/**
+ * Object containing some W3 specifications of namespaces.
+ * @global
+ */
+var NS = {
+  SVG: 'http://www.w3.org/2000/svg',
+  XLINK: 'http://www.w3.org/1999/xlink'
+};
+
+/**
+ * Generator of action for Display. It builds and manages hexagonal grid and
+ * things which are placed on it.
+ * @see Display
+ */
+function ActionGenerator(env, data) {
+  function Hex(size) {
+    this.size = size;
+
+    this._corner = function (center, i) {
+      var angle_deg = 60 * i + 30;
+      var angle_rad = Math.PI / 180 * angle_deg;
+      return {
+          x: center.x + this.size * Math.cos(angle_rad),
+          y: center.y + this.size * Math.sin(angle_rad)
+        };
+    };
+    this._points = function (center) {
+      var pointsArray = [];
+      for (var i = 0; i < 6; i++) {
+        pointsArray[i] = this._corner(center, i);
+      }
+      return pointsArray;
+    };
+
+    var round_to = function (num, precision) {
+        var f = Math.pow(10, precision);
+        return Math.round(num * f) / f;
+    };
+    this.generateLine = function (center) {
+      var point_to_str = function (point) {
+        return round_to(point.x, 10) + ' ' + round_to(point.y, 10);
+      };
+      var points = this._points(center);
+      var pointsString = 'M ' + point_to_str(points[0]) + ' ';
+      for (var i = 1; i < points.length; i++) {
+        pointsString += 'L ' + point_to_str(points[i]) + ' ';
+      }
+      pointsString += 'Z';
+      return pointsString;
+    };
+    this.width = this.size * Math.sqrt(3);
+    this.height = this.size * 2;
+    this.verticalSpace = this.size * 3 / 2;
+  }
+
+  var HexGrid = {
+    coords2px: function (coords, hex) {
+      var x = hex.width * (coords[0] + 0.5 * (coords[1] % 2) + 0.5);
+      var y = hex.verticalSpace * coords[1] + hex.height / 2;
+      return [x, y];
+    },
+    px2coords: function (px, hex) {
+      q = 2 * px[0] / (hex.size * 3);
+      r = (Math.sqrt(3) * px[1] - px[0]) / (hex.size * 3);
+      return _axial2coords(_axial_coords_round([q, r]));
+    },
+
+    height: function (rows, hex) {
+      return (rows - 1) * hex.verticalSpace + hex.height;
+    },
+    width: function (cols, hex) {
+      return (cols + 0.5) * hex.width;
+    },
+
+    _axiaL_coords_round: function (coords) {
+      var x = coords[0],         z = coords[1],         y = - (x + z);
+      var rx = Math.round(x),    rz = Math.round(z),    ry = Math.round(y);
+      var dx = Math.abs(rx - x), dz = Math.abs(rz - z), dy = Math.abs(ry - y);
+      if ((x_diff > y_diff) && (x_diff > z_diff))
+        rx = - (ry + rz);
+      else if (y_diff <= z_diff)
+        rz = - (rx + ry);
+      return [rx, rz];
+    },
+    _axial2coords: function (axial) {
+      return [q + (r - (r % 2)) / 2, r];
+    }
+  };
+
+
+  var wrapper = env.area.appendChild(document.createElement('div'));
+  wrapper.setAttribute('id', 'field');
+  var field = wrapper.appendChild(document.createElementNS(NS.SVG, 'svg'));
+  var defs = field.appendChild(document.createElementNS(NS.SVG, 'defs'));
+
+  var length = function(x) { return x.length };
+  var cols = data.subject.landscape.length;
+  var rows = _.max(data.subject.landscape, length).length;
+  var hex = new Hex(data.subject.hex_size);
+  var width, height;
+  var hexesElem;
+
+  // var entities = {};
+  // var loadSVGDependencies = function(resources) {
+  //   for (var type in resources) for (var id in resources[type]) {
+  //     if (resources[type][id].template) {
+  //       defs.innerHTML += resources[type][id].template;
+  //     }
+  //   }
+  // };
+
+  var generateHexClipPath = function() {
+    var clip = defs.appendChild(document.createElementNS(NS.SVG, 'clipPath'));
+    clip.setAttribute('id', 'hexclip');
+    var clipEl = clip.appendChild(document.createElementNS(NS.SVG, 'use'));
+    clipEl.setAttribute('x', '0');
+    clipEl.setAttribute('y', '0');
+    clipEl.setAttribute('href', '#hex');
+  };
+
+  var generateStandartHex = function() {
+    var pathElem = defs.appendChild(document.createElementNS(NS.SVG, 'path'));
+    pathElem.setAttribute('d', hex.generateLine({ x: 0, y: 0 }) );
+    pathElem.setAttribute('id', 'hex');
+    generateHexClipPath();
+  };
+
+  var generateGroups = function() {
+    hexesElem = document.createElementNS(NS.SVG, 'g');
+    //var entitiesElem = document.createElementNS(NS.SVG, 'g');
+    hexesElem.setAttribute('id', 'hexes');
+    //entitiesElem.setAttribute('id', 'entities');
+    field.appendChild(hexesElem);
+    //field.appendChild(entitiesElem);
+  };
+
+  var addHex = function(coordinates, options) {
+    if (typeof options !== 'object') options = {};
+    var place = HexGrid.coords2px(coordinates, hex);
+    // options = {
+    //   background: options.g.id,
+    //   backgroundParentElem: field.elem.getElementById('backgrounds'),
+    //   borderParentElem: field.elem.getElementById('borders')
+    // };
+    // var svgHex = new SVGHex(place, options);
+    // svgHex.coordinates = coordinates;
+    // svgHex.generate();
+    // field.hexes.set(coordinates.q, coordinates.r, svgHex);
+    var elem = hexesElem.appendChild(document.createElementNS(NS.SVG, 'use'));
+    elem.setAttribute('x', place[0]);
+    elem.setAttribute('y', place[1]);
+    elem.setAttributeNS(NS.XLINK, 'href', '#hex');
+    elem.setAttribute('fill', 'white');
+    elem.setAttribute('stroke', 'black');
+  };
+
+  // var addEntity = function(entity_data, coordinates, resources) {
+  //   var full_entity_data = _.clone(resources.entity[entity_data.id]);
+  //   var entity = new Entity(_.extend(full_entity_data, {
+  //     id: entity_data.id,
+  //     instance_id: entity_data.instance_id,
+  //     name: entity_data.name
+  //   }));
+  //   field.entities.add(entity, coordinates);
+  //   field.elem.getElementById('entities').appendChild(entity.elem);
+  //   return entity;
+  // };
+
+  var scale = function() {
+    width = HexGrid.width(cols, hex);
+    height = HexGrid.height(rows, hex);
+    field.setAttribute('height', height);
+    field.setAttribute('width', width);
+    field.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+  };
+
+  var generateField = function(map, resources) {
+    map.forEach(function(col, colNum) {
+      col.forEach(function(place, rowNum) {
+          var coordinates = [colNum, rowNum];
+          addHex(coordinates, place);
+          // if (place.entity) addEntity(place.entity, coordinates, resources);
+      });
+    });
+  };
+
+  generateStandartHex();
+  // loadSVGDependencies(data.subject.dependencies);
+  generateGroups();
+  generateField(data.subject.landscape, data.subject.dependencies);
+  scale();
+}

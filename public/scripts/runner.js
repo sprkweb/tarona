@@ -25,6 +25,7 @@ function Runner() {
    */
   this.display = new Display({ area_selector: '#area', io: this.messenger });
   this.display.addGenerator('text', TextGenerator);
+  this.display.addGenerator('action', ActionGenerator);
 }
 
 if (typeof environment === 'undefined') {

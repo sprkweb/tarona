@@ -24,8 +24,6 @@ require 'lib/tarona/web_socket'
 require 'lib/tarona/act_types/text_act'
 require 'lib/tarona/act_types/action'
 require 'lib/tarona/act_types/action/landscape'
-require 'lib/tarona/act_types/action/hex_geometry'
-require 'lib/tarona/act_types/action/hex_pattern'
 
 # The main namespace for the gem
 module Tarona

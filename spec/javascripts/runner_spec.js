@@ -11,7 +11,11 @@ describe('JS Engine runner', function() {
   });
 
   it('registers some generators in the display', function() {
-    expect(runner.display.generators.length).not.toEqual(0);
+    [ ['action', ActionGenerator],
+      ['text', TextGenerator]
+    ].forEach(function(type) {
+      expect(runner.display.generators[type[0]]).toBe(type[1]);
+    });
   });
 
   it('creates a new connection', function() {

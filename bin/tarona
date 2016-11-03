@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
 
+Thread.abort_on_exception = true
+
 require_relative '../lib/tarona'
 require_relative '../game/game'

@@ -67,4 +67,9 @@ describe Tarona::Action::Landscape do
     subj = described_class.new arr
     expect(subj.get(0, 1)).to be(:b)
   end
+
+  it 'can return its raw version' do
+    landscape.add([0, 0], [0, 1], [1, 0], [1, 1])
+    expect(landscape.raw).to eq([[{}, {}], [{}, {}]])
+  end
 end

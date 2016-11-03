@@ -1,8 +1,8 @@
 module Tarona
   # This is just placeholding act.
-  class Placeholder < TextAct
-    def display_format
-      '<h1>The End!</h1>'
-    end
+  class Placeholder < Action
+    sources = Dir.chdir(__dir__) { YAML.load File.read('placeholder/map.yml') }
+    subject landscape: Landscape.new(sources['map'])
+    hex_size 15
   end
 end

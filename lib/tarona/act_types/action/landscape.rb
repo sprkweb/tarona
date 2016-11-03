@@ -51,6 +51,11 @@ module Tarona
         clear_coords all_neighbors
       end
 
+      # @return content of the object expressed through common standard types.
+      def raw
+        @landscape
+      end
+
       private
 
       def add_place(coords)
