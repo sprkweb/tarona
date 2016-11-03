@@ -34,13 +34,14 @@ describe('ActionGenerator', function() {
     it('includes svg hex definition', function() {
       var hex = document.querySelector('#field > svg > defs > path#hex');
       expect(hex).not.toBeNull();
-      expect(hex.getAttribute('d')).toEqual('M 8.6602540378 8.6602540378 L 0 0 L -8.6602540378 -8.6602540378 L -8.6602540378 -8.6602540378 L 0 0 L 8.6602540378 8.6602540378 Z');
+      expect(hex.getAttribute('d')).toEqual('M 8.6602540378 5 L 0 10 L -8.6602540378 5 L -8.6602540378 -5 L 0 -10 L 8.6602540378 -5 Z');
     });
 
     it('includes clip path of hex', function() {
-      var clip =
-        document.querySelector('#field > svg > defs > clipPath#hexclip');
+      var defs = document.querySelector('#field > svg > defs');
+      var clip = defs.getElementsByTagName('clipPath')[0];
       expect(clip).not.toBeNull();
+      expect(clip.getAttribute('id')).toEqual('hexclip');
       var path = clip.querySelector('use[href="#hex"][x="0"][y="0"]');
       expect(path).not.toBeNull();
     });
