@@ -14,8 +14,7 @@ module Tarona
     end
 
     # You should redefine it.
-    # @return [Tarona::Act] next act. It will be started as soon as player
-    #   decide to continue.
+    # @return identificator of next act. See {Play#acts}
     def next_act
     end
   end
