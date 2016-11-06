@@ -3,18 +3,18 @@ module Tarona
   # these objects to methods when they are in the container. What is more, it
   # also acts as a dependency injection container for some of these tools.
   # @!attribute [r] settings
-  #   @return [Tardvig::SavedHash] hash containing user's settings. It is
+  #   @return [Tardvig::HashContainer] hash containing user's settings. It is
   #     default settings overwritten with user's settings (it is because user's
   #     settings can be incomplete). You can see names of the settings' files
   #     in the constants of the toolkit.
   # @!attribute [r] i18n
-  #   @return [Tardvig::SavedHash] hash containing translations for some phrases
-  #     for the current language (it is taken from the settings).
+  #   @return [Tardvig::HashContainer] hash containing translations for some
+  #     phrases for the current language (it is taken from the settings).
   #     You can see translations inside the /game/i18n directory.
-  # @!attribute [r] config
-  #   @return [Tardvig::SavedHash] hash containing configuration of this game,
-  #     that is some constants which should not be hardcoded, so they are stored
-  #     in a separate file.
+  # @!attribute [r] session
+  #   @return [Tardvig::HashContainer] hash containing everything about player's
+  #     progress in a game. It can be written to a file in order to save user's
+  #     progress.
   class Toolkit < Tardvig::Toolkit
     # @see #settings
     DEFAULT_SETTINGS_PATH = 'game/default_settings.yml'.freeze
@@ -41,6 +41,10 @@ module Tarona
 
     tool :i18n do |tk, params|
       load_hash(params[:i18n] || "game/i18n/#{tk.settings['language']}.yml")
+    end
+
+    tool :session do
+      Tardvig::HashContainer.new
     end
   end
 end

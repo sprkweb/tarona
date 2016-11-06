@@ -57,4 +57,11 @@ describe Tarona::Toolkit do
       expect(tk.i18n[:hello]).to eq('Привет')
     end
   end
+
+  describe '#session' do
+    it 'is plain hash container' do
+      tk = toolkit({})
+      expect(tk.session).to be_a(Tardvig::HashContainer)
+    end
+  end
 end
