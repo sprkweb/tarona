@@ -41,9 +41,11 @@ module Tarona
       RunActs.call(
         acts: @acts,
         first_act: @first_act,
-        act_params: { io: @io, tk: @tk_instance })
+        session: @tk_instance.session,
+        act_params: { io: @io, tk: @tk_instance }
+      )
     end
-    
+
     def prepare
       @tk_instance = @tk.new
     end
