@@ -13,15 +13,17 @@ RSpec.describe Tarona::Doorman do
         game_options: options
     )
   end
-  
+
   before :example do
-    allow(io_instance).to receive(:on) do |event, &block|
+    allow(io).to receive(:new).with(env) { io_instance }
+    allow(io_instance).to receive(:on_first) do |event, &block|
       if event == :open
         block.call
       else
         raise "Unexpected event: #{event.inspect}"
       end
     end
+    allow(io_instance).to receive(:response) { 'foo' }
   end
 
   describe '#call' do
@@ -35,12 +37,20 @@ RSpec.describe Tarona::Doorman do
     it 'starts a new game if it is WebSocket' do
       expect(io).to receive(:player?).with(env).ordered { true }
       expect(io).to receive(:new).with(env).ordered { io_instance }
-      expect(game).to receive(:call).with(hash_including(
-          io: io_instance,
-          valid: true
-      ))
+      expect(game).to receive(:call).with(
+        hash_including(io: io_instance, valid: true)
+      )
       expect(io_instance).to receive(:response) { 'foo' }
       expect(doorman.call(env)).to eq('foo')
     end
+  end
+
+  it 'stores game sessions with their hashes' do
+    expect(doorman.sessions).to eq({})
+    expect(io).to receive(:player?) { true }
+    game_inst = double 'game_inst'
+    expect(game).to receive(:call) { game_inst }
+    doorman.call env
+    expect(doorman.sessions).to eq game_inst.hash => game_inst
   end
 end

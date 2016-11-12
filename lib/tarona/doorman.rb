@@ -4,6 +4,10 @@ module Tarona
   #
   # Instances of this class should be used as Rack application object.
   class Doorman
+    # @return [Hash] `game.hash => game` pairs.
+    #   `game` is instance of `game` option of {#new}
+    attr_reader :sessions
+
     # Create a new doorman. You should pass the returned value to the Rack's
     # `run` method.
     # @option params [Class] :io class which can handle WebSocket connections.
@@ -20,6 +24,7 @@ module Tarona
     # @return [Doorman] new instancee
     def initialize(params)
       @params = params
+      @sessions = {}
     end
 
     # This method is created for Rack to call it when a new connection is
@@ -27,11 +32,20 @@ module Tarona
     def call(env)
       if @params[:io].player?(env)
         io = @params[:io].new env
-        options = @params[:game_options].merge io: io
-        io.on(:open) { @params[:game].call options }
+        open_game_inst io
         io.response
       else
         @params[:server].call env
+      end
+    end
+
+    private
+
+    def open_game_inst(io)
+      io.on_first :open do
+        options = @params[:game_options].merge io: io
+        game_inst = @params[:game].call options
+        sessions[game_inst.hash] = game_inst
       end
     end
   end
