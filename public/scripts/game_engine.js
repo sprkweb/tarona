@@ -107,10 +107,10 @@ function Messenger(url) {
 
   var self = this;
   this.socket.onmessage = function(msg) {
-    var msg_content = JSON.parse(msg.data);
-    self.listeners(msg_content[0]).forEach(function(listener) {
-      if (listener) listener.apply(self, [msg_content[1]]);
-    });
+    pure_happen.apply(self, JSON.parse(msg.data));
+  };
+  this.socket.onopen = function() {
+    pure_happen.apply(self, ['open']);
   };
 }
 

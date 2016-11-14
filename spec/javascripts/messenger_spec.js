@@ -12,7 +12,8 @@ describe('Messenger', function() {
     messenger = new Messenger('ws://foo');
     messenger.socket = {
       send: function() {},
-      onmessage: messenger.socket.onmessage
+      onmessage: messenger.socket.onmessage,
+      onopen: messenger.socket.onopen
     };
     spyOn(messenger.socket, 'send');
   });
@@ -34,5 +35,13 @@ describe('Messenger', function() {
     messenger.on('foo', listener);
     messenger.socket.onmessage({ data: JSON.stringify(['foo', 'bar']) });
     expect(listener).toHaveBeenCalledWith('bar');
+  });
+
+  it('triggers `open` event when connection is open', function() {
+    listener = jasmine.createSpy('listener');
+    messenger.on('open', listener);
+    messenger.socket.onopen();
+    expect(listener).toHaveBeenCalled();
+    expect(messenger.socket.send).not.toHaveBeenCalled();
   });
 });
