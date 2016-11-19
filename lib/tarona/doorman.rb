@@ -42,11 +42,26 @@ module Tarona
     private
 
     def open_game_inst(io)
-      io.on_first :open do
-        options = @params[:game_options].merge io: io
-        game_inst = @params[:game].call options
-        sessions[game_inst.hash] = game_inst
+      io.on_first :display_ready do |e|
+        session_id = e[:session_id]
+        if session_id && sessions[session_id]
+          old_game_inst session_id, io
+        else
+          new_game_inst io
+        end
       end
+    end
+
+    def new_game_inst(io)
+      options = @params[:game_options].merge io: io
+      game_inst = @params[:game].call options
+      hash = game_inst.hash.to_s(16)
+      sessions[hash] = game_inst
+      io.happen :new_session, hash: hash
+    end
+
+    def old_game_inst(hash, io)
+      sessions[hash].io.socket = io.socket
     end
   end
 end

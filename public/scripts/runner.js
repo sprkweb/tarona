@@ -13,6 +13,14 @@ function Runner() {
    * @type Messenger
    */
   this.messenger = new Messenger(location.origin.replace(/^http/, 'ws'));
+  this.messenger.on('open', function() {
+    var session_id = document.cookie.match(/session_id=([-a-zA-Z0-9]+)(;|$)/);
+    if (session_id) session_id = session_id[1];
+    this.happen('display_ready', { session_id: session_id });
+  });
+  this.messenger.on('new_session', function(inf) {
+    document.cookie = 'session_id=' + inf.hash;
+  });
   this.messenger.on('act_start', function(act) {
     runner.display.generate(act.type, act);
   });

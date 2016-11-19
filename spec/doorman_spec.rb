@@ -1,29 +1,34 @@
 RSpec.describe Tarona::Doorman do
-  let(:io) { double }
-  let(:io_instance) { double }
-  let(:server) { double }
-  let(:game) { double }
+  %w(io io_instance server game game_inst env).each do |o|
+    let(o.to_sym) { double o }
+  end
   let(:options) { { valid: true } }
-  let(:env) { double }
+  let(:socket) { double 'socket' }
+  let(:display_options) { {} }
   let :doorman do
     described_class.new(
-        io: io,
-        server: server,
-        game: game,
-        game_options: options
+      io: io,
+      server: server,
+      game: game,
+      game_options: options
     )
   end
 
   before :example do
     allow(io).to receive(:new).with(env) { io_instance }
     allow(io_instance).to receive(:on_first) do |event, &block|
-      if event == :open
-        block.call
-      else
-        raise "Unexpected event: #{event.inspect}"
-      end
+      events = [:display_ready]
+      raise "Unexpected event: #{event.inspect}" unless events.include? event
+      block.call display_options
+    end
+    allow(io_instance).to receive(:happen) do |event|
+      events = [:new_session]
+      raise "Unexpected event: #{event.inspect}" unless events.include? event
     end
     allow(io_instance).to receive(:response) { 'foo' }
+    allow(io_instance).to receive(:socket) {  }
+    allow(game).to receive(:call) { game_inst }
+    allow(game_inst).to receive(:io) { io_instance }
   end
 
   describe '#call' do
@@ -43,14 +48,47 @@ RSpec.describe Tarona::Doorman do
       expect(io_instance).to receive(:response) { 'foo' }
       expect(doorman.call(env)).to eq('foo')
     end
+
+    it 'send session hash through io if there is new one' do
+      expect(io).to receive(:player?) { true }
+      expect(io_instance).to receive(:happen).with(
+        :new_session, hash: game_inst.hash.to_s(16)
+      )
+      doorman.call env
+    end
+
+    it 'use old session if it is' do
+      new_socket = io_instance.socket
+      expect(io).to receive(:player?).and_return(true).twice
+      doorman.call env
+      display_options[:session_id] = game_inst.hash.to_s(16)
+      expect(io_instance).not_to receive(:happen)
+      expect(io_instance).to receive(:socket=).with(new_socket)
+      doorman.call env
+    end
+
+    it 'does not use old session unless it is given' do
+      expect(io).to receive(:player?).and_return(true).twice
+      doorman.call env
+      expect(io_instance).to receive(:happen)
+      expect(io_instance).not_to receive(:socket=)
+      doorman.call env
+    end
+
+    it 'does not use old session unless it exists' do
+      expect(io).to receive(:player?).and_return(true).twice
+      doorman.call env
+      display_options[:session_id] = 'foobarbaz'
+      expect(io_instance).to receive(:happen)
+      expect(io_instance).not_to receive(:socket=)
+      doorman.call env
+    end
   end
 
   it 'stores game sessions with their hashes' do
     expect(doorman.sessions).to eq({})
     expect(io).to receive(:player?) { true }
-    game_inst = double 'game_inst'
-    expect(game).to receive(:call) { game_inst }
     doorman.call env
-    expect(doorman.sessions).to eq game_inst.hash => game_inst
+    expect(doorman.sessions).to eq game_inst.hash.to_s(16) => game_inst
   end
 end

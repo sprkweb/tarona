@@ -18,51 +18,75 @@ RSpec.describe Tarona::WebSocket do
     described_class.new env
   end
 
-  let(:io) { described_class.new env }
-  let(:socket) { double }
-  before(:example) do
-    allow(socket).to receive(:listeners) { @listeners }
-    allow(socket).to receive(:on) do |event, &block|
+  MockSocket = Class.new do
+    def listeners
       @listeners ||= []
-      @listeners << [event, block]
     end
-    allow(socket).to receive(:rack_response) { 'foo' }
+
+    def on(event, &block)
+      listeners << [event, block]
+    end
+
+    def rack_response
+      'foo'
+    end
+  end
+
+  let(:io) { described_class.new env }
+  let(:socket) { MockSocket.new }
+  let(:socket2) { MockSocket.new }
+  before(:example) do
     allow(Faye::WebSocket).to receive(:new) { socket }
   end
 
-  it 'converts output events to JSON' do
-    expect(socket).to receive(:send) do |args|
-      expect(JSON.parse(args)).to match_array(['event', 'args'])
+  shared_examples 'socket-based methods' do |&settings|
+    instance_eval(&settings) if settings
+
+    it 'converts output events to JSON' do
+      expect(socket).to receive(:send) do |args|
+        expect(JSON.parse(args)).to match_array(%w(event args))
+      end
+      io.happen :event, 'args'
     end
-    io.happen :event, 'args'
+
+    it 'converts input JSON to events' do
+      listener = proc {}
+      io.on :event, &listener
+      expect(listener).to receive(:call).with('args')
+      event = double
+      expect(event).to receive(:data) { JSON.dump [:event, 'args'] }
+      socket.listeners.each do |l|
+        l[1].call event if l[0] == :message
+      end
+    end
+
+    describe '#response' do
+      it 'returns rack response to make the connection' do
+        expect(io.response).to eq('foo')
+      end
+    end
+
+    it 'triggers the `open` event when a connection is opened' do
+      listener = proc {}
+      io.on :open, &listener
+      expect(listener).to receive(:call)
+      socket.listeners.each do |l|
+        l[1].call if l[0] == :open
+      end
+    end
   end
 
-  it 'converts input JSON to events' do
-    listener = proc {}
-    io.on :event, &listener
-    expect(listener).to receive(:call).with('args')
-    event = double
-    expect(event).to receive(:data) { JSON.dump [:event, 'args'] }
-    socket.listeners.each do |listener|
-      next unless listener[0] == :message
-      listener[1].call event
-    end
-  end
-  
-  describe '#response' do
-    it 'returns rack response to make the connection' do
-      expect(io.response).to eq('foo')
-    end
-  end
-  
-  it 'triggers the `open` event when a connection is opened' do
-    listener = proc {}
-    io.on :open, &listener
-    expect(listener).to receive(:call)
-    old_threads = Thread.list
-    socket.listeners.each do |listener|
-      next unless listener[0] == :open
-      listener[1].call
+  include_examples('socket-based methods') {}
+  context 'with changed socket' do
+    include_examples 'socket-based methods' do
+      before(:example) do
+        allow(Faye::WebSocket).to receive(:new) { socket2 }
+      end
+      let(:io) do
+        subj = described_class.new env
+        subj.socket = socket
+        subj
+      end
     end
   end
 end

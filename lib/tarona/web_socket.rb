@@ -8,8 +8,20 @@ module Tarona
 
     def initialize(env)
       @socket = Faye::WebSocket.new env
-      @socket.on :message, &method(:input2event)
-      @socket.on(:open) { classic_happen :open }
+      set_socket_listeners
+    end
+
+    # Changes current WebSocket connection to a new one, so this object will
+    # send and get events and other information from it.
+    # @param value [Faye::WebSocket] socket object itself
+    # @note It is expected that old connection is closed and will not send new
+    #   events.
+    #   Otherwise, this object can not act properly.
+    def socket=(value)
+      # Deletion of listeners of an old socket should be here, but
+      # I do not know whether it is possible.
+      @socket = value
+      set_socket_listeners
     end
 
     alias classic_happen happen
@@ -23,7 +35,7 @@ module Tarona
     end
 
     alias trigger happen
-    
+
     # @return Rack response to make the connection.
     def response
       @socket.rack_response
@@ -39,6 +51,11 @@ module Tarona
       input = JSON.parse event.data, symbolize_names: true
       return if input.size != 2 || input[0].class != String
       classic_happen input[0].to_sym, input[1]
+    end
+
+    def set_socket_listeners
+      @socket.on :message, &method(:input2event)
+      @socket.on(:open) { classic_happen :open }
     end
   end
 end
