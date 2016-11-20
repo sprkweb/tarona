@@ -89,4 +89,11 @@ RSpec.describe Tarona::WebSocket do
       end
     end
   end
+
+  it 'triggers `update_io` when socket is changed' do
+    listener = proc {}
+    expect(listener).to receive(:call)
+    io.on :update_io, &listener
+    io.socket = socket
+  end
 end

@@ -5,7 +5,7 @@ module Tarona
   # Instances of this class should be used as Rack application object.
   class Doorman
     # @return [Hash] `game.hash => game` pairs.
-    #   `game` is instance of `game` option of {#new}
+    #   `game` is instance of `game` option of {#initialize}
     attr_reader :sessions
 
     # Create a new doorman. You should pass the returned value to the Rack's

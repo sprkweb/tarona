@@ -2,6 +2,8 @@ module Tarona
   # Instances of this class are event-driven WebSocket connections using the
   # GameIO interface.
   class WebSocket < Tardvig::GameIO
+    attr_reader :socket
+
     def self.player?(env)
       Faye::WebSocket.websocket? env
     end
@@ -22,6 +24,7 @@ module Tarona
       # I do not know whether it is possible.
       @socket = value
       set_socket_listeners
+      classic_happen :update_io
     end
 
     alias classic_happen happen

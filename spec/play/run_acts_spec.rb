@@ -11,11 +11,12 @@ RSpec.describe Tarona::Play::RunActs do
 
     private
 
-    def next_act
-      nil
+    def execute
+      process
     end
 
-    def notify_display
+    def next_act
+      nil
     end
   end
 
