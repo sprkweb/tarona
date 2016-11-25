@@ -8,7 +8,8 @@ module Tarona
   #
   # * {.hex_size}
   # * Hash `subject`. Keys:
-  #   * Landscape `landscape`
+  #   * Landscape,Proc `landscape` - landscape object
+  #     or proc object which returns landscape object for this act
   class Action < Act
     act_type :action
 
@@ -26,9 +27,12 @@ module Tarona
     end
 
     def display_format
+      c = self.class
+      land = c.subject[:landscape]
       {
-        hex_size: self.class.hex_size,
-        landscape: self.class.subject[:landscape].raw
+        hex_size: c.hex_size,
+        # TODO: Store created landscape
+        landscape: (land.respond_to?(:call) ? land.call : land).raw
       }
     end
   end

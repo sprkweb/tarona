@@ -13,6 +13,11 @@ RSpec.describe Tarona::Action do
     hex_size 15
   end
 
+  class TestAction2 < TestAction
+    subject landscape: proc { LANDSCAPE }
+    hex_size 15
+  end
+
   let(:io) { Tardvig::GameIO.new }
   let(:act) { TestAction.new io: io }
 
@@ -24,6 +29,17 @@ RSpec.describe Tarona::Action do
         landscape: TestAction::LANDSCAPE.raw,
         hex_size: TestAction.hex_size
       }
+    )
+    act.call
+  end
+
+  it 'can receive proc which returns landscape instead of landscape' do
+    act = TestAction2.new io: io
+    expect(io).to receive(:happen).with(
+      :act_start,
+      hash_including(
+        subject: hash_including(landscape: TestAction::LANDSCAPE.raw)
+      )
     )
     act.call
   end
