@@ -299,13 +299,9 @@ function ActionGenerator(env, data) {
   var hexesElem;
 
   // var entities = {};
-  // var loadSVGDependencies = function(resources) {
-  //   for (var type in resources) for (var id in resources[type]) {
-  //     if (resources[type][id].template) {
-  //       defs.innerHTML += resources[type][id].template;
-  //     }
-  //   }
-  // };
+  var loadSVGDependencies = function(resources) {
+    defs.innerHTML += resources;
+  };
 
   var generateHexClipPath = function() {
     var clip = defs.appendChild(document.createElementNS(NS.SVG, 'clipPath'));
@@ -383,7 +379,7 @@ function ActionGenerator(env, data) {
   };
 
   generateStandartHex();
-  // loadSVGDependencies(data.subject.dependencies);
+  loadSVGDependencies(data.subject.dependencies);
   generateGroups();
   generateField(data.subject.landscape, data.subject.dependencies);
   scale();

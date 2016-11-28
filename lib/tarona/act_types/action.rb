@@ -26,14 +26,32 @@ module Tarona
       end
     end
 
+    # It is list of files, their content will be loaded to the SVG `defs`
+    # section. These files can include some predefined elements which can be
+    # used as visualization of some objects (entities, ground).
+    #
+    # You should add some files to this variable. Note, paths must be relative
+    # to the root directory of the project.
+    # @return [Array] list of resources
+    def self.resources
+      @resources ||= []
+    end
+
     def display_format
       c = self.class
       land = c.subject[:landscape]
       {
         hex_size: c.hex_size,
         # TODO: Store created landscape
-        landscape: (land.respond_to?(:call) ? land.call : land).raw
+        landscape: (land.respond_to?(:call) ? land.call : land).raw,
+        dependencies: dependencies
       }
+    end
+
+    private
+
+    def dependencies
+      self.class.resources.inject('') { |a, e| a + File.read(e) }
     end
   end
 end

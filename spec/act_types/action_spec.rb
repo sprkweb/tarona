@@ -21,14 +21,18 @@ RSpec.describe Tarona::Action do
   let(:io) { Tardvig::GameIO.new }
   let(:act) { TestAction.new io: io }
 
+  after :each do
+    TestAction.resources.clear
+  end
+
   it 'notifies IO with some data' do
     expect(io).to receive(:happen).with(
       :act_start,
       type: :action,
-      subject: {
+      subject: hash_including(
         landscape: TestAction::LANDSCAPE.raw,
         hex_size: TestAction.hex_size
-      }
+      )
     )
     act.call
   end
@@ -40,6 +44,24 @@ RSpec.describe Tarona::Action do
       hash_including(
         subject: hash_including(landscape: TestAction::LANDSCAPE.raw)
       )
+    )
+    act.call
+  end
+
+  it 'allows to set resources' do
+    expect(TestAction.resources).to eq([])
+    TestAction.resources << 'myfile.svg'
+    expect(TestAction.resources).to eq(['myfile.svg'])
+  end
+
+  it 'send resources with other information' do
+    TestAction.resources << 'spec/helpers/myfile.svg'
+    TestAction.resources << 'spec/helpers/good_things.svg'
+    expect(io).to receive(:happen).with(
+      :act_start,
+      hash_including(subject: hash_including(
+        dependencies: "<g>Some SVG markup here</g>\n<g>Good things.</g>\n"
+      ))
     )
     act.call
   end

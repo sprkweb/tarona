@@ -9,7 +9,8 @@ describe('ActionGenerator', function() {
     area = document.querySelector(selector);
     subject = {
       hex_size: 10,
-      landscape: [[{}, {}], [{}, {}], [{}, {}]]
+      landscape: [[{}, {}], [{}, {}], [{}, {}]],
+      dependencies: '<g id="check_deps"></g>'
     };
     run = function() {
       area.innerHTML = '';
@@ -29,6 +30,12 @@ describe('ActionGenerator', function() {
     it('includes svg defs', function() {
       var defs = document.querySelector('#field > svg > defs');
       expect(defs).not.toBeNull();
+    })
+
+    it('includes svg defs dependencies', function() {
+      // I hate this buggy Phantom.js
+      var defs = document.querySelector('#field > svg > defs');
+      expect(defs.innerHTML.indexOf(subject.dependencies)).not.toBe(-1);
     })
 
     it('includes svg hex definition', function() {
