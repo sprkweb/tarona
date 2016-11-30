@@ -53,7 +53,11 @@ module Tarona
 
       # @return content of the object expressed through common standard types.
       def raw
-        @landscape
+        @landscape.map do |cells|
+          cells.map do |place|
+            place.map { |x| [x.first, x.last.raw] }.to_h
+          end
+        end
       end
 
       private

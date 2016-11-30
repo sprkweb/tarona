@@ -9,7 +9,7 @@ describe('ActionGenerator', function() {
     area = document.querySelector(selector);
     subject = {
       hex_size: 10,
-      landscape: [[{}, {}], [{}, {}], [{}, {}]],
+      landscape: [[{ g: { svg_id: 'mypattern' } }, {}], [{}, {}], [{}, {}]],
       dependencies: '<g id="check_deps"></g>'
     };
     run = function() {
@@ -98,6 +98,15 @@ describe('ActionGenerator', function() {
       };
       run();
       checkScale(116.91, 75);
+    });
+
+    it('uses ground patterns', function() {
+      var filled_hex = document.querySelectorAll('#field > svg > g#hexes > use');
+      expect(_.some(filled_hex, function(hex) {
+        return (
+          (hex.getAttribute('fill') === 'url(#mypattern)') &&
+          (hex.getAttribute('stroke') === 'url(#mypattern)'))
+      })).toBeTruthy()
     });
   });
 

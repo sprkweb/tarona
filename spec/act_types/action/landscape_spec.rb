@@ -72,4 +72,15 @@ describe Tarona::Action::Landscape do
     landscape.add([0, 0], [0, 1], [1, 0], [1, 1])
     expect(landscape.raw).to eq([[{}, {}], [{}, {}]])
   end
+
+  it 'can content places containing other objects' do
+    obj = double
+    expect(obj).to receive(:raw) { 'foo' }
+    obj2 = double
+    expect(obj2).to receive(:raw) { 'bar' }
+    cell, = landscape.add([0, 0])
+    cell[:baz] = obj
+    cell[:bazz] = obj2
+    expect(landscape.raw).to eq([[{ baz: 'foo', bazz: 'bar' }]])
+  end
 end

@@ -1,71 +1,71 @@
 map:
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-  - - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
-    - {}
+  - - { g: &grass !ruby/object:Tarona::Action::Ground { id: grass, template: grass } }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+  - - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+  - - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+    - { g: *grass }
+  - - { g: &water !ruby/object:Tarona::Action::Ground { id: water, template: water } }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+  - - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+    - { g: *water }
+  - - { g: &stone !ruby/object:Tarona::Action::Ground { id: stone, template: stone } }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+  - - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }
+    - { g: *stone }

@@ -1,0 +1,12 @@
+<pattern height="10" id="ground" patternUnits="userSpaceOnUse" width="10">
+  <rect fill="#755c48" height="10" width="10"/>
+</pattern>
+<pattern height="10" id="grass" patternUnits="userSpaceOnUse" width="10">
+  <rect fill="#5da130" height="10" width="10"/>
+</pattern>
+<pattern height="10" id="water" patternUnits="userSpaceOnUse" width="10">
+  <rect fill="#6eb8e0" height="10" width="10"/>
+</pattern>
+<pattern height="10" id="stone" patternUnits="userSpaceOnUse" width="10">
+  <rect fill="#808080" height="10" width="10"/>
+</pattern>

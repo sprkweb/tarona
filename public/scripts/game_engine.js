@@ -285,6 +285,37 @@ function ActionGenerator(env, data) {
     }
   };
 
+  var SVGHex = function(place, options) {
+    if (typeof options != 'object') options = {};
+    this.options = _.extend({
+      templateId: '',
+      backgroundId: ''
+    }, options);
+    this.place = place;
+    this.backgroundElem = null;
+
+    this.generate = function() {
+      this._generateBackground();
+    };
+
+    this.getBackgroundElem = function() { return this.backgroundElem; };
+
+    this._generateBackground = function() {
+      var bgElem = this._generateUse();
+      bgElem.setAttribute('fill', 'url(#' + this.options.backgroundId + ')');
+      bgElem.setAttribute('stroke', 'url(#' + this.options.backgroundId + ')');
+      this.options.backgroundParentElem.appendChild(bgElem);
+      this.backgroundElem = bgElem;
+    };
+
+    this._generateUse = function() {
+      var elem = document.createElementNS(NS.SVG, 'use');
+      elem.setAttribute('x', this.place[0]);
+      elem.setAttribute('y', this.place[1]);
+      elem.setAttributeNS(NS.XLINK, 'href', '#' + this.options.templateId);
+      return elem;
+    };
+  };
 
   var wrapper = env.area.appendChild(document.createElement('div'));
   wrapper.setAttribute('id', 'field');
@@ -295,6 +326,7 @@ function ActionGenerator(env, data) {
   var cols = data.subject.landscape.length;
   var rows = _.max(data.subject.landscape, length).length;
   var hex = new Hex(data.subject.hex_size);
+  var hexes = [];
   var width, height;
   var hexesElem;
 
@@ -331,21 +363,17 @@ function ActionGenerator(env, data) {
   var addHex = function(coordinates, options) {
     if (typeof options !== 'object') options = {};
     var place = HexGrid.coords2px(coordinates, hex);
-    // options = {
-    //   background: options.g.id,
-    //   backgroundParentElem: field.elem.getElementById('backgrounds'),
-    //   borderParentElem: field.elem.getElementById('borders')
-    // };
-    // var svgHex = new SVGHex(place, options);
-    // svgHex.coordinates = coordinates;
-    // svgHex.generate();
-    // field.hexes.set(coordinates.q, coordinates.r, svgHex);
-    var elem = hexesElem.appendChild(document.createElementNS(NS.SVG, 'use'));
-    elem.setAttribute('x', place[0]);
-    elem.setAttribute('y', place[1]);
-    elem.setAttributeNS(NS.XLINK, 'href', '#hex');
-    elem.setAttribute('fill', 'white');
-    elem.setAttribute('stroke', 'black');
+    options = {
+      backgroundId: (options.g ? options.g.svg_id : '' ),
+      backgroundParentElem: hexesElem,
+      templateId: 'hex'
+    };
+    var svgHex = new SVGHex(place, options);
+    svgHex.coordinates = coordinates;
+    svgHex.generate();
+    var x = coordinates[0], y = coordinates[1];
+    if (typeof hexes[x] === 'undefined') hexes[x] = [];
+    hexes[x][y] = svgHex;
   };
 
   // var addEntity = function(entity_data, coordinates, resources) {
