@@ -24,6 +24,8 @@ require 'lib/tarona/web_socket'
 require 'lib/tarona/act_types/text_act'
 require 'lib/tarona/act_types/action'
 require 'lib/tarona/act_types/action/ground'
+require 'lib/tarona/act_types/action/entity'
+require 'lib/tarona/act_types/action/place_entity'
 require 'lib/tarona/act_types/action/landscape'
 
 # The main namespace for the gem
