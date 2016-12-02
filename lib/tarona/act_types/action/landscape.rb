@@ -55,7 +55,7 @@ module Tarona
       def raw
         @landscape.map do |cells|
           cells.map do |place|
-            place.map { |x| [x.first, x.last.raw] }.to_h
+            place.each_with_object({}) { |e, a| a[e.first] = e.last.raw }
           end
         end
       end
