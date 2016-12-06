@@ -2,6 +2,9 @@ module Tarona
   class Action
     # Module with methods for eathier placement and movement of entities
     # on landscape.
+    # @note **"Coordinates of entity"** means array `[x, y]` with integer
+    #   coordinates of its central point. Central point is a place with
+    #   relative (to the entity) coordinates: `[0, 0]`.
     module PlaceEntity
       module_function
 
@@ -16,6 +19,44 @@ module Tarona
         hexes.map do |hex|
           [hex[0] + x, hex[1] + y]
         end
+      end
+
+      # Adds entity to the given place of the landscape.
+      # @param landscape [Landscape] container of places.
+      # @param entity [Entity] entity which you want to add to landscape.
+      # @param here [Array] coordinates of the place you want to add entity to.
+      # @return entity
+      def add(landscape, entity, here)
+        abs_hexes(entity.hexes, here).each do |hex|
+          place_inf = landscape.get(*hex)
+          place_inf[:e] ||= []
+          place_inf[:e] << entity
+        end
+        entity
+      end
+
+      # Deletes entity from the landscape.
+      # @param landscape [Landscape] container of places.
+      # @param from [Array] coordinates of the entity.
+      # @param entity [Entity] entity which you want to remove from landscape.
+      def remove(landscape, entity, from)
+        abs_hexes(entity.hexes, from).each do |hex|
+          place_inf = landscape.get(*hex)
+          place_inf[:e].delete entity
+          place_inf.delete :e if place_inf[:e].empty?
+        end
+        entity
+      end
+
+      # Moves entity to another place on the landscape.
+      # @param landscape [Landscape] container of places.
+      # @param entity [Entity] entity which you want to move.
+      # @param from [Array] coordinates of the entity's center place
+      # @param to [Array] coordinates of the place you want to move entity to.
+      # @return entity
+      def move(landscape, entity, from, to)
+        remove landscape, entity, from
+        add landscape, entity, to
       end
     end
   end
