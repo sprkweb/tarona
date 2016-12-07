@@ -9,17 +9,21 @@ RSpec.describe Tarona::Action do
 
   class TestAction < Tarona::Action
     LANDSCAPE = Landscape.new [[{}, {}]]
-    subject landscape: LANDSCAPE
-    hex_size 15
-  end
-
-  class TestAction2 < TestAction
-    subject landscape: proc { LANDSCAPE }
+    subject(
+      landscape: proc { LANDSCAPE },
+      entities_index: proc { { foo: [1, 2] } }
+    )
     hex_size 15
   end
 
   let(:io) { Tardvig::GameIO.new }
-  let(:act) { TestAction.new io: io }
+  let(:tk) { double }
+  let(:session) { {} }
+  let(:act) { TestAction.new io: io, toolkit: tk }
+
+  before :each do
+    allow(tk).to receive(:session) { session }
+  end
 
   after :each do
     TestAction.resources.clear
@@ -31,21 +35,20 @@ RSpec.describe Tarona::Action do
       type: :action,
       subject: hash_including(
         landscape: TestAction::LANDSCAPE.raw,
+        entities_index: TestAction.subject[:entities_index].call,
         hex_size: TestAction.hex_size
       )
     )
     act.call
   end
 
-  it 'can receive proc which returns landscape instead of landscape' do
-    act = TestAction2.new io: io
-    expect(io).to receive(:happen).with(
-      :act_start,
-      hash_including(
-        subject: hash_including(landscape: TestAction::LANDSCAPE.raw)
-      )
-    )
+  it 'stores some data in session' do
     act.call
+    expect(session).to eq(act_inf:
+    {
+      landscape: TestAction::LANDSCAPE,
+      entities_index: TestAction.subject[:entities_index].call
+    })
   end
 
   it 'allows to set resources' do
