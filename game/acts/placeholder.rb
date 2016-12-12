@@ -8,6 +8,7 @@ module Tarona
       entities_index: proc { sources.call['entities'] }
     )
     resources << 'game/resources/ground.svg'
+    resources << 'game/resources/entities.svg'
     hex_size 15
   end
 end

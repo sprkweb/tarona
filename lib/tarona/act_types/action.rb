@@ -42,8 +42,8 @@ module Tarona
       c = self.class
       {
         hex_size: c.hex_size,
-        landscape: @toolkit.session[:act_inf][:landscape].raw,
-        entities_index: @toolkit.session[:act_inf][:entities_index],
+        landscape: @tk.session[:act_inf][:landscape].raw,
+        entities_index: @tk.session[:act_inf][:entities_index],
         dependencies: dependencies
       }
     end
@@ -52,7 +52,7 @@ module Tarona
 
     def init_act
       c = self.class
-      @toolkit.session[:act_inf] = {
+      @tk.session[:act_inf] = {
         landscape: c.subject[:landscape].call,
         entities_index: c.subject[:entities_index].call
       }

@@ -68,19 +68,31 @@ describe Tarona::Action::Landscape do
     expect(subj.get(0, 1)).to be(:b)
   end
 
-  it 'can return its raw version' do
-    landscape.add([0, 0], [0, 1], [1, 0], [1, 1])
-    expect(landscape.raw).to eq([[{}, {}], [{}, {}]])
-  end
+  describe '#raw' do
+    it 'returns its raw version' do
+      landscape.add([0, 0], [0, 1], [1, 0], [1, 1])
+      expect(landscape.raw).to eq([[{}, {}], [{}, {}]])
+    end
 
-  it 'can content places containing other objects' do
-    obj = double
-    expect(obj).to receive(:raw) { 'foo' }
-    obj2 = double
-    expect(obj2).to receive(:raw) { 'bar' }
-    cell, = landscape.add([0, 0])
-    cell[:baz] = obj
-    cell[:bazz] = obj2
-    expect(landscape.raw).to eq([[{ baz: 'foo', bazz: 'bar' }]])
+    let(:obj) { double }
+    let(:obj2) { double }
+
+    before :each do
+      allow(obj).to receive(:raw) { 'foo' }
+      allow(obj2).to receive(:raw) { 'bar' }
+    end
+
+    it 'can contain places containing other objects' do
+      cell, = landscape.add([0, 0])
+      cell[:baz] = obj
+      cell[:bazz] = obj2
+      expect(landscape.raw).to eq([[{ baz: 'foo', bazz: 'bar' }]])
+    end
+
+    it 'can contain places containing arrays' do
+      cell, = landscape.add([0, 0])
+      cell[:baz] = [obj, obj2]
+      expect(landscape.raw).to eq([[{ baz: %w(foo bar) }]])
+    end
   end
 end

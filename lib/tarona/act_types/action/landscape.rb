@@ -6,6 +6,7 @@ module Tarona
     #
     # Coordinate system is "odd-r" (see
     # [there](http://www.redblobgames.com/grids/hexagons/#coordinates))
+    # Hexes are pointy topped.
     class Landscape
       NEIGHBORS = {
         even_row: [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0]],
@@ -54,9 +55,7 @@ module Tarona
       # @return content of the object expressed through common standard types.
       def raw
         @landscape.map do |cells|
-          cells.map do |place|
-            place.each_with_object({}) { |e, a| a[e.first] = e.last.raw }
-          end
+          cells.map { |x| make_raw_place x }
         end
       end
 
@@ -70,6 +69,18 @@ module Tarona
 
       def clear_coords(coords)
         coords.reject { |a| get(*a).nil? }
+      end
+
+      def make_raw_place(place)
+        place.each_with_object({}) do |property, raw_place|
+          key, val = property
+          raw_place[key] = (
+            if val.class == Array
+              val.map(&:raw)
+            else
+              val.raw
+            end)
+        end
       end
     end
   end

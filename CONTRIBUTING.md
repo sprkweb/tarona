@@ -35,6 +35,7 @@ See `Rakefile`
 
 ## Code guide
 ### Back-end
+#### Core
 First, you need to read the documentation of the tardvig gem, because the
 structure of this project is based on it.
 

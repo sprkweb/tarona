@@ -19,7 +19,7 @@ RSpec.describe Tarona::Action do
   let(:io) { Tardvig::GameIO.new }
   let(:tk) { double }
   let(:session) { {} }
-  let(:act) { TestAction.new io: io, toolkit: tk }
+  let(:act) { TestAction.new io: io, tk: tk }
 
   before :each do
     allow(tk).to receive(:session) { session }

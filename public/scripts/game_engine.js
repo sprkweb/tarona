@@ -211,7 +211,11 @@ var NS = {
  * @see Display
  */
 function ActionGenerator(env, data) {
-  function Hex(size) {
+  /*
+  There are some classes. They are not documented and tested. It is because
+  they are private.
+  */
+  var Hex = function(size) {
     this.size = size;
 
     this._corner = function (center, i) {
@@ -317,6 +321,45 @@ function ActionGenerator(env, data) {
     };
   };
 
+  var Entity = function(options) {
+    Events.addEventsTo(this);
+
+    this.move = function(coordinates) {
+      if (coordinates) {
+        this.changePlace(HexGrid.coords2px(coordinates, this.hex));
+        this.coordinates = coordinates;
+      }
+    };
+
+    this.changePlace = function(place) {
+      if (place) {
+        this.elem.setAttribute('x', place[0]);
+        this.elem.setAttribute('y', place[1])
+      }
+    };
+
+    this.changeTemplate = function(template_id) {
+      if (template_id)
+        this.elem.setAttributeNS(NS.XLINK, 'href', '#' + template_id);
+    };
+
+    this.hexes = function() {
+      var hexes = [];
+      var self = this;
+      options.hexes.forEach(function(hex) {
+        hexes.push([self.coordinates[0] + hex[0], self.coordinates[1] + hex[1]]);
+      });
+      return hexes;
+    };
+
+    this.id = options.id;
+    this.hex = options.hex;
+    this.coordinates = null;
+    this.elem = document.createElementNS(NS.SVG, 'use');
+    this.changeTemplate(options.svg_id);
+    if (options.place) this.move(options.place);
+  };
+
   var wrapper = env.area.appendChild(document.createElement('div'));
   wrapper.setAttribute('id', 'field');
   var field = wrapper.appendChild(document.createElementNS(NS.SVG, 'svg'));
@@ -328,9 +371,8 @@ function ActionGenerator(env, data) {
   var hex = new Hex(data.subject.hex_size);
   var hexes = [];
   var width, height;
-  var hexesElem;
+  var hexesElem, entitiesElem;
 
-  // var entities = {};
   var loadSVGDependencies = function(resources) {
     defs.innerHTML += resources;
   };
@@ -353,11 +395,11 @@ function ActionGenerator(env, data) {
 
   var generateGroups = function() {
     hexesElem = document.createElementNS(NS.SVG, 'g');
-    //var entitiesElem = document.createElementNS(NS.SVG, 'g');
+    entitiesElem = document.createElementNS(NS.SVG, 'g');
     hexesElem.setAttribute('id', 'hexes');
-    //entitiesElem.setAttribute('id', 'entities');
+    entitiesElem.setAttribute('id', 'entities');
     field.appendChild(hexesElem);
-    //field.appendChild(entitiesElem);
+    field.appendChild(entitiesElem);
   };
 
   var addHex = function(coordinates, options) {
@@ -376,17 +418,14 @@ function ActionGenerator(env, data) {
     hexes[x][y] = svgHex;
   };
 
-  // var addEntity = function(entity_data, coordinates, resources) {
-  //   var full_entity_data = _.clone(resources.entity[entity_data.id]);
-  //   var entity = new Entity(_.extend(full_entity_data, {
-  //     id: entity_data.id,
-  //     instance_id: entity_data.instance_id,
-  //     name: entity_data.name
-  //   }));
-  //   field.entities.add(entity, coordinates);
-  //   field.elem.getElementById('entities').appendChild(entity.elem);
-  //   return entity;
-  // };
+  var addEntity = function(entity_data, coordinates) {
+    var entity = new Entity(_.extend(entity_data, {
+      place: coordinates,
+      hex: hex
+    }));
+    entitiesElem.appendChild(entity.elem);
+    return entity;
+  };
 
   var scale = function() {
     width = HexGrid.width(cols, hex);
@@ -401,7 +440,9 @@ function ActionGenerator(env, data) {
       col.forEach(function(place, rowNum) {
           var coordinates = [colNum, rowNum];
           addHex(coordinates, place);
-          // if (place.entity) addEntity(place.entity, coordinates, resources);
+          if (place.e) place.e.forEach(function(entity) {
+              addEntity(entity, coordinates);
+            });
       });
     });
   };

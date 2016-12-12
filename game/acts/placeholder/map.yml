@@ -12,7 +12,7 @@ map:
   - - { g: *grass }
     - { g: *grass }
     - { g: *grass }
-    - { g: *grass }
+    - { g: *grass, e: [!ruby/object:Tarona::Action::Entity { id: man, template: man }] }
     - { g: *grass }
     - { g: *grass }
     - { g: *grass }
@@ -69,3 +69,5 @@ map:
     - { g: *stone }
     - { g: *stone }
     - { g: *stone }
+entities:
+  man: [1, 3]

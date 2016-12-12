@@ -4,6 +4,7 @@ module Tarona
     # etc. Unlike {Ground}, it can take several places of landscape, can be
     # moved, can have AI and is extendable in many ways.
     # @!attribute [r] hexes
+    # FIXME: THIS WILL NOT WORK http://www.redblobgames.com/grids/hexagons/#neighbors
     #   @return [Array<Array>] what places does the entity takes
     #     relatively to itself
     #   @example

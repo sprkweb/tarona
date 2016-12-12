@@ -9,7 +9,7 @@ describe('ActionGenerator', function() {
     area = document.querySelector(selector);
     subject = {
       hex_size: 10,
-      landscape: [[{ g: { svg_id: 'mypattern' } }, {}], [{}, {}], [{}, {}]],
+      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ svg_id: 'mysymbol' }] }, {}], [{}, {}], [{}, {}]],
       dependencies: '<g id="check_deps"></g>'
     };
     run = function() {
@@ -33,7 +33,6 @@ describe('ActionGenerator', function() {
     })
 
     it('includes svg defs dependencies', function() {
-      // I hate this buggy Phantom.js
       var defs = document.querySelector('#field > svg > defs');
       expect(defs.innerHTML.indexOf(subject.dependencies)).not.toBe(-1);
     })
@@ -53,9 +52,14 @@ describe('ActionGenerator', function() {
       expect(path).not.toBeNull();
     });
 
-    it('includes containers for various elements', function() {
+    it('includes container for hexes', function() {
       var hexes = document.querySelector('#field > svg > g#hexes');
       expect(hexes).not.toBeNull();
+    });
+
+    it('includes container for entities', function() {
+      var entities = document.querySelector('#field > svg > g#entities');
+      expect(entities).not.toBeNull();
     });
 
     var shouldBeHexes = function() {
@@ -107,6 +111,17 @@ describe('ActionGenerator', function() {
           (hex.getAttribute('fill') === 'url(#mypattern)') &&
           (hex.getAttribute('stroke') === 'url(#mypattern)'))
       })).toBeTruthy()
+    });
+
+    it('shows entities', function() {
+      var entity = document.querySelector('#field > svg > g#entities > use');
+      expect(entity.getAttribute('href')).toEqual('#mysymbol');
+    });
+
+    it('shows entities at their places', function() {
+      var entity = document.querySelector('#field > svg > g#entities > use');
+      expect(entity.getAttribute('x')).toEqual('8.660254037844386');
+      expect(entity.getAttribute('y')).toEqual('10');
     });
   });
 
