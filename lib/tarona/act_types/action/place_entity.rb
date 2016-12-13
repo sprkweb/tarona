@@ -21,13 +21,23 @@ module Tarona
         end
       end
 
+      # @param entity [Entity] entity object
+      # @param center [Array] coordinates of entity
+      # @return [Array<Array>] places which the entity takes
+      #   when it is placed here
+      # @see Entity#hexes
+      def places_taken(entity, center)
+        parity = (center[1].even? ? :even_row : :odd_row)
+        abs_hexes entity.hexes[parity], center
+      end
+
       # Adds entity to the given place of the landscape.
       # @param landscape [Landscape] container of places.
       # @param entity [Entity] entity which you want to add to landscape.
       # @param here [Array] coordinates of the place you want to add entity to.
       # @return entity
       def add(landscape, entity, here)
-        abs_hexes(entity.hexes, here).each do |hex|
+        places_taken(entity, here).each do |hex|
           place_inf = landscape.get(*hex)
           place_inf[:e] ||= []
           place_inf[:e] << entity
@@ -40,7 +50,7 @@ module Tarona
       # @param from [Array] coordinates of the entity.
       # @param entity [Entity] entity which you want to remove from landscape.
       def remove(landscape, entity, from)
-        abs_hexes(entity.hexes, from).each do |hex|
+        places_taken(entity, from).each do |hex|
           place_inf = landscape.get(*hex)
           place_inf[:e].delete entity
           place_inf.delete :e if place_inf[:e].empty?

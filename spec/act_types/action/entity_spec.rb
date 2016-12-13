@@ -19,13 +19,13 @@ RSpec.describe Tarona::Action::Entity do
 
   describe '#hexes' do
     it 'describes what places does the entity takes relatively to itself' do
-      hexes = [[0, 0], [0, 1]]
+      hexes = { even_row: [[0, 0], [0, 1]], odd_row: [[0, 0], [1, 1]] }
       subj = described_class.new :wolf, :wolf_template, hexes: hexes
       expect(subj.hexes).to eq(hexes)
     end
 
-    it 'returns [[0, 0]] by default' do
-      expect(subj.hexes).to eq([[0, 0]])
+    it 'returns only one place by default' do
+      expect(subj.hexes).to eq(even_row: [[0, 0]], odd_row: [[0, 0]])
     end
   end
 end

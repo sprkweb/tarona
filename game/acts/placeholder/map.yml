@@ -12,7 +12,14 @@ map:
   - - { g: *grass }
     - { g: *grass }
     - { g: *grass }
-    - { g: *grass, e: [!ruby/object:Tarona::Action::Entity { id: man, template: man }] }
+    - g: *grass
+      e:
+        - !ruby/object:Tarona::Action::Entity
+          id: man
+          template: man
+          # hexes:
+          #   :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
+          #   :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
     - { g: *grass }
     - { g: *grass }
     - { g: *grass }
