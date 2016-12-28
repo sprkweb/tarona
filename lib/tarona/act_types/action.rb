@@ -43,7 +43,6 @@ module Tarona
       {
         hex_size: c.hex_size,
         landscape: @tk.session[:act_inf][:landscape].raw,
-        entities_index: @tk.session[:act_inf][:entities_index],
         dependencies: dependencies
       }
     end

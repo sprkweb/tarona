@@ -20,6 +20,7 @@ describe('Messenger', function() {
 
   it('is event-driven', function() {
     Object.getOwnPropertyNames(Events).forEach(function(key) {
+      if (key === 'addEventsTo') return;
       expect(messenger[key]).toBeDefined();
     });
   });

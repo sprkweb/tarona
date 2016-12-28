@@ -35,7 +35,6 @@ RSpec.describe Tarona::Action do
       type: :action,
       subject: hash_including(
         landscape: TestAction::LANDSCAPE.raw,
-        entities_index: TestAction.subject[:entities_index].call,
         hex_size: TestAction.hex_size
       )
     )

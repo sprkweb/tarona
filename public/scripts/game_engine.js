@@ -59,13 +59,18 @@ var Events = {
   /**
    * This method mixes the mixin in the the given object so it has ability to
    * have events.
+   * <br>
+   * <strong>This method is not mixed to other objects.</strong>
+   * Actually, I do not know how to say that to JSDoc.
    *
    * @param {object} target - Object which must be extended
    * @returns {object} target extended with mixin
+   * @protected
    */
   addEventsTo: function(target) {
     var self = this;
-    Object.getOwnPropertyNames(this).forEach(function(key) {
+    Object.getOwnPropertyNames(Events).forEach(function(key) {
+      if (key === 'addEventsTo') return;
       var value = Object.getOwnPropertyDescriptor(self, key);
       Object.defineProperty(target, key, value);
     });
@@ -198,7 +203,7 @@ function TextGenerator(env, data) {
 
 /**
  * Object containing some W3 specifications of namespaces.
- * @global
+ * @namespace
  */
 var NS = {
   SVG: 'http://www.w3.org/2000/svg',
@@ -206,16 +211,41 @@ var NS = {
 };
 
 /**
- * Generator of action for Display. It builds and manages hexagonal grid and
- * things which are placed on it.
- * @see Display
+ * Contains {@link Action.Generator} and related things.
+ *
+ * @namespace
  */
-function ActionGenerator(env, data) {
-  /*
-  There are some classes. They are not documented and tested. It is because
-  they are private.
-  */
-  var Hex = function(size) {
+var Action = {
+  // These intefaces are used for DRY documentation.
+  /**
+   * Two-dimensional array, its indexes are coordinates of corresponding places.
+   *
+   * @interface Action.Grid
+   * @example
+   * grid[x][y] = val; // means: "val" is placed at (x, y).
+   */
+
+  /**
+   * Array with two elements: x and y
+   *
+   * @interface Action.Coordinates
+   * @example
+   * [x, y] // means (x, y) coordinate.
+   */
+
+  /**
+   * Geometric description of a regular hexagon.
+   * You need to give its size, other characteristics will be calculated.
+   *
+   * @constructor
+   * @param {number} size - distance from hexagon's center to its vertices.
+   */
+  Hex: function(size) {
+    /**
+     * @see arguments given
+     * @type number
+     * @readonly
+     */
     this.size = size;
 
     this._corner = function (center, i) {
@@ -238,6 +268,12 @@ function ActionGenerator(env, data) {
         var f = Math.pow(10, precision);
         return Math.round(num * f) / f;
     };
+    /**
+     * @param {object} center - coordinates of the center point of the hexagon.
+     *   It must contain x and y keys.
+     * @return {string} svg border line description for this hexagon.
+     *   See documentation for the "d" SVG attribute.
+     */
     this.generateLine = function (center) {
       var point_to_str = function (point) {
         return round_to(point.x, 10) + ' ' + round_to(point.y, 10);
@@ -250,64 +286,241 @@ function ActionGenerator(env, data) {
       pointsString += 'Z';
       return pointsString;
     };
+    /**
+     * Width of a hexagon with given size.
+     * @type number
+     * @readonly
+     */
     this.width = this.size * Math.sqrt(3);
+    /**
+     * Height of a hexagon with given size.
+     * @type number
+     * @readonly
+     */
     this.height = this.size * 2;
-    this.verticalSpace = this.size * 3 / 2;
-  }
+    /**
+     * How much vertical space does the hexagon takes when it is placed into
+     * pattern.
+     * @see http://www.redblobgames.com/grids/hexagons/#basics
+     * @type number
+     * @readonly
+     */
+     this.verticalSpace = this.size * 3 / 2;
+  },
 
-  var HexGrid = {
+  /**
+   * Some useful methods for calculating various properties of hexagonal grid.
+   * Type of the grid is "pointy-topped odd-r".
+   * @see http://www.redblobgames.com/grids/hexagons/
+   * @namespace
+   */
+  HexGrid: {
+    /**
+     * Calculates where is a hexagon with given coordinates placed.
+     * @param {Action.Coordinates} coords - coordinates of the hexagon
+     * @param {Action.Hex} hex - the hexagon itself
+     * @return {Action.Coordinates} coordinates in pixels from top-left corner
+     */
     coords2px: function (coords, hex) {
       var x = hex.width * (coords[0] + 0.5 * (coords[1] % 2) + 0.5);
       var y = hex.verticalSpace * coords[1] + hex.height / 2;
       return [x, y];
     },
+    /**
+     * Calculates coordinates of a hexagon using its coordinates in pixels.
+     * @param {Action.Coordinates} px - coordinates in pixels
+     *   from top-left corner
+     * @param {Action.Hex} hex - the hexagon itself
+     * @return {Action.Coordinates} coordinates of the hexagon
+     */
     px2coords: function (px, hex) {
-      q = 2 * px[0] / (hex.size * 3);
-      r = (Math.sqrt(3) * px[1] - px[0]) / (hex.size * 3);
-      return _axial2coords(_axial_coords_round([q, r]));
+      var x = px[0] - hex.width / 2;
+      var y = px[1] - hex.height / 2;
+      var q = (x * Math.sqrt(3)/3 - y / 3) / hex.size;
+      var r = y * 2/3 / hex.size;
+      return this._axial2coords(this._axial_coords_round([q, r]));
     },
 
+    /**
+     * Calculates height of a hexagonal grid.
+     * @param {number} rows - how much rows does the grid have
+     * @param {Action.Hex} hex - description of element of the grid
+     * @return {number} height of a hexagonal grid.
+     */
     height: function (rows, hex) {
       return (rows - 1) * hex.verticalSpace + hex.height;
     },
+    /**
+     * Calculates width of a hexagonal grid.
+     * @param {number} cols - how much columns does the grid have
+     * @param {Action.Hex} hex - description of element of the grid
+     * @return {number} width of a hexagonal grid.
+     */
     width: function (cols, hex) {
       return (cols + 0.5) * hex.width;
     },
 
-    _axiaL_coords_round: function (coords) {
+    _axial_coords_round: function (coords) {
       var x = coords[0],         z = coords[1],         y = - (x + z);
       var rx = Math.round(x),    rz = Math.round(z),    ry = Math.round(y);
       var dx = Math.abs(rx - x), dz = Math.abs(rz - z), dy = Math.abs(ry - y);
-      if ((x_diff > y_diff) && (x_diff > z_diff))
+      if ((dx > dy) && (dx > dz))
         rx = - (ry + rz);
-      else if (y_diff <= z_diff)
+      else if (dy <= dz)
         rz = - (rx + ry);
       return [rx, rz];
     },
     _axial2coords: function (axial) {
+      var q = axial[0], r = axial[1];
       return [q + (r - (r % 2)) / 2, r];
     }
-  };
+  },
 
-  var SVGHex = function(place, options) {
+  /**
+   * Represents visualization of an entity.
+   *
+   * @constructor
+   * @param {object} options - some properties of the entity.
+   * @param {string} options.id - identificator of the entity
+   * @param {string} options.svg_id - "id" attribute of template
+   *   definition - element inside the "defs" container.
+   *   It will be used to create visualization
+   * @param {Action.Hex} options.hex - element of the grid
+   *   on which the entity is placed
+   * @param {Action.Coordinates} options.place - coordinates of the entity
+   * @param {object<Array<Action.Coordinates>>} options.hexes - which places
+   *   does the entity takes relatively to itself.<br>
+   *   Object has two keys: even_row contains array with hexes which the entity
+   *   takes when it stands on row with even number, odd_row - with odd number.
+   */
+  Entity: function(options) {
+    /**
+     * Changes entity's coordinates and moves its visualization.
+     *
+     * @param {Action.Coordinates} coordinates - entity will be placed there.
+     */
+    this.move = function(coordinates) {
+      if (coordinates) {
+        this.changePlace(Action.HexGrid.coords2px(coordinates, this.hex));
+        this.coordinates = coordinates;
+      }
+    };
+
+    /**
+     * Moves visualization of the entity.
+     * Unlike #move, it does not changes its coordinates and receives
+     * coordinates in pixels.
+     *
+     * @param {Action.Coordinates} place - entity will be placed here (pixels)
+     */
+    this.changePlace = function(place) {
+      if (place) {
+        this.elem.setAttribute('x', place[0]);
+        this.elem.setAttribute('y', place[1])
+      }
+    };
+
+    /**
+     * Changes template of the entity, so it looks in other way.
+     *
+     * @param {string} template_id - "id" attribute of template
+     *   definition - element inside the "defs" container.
+     */
+    this.changeTemplate = function(template_id) {
+      if (template_id)
+        this.elem.setAttributeNS(NS.XLINK, 'href', '#' + template_id);
+    };
+
+    /**
+     * @returns {Array<Action.Coordinates>} coordinates of hexes which is taken
+     *   by the entity
+     */
+    this.hexes = function() {
+      var x = this.coordinates[0], y = this.coordinates[1];
+      var relative_places = options.hexes[y % 2 == 0 ? 'even_row' : 'odd_row'];
+      var hexes = [];
+      relative_places.forEach(function(hex) {
+        hexes.push([x + hex[0], y + hex[1]]);
+      });
+      return hexes;
+    };
+
+    /**
+     * @see arguments given
+     * @type string
+     */
+    this.id = options.id;
+    /**
+     * @see arguments given
+     * @type Action.Hex
+     */
+    this.hex = options.hex;
+    /**
+     * Coordinates of the entity. Unit is hexagon, not pixel.
+     * @see Action.HexGrid
+     * @type Action.Coordinates
+     */
+    this.coordinates = null;
+    /**
+     * Element which shows entity. Note, Entity object does not insert it into
+     * DOM, you should do it by yourself.
+     * @type SVGUseElement
+     */
+    this.elem = document.createElementNS(NS.SVG, 'use');
+    this.elem.setAttribute('data-type', 'entity');
+    this.elem.setAttribute('data-entity_id', this.id);
+    this.changeTemplate(options.svg_id);
+    if (options.place) this.move(options.place);
+  },
+
+  /**
+   * Represents visualization of an individual hexagon.
+   *
+   * @constructor
+   * @param {Action.Coordinates} place - where is the hexagon (pixels).
+   * @param {object} options - some properties of the hex.
+   * @param {string} options.templateId - "id" attribute of template
+   *   definition - element inside the "defs" container
+   *   which looks like the hex. Its shape will be used to create visualization.
+   * @param {string} options.backgroundId - "id" attribute of pattern
+   *   definition - element inside the "defs" container.
+   *   It will be used as fill for hexagon's background.
+   * @param {Element} options.backgroundParentElem - container
+   *   for hexes [background] elements.
+   *   Visualization will be placed here.
+   */
+  SVGHex: function(place, options) {
     if (typeof options != 'object') options = {};
-    this.options = _.extend({
-      templateId: '',
-      backgroundId: ''
-    }, options);
+    /**
+     * @see arguments given
+     * @type object
+     */
+    this.options = options;
+    /**
+     * @see arguments given
+     * @type Action.Coodinates
+     * @readonly
+     */
     this.place = place;
+    /**
+     * Element which shows hexagon's background
+     * @type SVGElement
+     * @readonly
+     */
     this.backgroundElem = null;
 
+    /**
+     * Generates visualization.
+     */
     this.generate = function() {
       this._generateBackground();
     };
-
-    this.getBackgroundElem = function() { return this.backgroundElem; };
 
     this._generateBackground = function() {
       var bgElem = this._generateUse();
       bgElem.setAttribute('fill', 'url(#' + this.options.backgroundId + ')');
       bgElem.setAttribute('stroke', 'url(#' + this.options.backgroundId + ')');
+      bgElem.setAttribute('data-type', 'hex');
       this.options.backgroundParentElem.appendChild(bgElem);
       this.backgroundElem = bgElem;
     };
@@ -319,47 +532,46 @@ function ActionGenerator(env, data) {
       elem.setAttributeNS(NS.XLINK, 'href', '#' + this.options.templateId);
       return elem;
     };
-  };
+  }
+};
 
-  var Entity = function(options) {
-    Events.addEventsTo(this);
-
-    this.move = function(coordinates) {
-      if (coordinates) {
-        this.changePlace(HexGrid.coords2px(coordinates, this.hex));
-        this.coordinates = coordinates;
-      }
-    };
-
-    this.changePlace = function(place) {
-      if (place) {
-        this.elem.setAttribute('x', place[0]);
-        this.elem.setAttribute('y', place[1])
-      }
-    };
-
-    this.changeTemplate = function(template_id) {
-      if (template_id)
-        this.elem.setAttributeNS(NS.XLINK, 'href', '#' + template_id);
-    };
-
-    this.hexes = function() {
-      var hexes = [];
-      var self = this;
-      options.hexes.forEach(function(hex) {
-        hexes.push([self.coordinates[0] + hex[0], self.coordinates[1] + hex[1]]);
-      });
-      return hexes;
-    };
-
-    this.id = options.id;
-    this.hex = options.hex;
-    this.coordinates = null;
-    this.elem = document.createElementNS(NS.SVG, 'use');
-    this.changeTemplate(options.svg_id);
-    if (options.place) this.move(options.place);
-  };
-
+/**
+ * Generator of action for Display. It builds and manages hexagonal grid and
+ * things which are placed on it.
+ *
+ * @param {object} env - environment variables
+ * @param {string} env.area - container element.
+ *   All of the action's elements will be placed here.
+ * @param {Messenger} env.io - event-driven way to communicate with back-end.
+ * @param {Array<function>} env.scripts - array with functions.
+ *   They are expected to modify and extend action process.
+ *   They will be executed right after generation of the standard markup.
+ *   Following arguments will be passed: <br>
+ *   "env", "data" - the same variables which you passed to this generator.<br>
+ *   "essence" - see {@link Action.Essence}.
+ * @param {object} data - information about the action.
+ * @param {object} data.subject - description of the action.
+ * @param {number} data.subject.hex_size - relative size of hexagons
+ *   used by the action.
+ *   It is distance from its center to its vertices.
+ * @param {string} data.subject.dependencies - SVG markup.
+ *   It will be inserted into the "defs" tag.
+ * @param {Action.Grid} data.subject.landscape - description of a landscape
+ *   where the action takes place.
+ *   Places format: <br>{ g: ground, e: [entity, ...] }.
+ *   "ground" and "entity" are objects which represent either ground or entity.
+ *   <br><br>
+ *   Both ground and entity objects must contain properties:
+ *   "svg_id" (string) - id of the element which is visualization of the object.
+ *      This element must be placed inside the SVG "defs" element,
+ *      it will be used to show the object to user through
+ *      the "use" SVG element.
+ *   <br><br>
+ *   Entity object must also contain:
+ *   "id" (string) - custom unique identificator of the entity.
+ * @see Display
+ */
+Action.Generator = function(env, data) {
   var wrapper = env.area.appendChild(document.createElement('div'));
   wrapper.setAttribute('id', 'field');
   var field = wrapper.appendChild(document.createElementNS(NS.SVG, 'svg'));
@@ -368,8 +580,8 @@ function ActionGenerator(env, data) {
   var length = function(x) { return x.length };
   var cols = data.subject.landscape.length;
   var rows = _.max(data.subject.landscape, length).length;
-  var hex = new Hex(data.subject.hex_size);
-  var hexes = [];
+  var hex = new Action.Hex(data.subject.hex_size);
+  var hexes = [], entities = {}, entities_index = [];
   var width, height;
   var hexesElem, entitiesElem;
 
@@ -404,13 +616,13 @@ function ActionGenerator(env, data) {
 
   var addHex = function(coordinates, options) {
     if (typeof options !== 'object') options = {};
-    var place = HexGrid.coords2px(coordinates, hex);
+    var place = Action.HexGrid.coords2px(coordinates, hex);
     options = {
       backgroundId: (options.g ? options.g.svg_id : '' ),
       backgroundParentElem: hexesElem,
       templateId: 'hex'
     };
-    var svgHex = new SVGHex(place, options);
+    var svgHex = new Action.SVGHex(place, options);
     svgHex.coordinates = coordinates;
     svgHex.generate();
     var x = coordinates[0], y = coordinates[1];
@@ -419,17 +631,22 @@ function ActionGenerator(env, data) {
   };
 
   var addEntity = function(entity_data, coordinates) {
-    var entity = new Entity(_.extend(entity_data, {
+    var entity = new Action.Entity(_.extend(entity_data, {
       place: coordinates,
       hex: hex
     }));
     entitiesElem.appendChild(entity.elem);
+    var x = coordinates[0], y = coordinates[1];
+    if (typeof entities_index[x] === 'undefined') entities_index[x] = [];
+    if (typeof entities_index[x][y] === 'undefined') entities_index[x][y] = [];
+    entities[entity_data.id] = entity;
+    entities_index[x][y].push(entity);
     return entity;
   };
 
   var scale = function() {
-    width = HexGrid.width(cols, hex);
-    height = HexGrid.height(rows, hex);
+    width = Action.HexGrid.width(cols, hex);
+    height = Action.HexGrid.height(rows, hex);
     field.setAttribute('height', height);
     field.setAttribute('width', width);
     field.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
@@ -452,4 +669,79 @@ function ActionGenerator(env, data) {
   generateGroups();
   generateField(data.subject.landscape, data.subject.dependencies);
   scale();
+
+  /**
+   * Some information about action markup which is generated in process of
+   * ActionGenerator. It also triggers some action-related events.
+   * It can be used by scripts to extend or modify action.
+   *
+   * @interface Action.Essence
+   * @mixes Events
+   * @fires ActionEssence#event:hoverHex
+   * @fires ActionEssence#event:focusChange
+   * @property {Element} field - the "svg" element which contains markup of the
+   *   action
+   * @property {number} cols - number of columns in the grid
+   * @property {number} rows - number of rows in the grid
+   * @property {Action.Hex} hex - object which is geometric description
+   *   of hexagons of the grid
+   * @property {number} width - width of the grid
+   * @property {number} height - height of the grid
+   * @property {SVGElement} hexesElem - container for elements which shows hexes
+   * @property {SVGElement} entitiesElem - container for elements which shows
+   *   entities
+   * @property {Action.Grid<Action.SVGHex>} hexes - grid containing objects
+   *   which represent individual hexagons.
+   * @property {Action.Grid} entities_index - grid containing Entity objects.
+   * @property {object<Entity>} entities - object with "key => value" pairs,
+   *   where "value" is an Entity object and "key" is its id.
+   */
+  var essence = Events.addEventsTo({
+    field: field, cols: cols, rows: rows, width: width, height: height,
+    hexesElem: hexesElem, entitiesElem: entitiesElem, hexes: hexes,
+    entities: entities, entities_index: entities_index, hex: hex
+  });
+  var BindActionListeners = function() {
+    var blocked = false;
+    var hovered_hex;
+
+    var getHoveredHex = function(event) {
+      var svg_position = field.getBoundingClientRect();
+      return Action.HexGrid.px2coords(
+        [event.pageX - svg_position.left, event.pageY - svg_position.top],
+        hex);
+    }
+    var hexesEqual = function(first, sec) {
+      return (first[0] == sec[0]) && (first[1] == sec[1]);
+    };
+
+    // field.addEventListener('mousemove', function(event) {
+    //   if (blocked) return;
+    //   var cur_hover = getHoveredHex(event);
+    //   if (!hexesEqual(hovered_hex, cur_hover)) {
+    //     var was = hovered_hex;
+    //     if (hexes[cur_hover[0]][cur_hover[1]]) {
+    //       hovered_hex = cur_hover;
+    //     } else {
+    //       hovered_hex = null;
+    //     }
+    //     events.happen('hoverHex', { was: was, now: hovered_hex });
+    //   }
+    // });
+
+    // field.addEventListener('click', function(event) {
+    //   if (blocked) return;
+    //   if (hovered_hex) {
+    //     if (event.target.getAttribute('data-type') == 'entity') {
+    //       var id = entities[event.target.getAttribute('data-entity_id')];
+    //     var entity =
+    //     happen focusChange ({ was: , now: })
+    //     }
+    //   }
+    // });
+  };
+
+  if (env.scripts) env.scripts.forEach(function(script) {
+    script(env, data, essence);
+  });
 }

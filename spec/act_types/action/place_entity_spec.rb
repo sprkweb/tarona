@@ -107,8 +107,6 @@ RSpec.describe Tarona::Action::PlaceEntity do
       expect(matrix[3][3][:e]).to eq([entity])
     end
 
-    # FIXME: REWRITE EVERYTHING BELOW
-
     context 'when entity\'s y coordinate is even' do
       it 'moves entity object' do
         modul.add landscape, entity, [3, 2]

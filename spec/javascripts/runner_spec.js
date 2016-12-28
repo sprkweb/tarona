@@ -12,7 +12,7 @@ describe('JS Engine runner', function() {
   });
 
   it('registers some generators in the display', function() {
-    [ ['action', ActionGenerator],
+    [ ['action', Action.Generator],
       ['text', TextGenerator]
     ].forEach(function(type) {
       expect(runner.display.generators[type[0]]).toBe(type[1]);

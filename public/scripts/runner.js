@@ -33,7 +33,7 @@ function Runner() {
    */
   this.display = new Display({ area_selector: '#area', io: this.messenger });
   this.display.addGenerator('text', TextGenerator);
-  this.display.addGenerator('action', ActionGenerator);
+  this.display.addGenerator('action', Action.Generator);
 }
 
 if (typeof environment === 'undefined') {

@@ -1,5 +1,5 @@
-describe('ActionGenerator', function() {
-  var run, area, selector, subject, io;
+describe('Action.Generator', function() {
+  var run, area, selector, subject, io, env, data, script;
   beforeEach(function() {
     selector = '#test_area';
     io = {
@@ -9,12 +9,15 @@ describe('ActionGenerator', function() {
     area = document.querySelector(selector);
     subject = {
       hex_size: 10,
-      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ svg_id: 'mysymbol' }] }, {}], [{}, {}], [{}, {}]],
+      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ id: 'man', svg_id: 'mysymbol' }] }, {}], [{}, {}], [{}, {}]],
       dependencies: '<g id="check_deps"></g>'
     };
+    script = jasmine.createSpy('script');
     run = function() {
       area.innerHTML = '';
-      ActionGenerator({ area: area, io: io }, { subject: subject });
+      env = { area: area, io: io, scripts: [script] };
+      data = { subject: subject };
+      Action.Generator(env, data);
     };
     run();
   });
@@ -110,7 +113,14 @@ describe('ActionGenerator', function() {
         return (
           (hex.getAttribute('fill') === 'url(#mypattern)') &&
           (hex.getAttribute('stroke') === 'url(#mypattern)'))
-      })).toBeTruthy()
+      })).toBeTruthy();
+    });
+
+    it('sets data-type attribute for hexes', function() {
+      var hexes = document.querySelectorAll('#field > svg > g#hexes > use');
+      expect(_.every(hexes, function(hex) {
+        return (hex.getAttribute('data-type') === 'hex');
+      })).toBeTruthy();
     });
 
     it('shows entities', function() {
@@ -122,6 +132,96 @@ describe('ActionGenerator', function() {
       var entity = document.querySelector('#field > svg > g#entities > use');
       expect(entity.getAttribute('x')).toEqual('8.660254037844386');
       expect(entity.getAttribute('y')).toEqual('10');
+    });
+
+    it('sets data-type attribute for entities', function() {
+      var entity = document.querySelector('#field > svg > g#entities > use');
+      expect(entity.getAttribute('data-type')).toEqual('entity');
+    });
+
+    it('sets entity\'s id as an attribute', function() {
+      var entity = document.querySelector('#field > svg > g#entities > use');
+      expect(entity.getAttribute('data-entity_id')).toEqual('man');
+    });
+  });
+
+  describe('scripts', function() {
+    it('are called', function() {
+      expect(script.calls.count()).toEqual(1);
+    });
+
+    it('receive arguments of generator as first two arguments', function() {
+      expect(_.first(script.calls.argsFor(0), 2)).toEqual([env, data]);
+    });
+  });
+
+  describe('essence', function() {
+    var essence;
+    beforeEach(function() {
+      essence = script.calls.argsFor(0)[2];
+    });
+
+    it('is passed to scripts as a third argument', function() {
+      expect(typeof essence).toEqual('object')
+    });
+
+    it('includes field element', function() {
+      expect(essence.field).toBe(
+        document.getElementById('field').getElementsByTagName('svg')[0]);
+    });
+
+    it('includes numbers of columns and rows', function() {
+      expect(essence.cols).toEqual(3);
+    });
+
+    it('includes number of rows', function() {
+      expect(essence.rows).toEqual(2);
+    });
+
+    it('includes hexagon geomeric definition', function() {
+      expect(essence.hex instanceof Action.Hex).toBeTruthy();
+      expect(essence.hex.size).toEqual(10);
+    });
+
+    it('includes size of the field', function() {
+      expect(essence.width).toEqual(
+        Action.HexGrid.width(essence.cols, essence.hex));
+      expect(essence.height).toEqual(
+        Action.HexGrid.height(essence.rows, essence.hex));
+    });
+
+    it('includes container element for hexagons', function() {
+      expect(essence.hexesElem).toEqual(
+        document.querySelector('#field > svg > g#hexes'));
+    });
+
+    it('includes container element for entities', function() {
+      expect(essence.entitiesElem).toEqual(
+        document.querySelector('#field > svg > g#entities'));
+    });
+
+    it('includes matrix with objects of hexagons', function() {
+      essence.hexes.forEach(function(col, colNum) {
+        col.forEach(function(hex, rowNum) {
+          expect(hex instanceof Action.SVGHex).toBeTruthy();
+          expect(hex.options.backgroundParentElem).toBe(essence.hexesElem);
+          expect(hex.options.templateId).toEqual('hex');
+          expect(hex.place).toEqual(
+            Action.HexGrid.coords2px([colNum, rowNum], essence.hex));
+        });
+      });
+    });
+
+    it('includes objects of entities', function() {
+      var entity = essence.entities['man'];
+      expect(entity instanceof Action.Entity).toBeTruthy();
+      expect(entity.coordinates).toEqual([0, 0]);
+      expect(entity.hex).toBe(essence.hex);
+      expect(entity.elem.getAttribute('href')).toEqual('#mysymbol');
+    });
+
+    it('includes objects of entities', function() {
+      expect(essence.entities_index[0][0][0]).toBe(essence.entities['man']);
     });
   });
 

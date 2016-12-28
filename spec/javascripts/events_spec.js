@@ -8,7 +8,12 @@ describe('Events', function() {
 
   it('can mix itself to objects', function() {
     Object.getOwnPropertyNames(Events).forEach(function(key) {
-      expect(subject[key]).toBeDefined();
+      if (key === 'addEventsTo') {
+        expect(subject[key]).not.toBeDefined();
+      }
+      else {
+        expect(subject[key]).toBeDefined();
+      }
     });
   });
 

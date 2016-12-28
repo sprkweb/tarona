@@ -14,7 +14,9 @@ RSpec.describe Tarona::Action::Entity do
   end
 
   it 'can return its raw version' do
-    expect(subj.raw).to eq(id: :wolf, svg_id: :wolf_template)
+    hexes = { even_row: [[0, 0]], odd_row: [[0, 0]] }
+    subj = described_class.new :wolf, :wolf_template, hexes: hexes
+    expect(subj.raw).to eq(id: :wolf, svg_id: :wolf_template, hexes: hexes)
   end
 
   describe '#hexes' do
