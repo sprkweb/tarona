@@ -41,6 +41,14 @@ describe('JS Engine runner', function() {
     expect(runner.display.generate).toHaveBeenCalledWith(act.type, act);
   });
 
+  it('gives environment information to display', function() {
+    expect(runner.display.env).toEqual({
+      area_selector: '#area',
+      io: runner.messenger,
+      scripts: [HighlightHexes]
+    });
+  });
+
   it('saves session id to cookie', function() {
     runner.messenger.happen('new_session', { hash: '12345' });
     expect(document.cookie.match(/session_id=12345/g)).toBeTruthy();

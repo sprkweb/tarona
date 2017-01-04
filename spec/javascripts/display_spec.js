@@ -10,6 +10,10 @@ describe('Display', function() {
     data = { valid: true };
   });
 
+  it('saves env variable as its attribute', function() {
+    expect(display.env).toBe(env);
+  });
+
   it('keeps records of generators and invokes them', function() {
     display.generate(generator_name);
     expect(generator).toHaveBeenCalled();

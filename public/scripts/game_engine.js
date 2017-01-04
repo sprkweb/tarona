@@ -135,6 +135,12 @@ function Display(env) {
   Events.addEventsTo(this);
 
   /**
+   * @type {object}
+   * @see arguments given
+   */
+  this.env = env;
+
+  /**
    * List of generators which you have previously added:
    * @example
    * { generator_name: function() {} }
@@ -702,8 +708,7 @@ Action.Generator = function(env, data) {
     entities: entities, entities_index: entities_index, hex: hex
   });
   var BindActionListeners = function() {
-    var blocked = false;
-    var hovered_hex;
+    var hovered_hex = null, focused = null;
 
     var getHoveredHex = function(event) {
       var svg_position = field.getBoundingClientRect();
@@ -712,36 +717,101 @@ Action.Generator = function(env, data) {
         hex);
     }
     var hexesEqual = function(first, sec) {
-      return (first[0] == sec[0]) && (first[1] == sec[1]);
+      if (first && sec) return (first[0] == sec[0]) && (first[1] == sec[1]);
+      else return first == sec;
     };
 
-    // field.addEventListener('mousemove', function(event) {
-    //   if (blocked) return;
-    //   var cur_hover = getHoveredHex(event);
-    //   if (!hexesEqual(hovered_hex, cur_hover)) {
-    //     var was = hovered_hex;
-    //     if (hexes[cur_hover[0]][cur_hover[1]]) {
-    //       hovered_hex = cur_hover;
-    //     } else {
-    //       hovered_hex = null;
-    //     }
-    //     events.happen('hoverHex', { was: was, now: hovered_hex });
-    //   }
-    // });
+    field.addEventListener('mousemove', function(event) {
+      var now = getHoveredHex(event);
+      var now_exist = hexes[now[0]] && hexes[now[0]][now[1]];
+      var was = hovered_hex;
+      hovered_hex = (now_exist ? now : null);
+      if (!hexesEqual(was, hovered_hex)) {
+        /**
+         * A hexagon is hovered by the player's pointer.
+         *
+         * @event ActionEssence#event:hoverHex
+         * @type object
+         * @property {(Action.Coordinates|null)} was - previous hovered hexagon
+         * @property {(Action.Coordinates|null)} now - the hexagon which is just
+         *   hovered.
+         */
+        essence.happen('hoverHex', { was: was, now: hovered_hex });
+      }
+    });
 
-    // field.addEventListener('click', function(event) {
-    //   if (blocked) return;
-    //   if (hovered_hex) {
-    //     if (event.target.getAttribute('data-type') == 'entity') {
-    //       var id = entities[event.target.getAttribute('data-entity_id')];
-    //     var entity =
-    //     happen focusChange ({ was: , now: })
-    //     }
-    //   }
-    // });
+    field.addEventListener('click', function(event) {
+      var id = event.target.getAttribute('data-entity_id');
+      var was = focused;
+      focused = essence.entities[id] || null;
+      if (was != focused) {
+        /**
+         * An entity is focused (selected) by the player. Usually it means that
+         * all of the player's orders will be applied to this entity.
+         *
+         * @event ActionEssence#event:focusChange
+         * @type object
+         * @property {(Action.Coordinates|null)} was - entity which have just
+         *   lost focus.
+         * @property {(Action.Coordinates|null)} now - entity which is just
+         *   hovered.
+         */
+        essence.happen('focusChange', { was: was, now: focused });
+      }
+    });
   };
 
+  BindActionListeners();
   if (env.scripts) env.scripts.forEach(function(script) {
     script(env, data, essence);
   });
+}
+
+/**
+ * Script for Action.Generator which highlights some kinds of hexagons in some
+ * cases.
+ *
+ * @see Action.Generator
+ */
+function HighlightHexes(_env, _data, essence) {
+  var Highlight = function(klass) {
+    this.klass = klass;
+    this.nowHighlighted = [];
+
+    this.highlight = function(hexes) {
+      var self = this;
+      hexes.forEach(function(hex) {
+        var hex_obj = essence.hexes[hex[0]][hex[1]];
+        hex_obj.backgroundElem.classList.add(self.klass);
+        self.nowHighlighted.push(hex_obj);
+      });
+    };
+
+    this.clear = function() {
+      if (this.nowHighlighted === []) return;
+      var self = this;
+      this.nowHighlighted.forEach(function(hex) {
+        hex.backgroundElem.classList.remove(self.klass);
+      });
+     this.nowHighlighted = [];
+    };
+
+    this.change = function(hexes) {
+      this.clear();
+      this.highlight(hexes);
+    };
+  };
+
+  // Focused entity highlight
+  var focusedHighlight = new Highlight('focused');
+  var changeFocusedHighlight = function(ev) {
+    focusedHighlight.clear();
+    if (ev.now instanceof Action.Entity) {
+      focusedHighlight.highlight(ev.now.hexes());
+    }
+  };
+  essence.on('focusChange', changeFocusedHighlight);
+  // .on('move', function( ) {
+  //   if (focused.coordinates == to) changeFocusedHighlight();
+  // });
 }

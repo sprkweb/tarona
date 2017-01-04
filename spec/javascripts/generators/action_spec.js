@@ -9,7 +9,7 @@ describe('Action.Generator', function() {
     area = document.querySelector(selector);
     subject = {
       hex_size: 10,
-      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ id: 'man', svg_id: 'mysymbol' }] }, {}], [{}, {}], [{}, {}]],
+      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ id: 'man', svg_id: 'mysymbol' }] }, {}], [{}, {}], [{ e: [{ id: 'woman', svg_id: 'mysymbol2' }] }, {}]],
       dependencies: '<g id="check_deps"></g>'
     };
     script = jasmine.createSpy('script');
@@ -222,6 +222,130 @@ describe('Action.Generator', function() {
 
     it('includes objects of entities', function() {
       expect(essence.entities_index[0][0][0]).toBe(essence.entities['man']);
+    });
+
+    describe('events', function() {
+      var createFakeMousemove = function(offset) {
+        var el = essence.field;
+        var coords = el.getBoundingClientRect();
+        var mousemove = document.createEvent('CustomEvent');
+        mousemove.initEvent('mousemove', true, false, null);
+        _.extend(mousemove, {
+          pageX: coords.left + offset[0],
+          pageY: coords.top + offset[1]
+        });
+        essence.field.dispatchEvent(mousemove);
+      };
+
+      it('triggers event when a hexagon is hovered', function() {
+        listener = jasmine.createSpy('listener');
+        essence.on('hoverHex', listener);
+        createFakeMousemove([17.5, 23.3]);
+        expect(listener).toHaveBeenCalledWith({ was: null, now: [0, 1] });
+      });
+
+      it('passes last hovered hexagon as an option to hoveHex', function() {
+        listener = jasmine.createSpy('listener');
+        essence.on('hoverHex', listener);
+        createFakeMousemove([17.2, 24.3]);
+        createFakeMousemove([34.2, 24.3]);
+        expect(listener).toHaveBeenCalledWith({ was: [0, 1], now: [1, 1] });
+      });
+
+      it('does not trigger hoverHex event if hex not changed', function() {
+        listener = jasmine.createSpy('listener');
+        createFakeMousemove([17.2, 24.3]);
+        essence.on('hoverHex', listener);
+        createFakeMousemove([17.3, 24.2]);
+        expect(listener).not.toHaveBeenCalled();
+      });
+
+      it('does not trigger hoverHex event if hex not hovered', function() {
+        listener = jasmine.createSpy('listener');
+        essence.on('hoverHex', listener);
+        createFakeMousemove([999, 993]);
+        createFakeMousemove([999, 999]);
+        expect(listener).not.toHaveBeenCalled();
+      });
+
+      it('triggers hoverHex event if hex have been hovered', function() {
+        listener = jasmine.createSpy('listener');
+        createFakeMousemove([17.2, 24.3]);
+        essence.on('hoverHex', listener);
+        createFakeMousemove([999, 999]);
+        expect(listener).toHaveBeenCalledWith({ was: [0, 1], now: null });
+      });
+
+      var createFakeClick = function(target) {
+        var click = document.createEvent('CustomEvent');
+        click.initEvent('click', true, false, null);
+        target.dispatchEvent(click);
+      };
+      var entity, entity2, not_entity;
+      beforeEach(function() {
+        entity = essence.entities['man'].elem;
+        entity2 = essence.entities['woman'].elem;
+        not_entity = essence.hexes[0][1].backgroundElem;
+      });
+
+      it('triggers focusChange event if entity is clicked', function() {
+        listener = jasmine.createSpy('listener');
+        essence.on('focusChange', listener);
+        createFakeClick(entity);
+        expect(listener).toHaveBeenCalledWith({
+          was: null,
+          now: essence.entities['man']
+        });
+      });
+
+      it('does not trigger focusChange if it is the same entity', function() {
+        listener = jasmine.createSpy('listener');
+        createFakeClick(entity);
+        essence.on('focusChange', listener);
+        createFakeClick(entity);
+        expect(listener).not.toHaveBeenCalled();
+      });
+
+      it('passes last entity to focusChange event', function() {
+        createFakeClick(entity);
+        listener = jasmine.createSpy('listener');
+        essence.on('focusChange', listener);
+        createFakeClick(entity2);
+        expect(listener).toHaveBeenCalledWith({
+          was: essence.entities['man'],
+          now: essence.entities['woman']
+        });
+      });
+
+      it('clears focus if you clicked not entity', function() {
+        createFakeClick(entity);
+        listener = jasmine.createSpy('listener');
+        essence.on('focusChange', listener);
+        createFakeClick(not_entity);
+        expect(listener).toHaveBeenCalledWith({
+          was: essence.entities['man'],
+          now: null
+        });
+      });
+
+      it('clears focus if non-existent entity clicked', function() {
+        essence.entities['woman'] = undefined;
+        createFakeClick(entity);
+        listener = jasmine.createSpy('listener');
+        essence.on('focusChange', listener);
+        createFakeClick(not_entity);
+        expect(listener).toHaveBeenCalledWith({
+          was: essence.entities['man'],
+          now: null
+        });
+      });
+
+      it('does not trigger focusChange if you focused no entity', function() {
+        listener = jasmine.createSpy('listener');
+        essence.on('focusChange', listener);
+        createFakeMousemove(not_entity);
+        expect(listener).not.toHaveBeenCalled();
+      });
     });
   });
 
