@@ -393,7 +393,8 @@ var Action = {
    *   It will be used to create visualization
    * @param {Action.Hex} options.hex - element of the grid
    *   on which the entity is placed
-   * @param {Action.Coordinates} options.place - coordinates of the entity
+   * @param {Action.Coordinates} options.place - coordinates of the central
+   *   point of the entity.
    * @param {object<Array<Action.Coordinates>>} options.hexes - which places
    *   does the entity takes relatively to itself.<br>
    *   Object has two keys: even_row contains array with hexes which the entity
@@ -560,12 +561,16 @@ var Action = {
  * @param {number} data.subject.hex_size - relative size of hexagons
  *   used by the action.
  *   It is distance from its center to its vertices.
+ * @param {object} data.subject.entities_index - object which contains
+ *   entities' identificators as keys and their coordinates (Action.Coordinates)
+ *   of central points as values.
  * @param {string} data.subject.dependencies - SVG markup.
  *   It will be inserted into the "defs" tag.
  * @param {Action.Grid} data.subject.landscape - description of a landscape
  *   where the action takes place.
  *   Places format: <br>{ g: ground, e: [entity, ...] }.
- *   "ground" and "entity" are objects which represent either ground or entity.
+ *   "ground" and "entity" are objects which represent either ground or entity
+ *   which are placed on the place.
  *   <br><br>
  *   Both ground and entity objects must contain properties:
  *   "svg_id" (string) - id of the element which is visualization of the object.
@@ -573,8 +578,8 @@ var Action = {
  *      it will be used to show the object to user through
  *      the "use" SVG element.
  *   <br><br>
- *   Entity object must also contain:
- *   "id" (string) - custom unique identificator of the entity.
+ *   Entity object must also contain "id" and "hexes" properties.
+ *   See {@link Action.Entity} for their description.
  * @see Display
  */
 Action.Generator = function(env, data) {
@@ -587,7 +592,7 @@ Action.Generator = function(env, data) {
   var cols = data.subject.landscape.length;
   var rows = _.max(data.subject.landscape, length).length;
   var hex = new Action.Hex(data.subject.hex_size);
-  var hexes = [], entities = {}, entities_index = [];
+  var hexes = [], entities = {}, entities_grid = [];
   var width, height;
   var hexesElem, entitiesElem;
 
@@ -636,17 +641,24 @@ Action.Generator = function(env, data) {
     hexes[x][y] = svgHex;
   };
 
-  var addEntity = function(entity_data, coordinates) {
-    var entity = new Action.Entity(_.extend(entity_data, {
-      place: coordinates,
-      hex: hex
-    }));
-    entitiesElem.appendChild(entity.elem);
-    var x = coordinates[0], y = coordinates[1];
-    if (typeof entities_index[x] === 'undefined') entities_index[x] = [];
-    if (typeof entities_index[x][y] === 'undefined') entities_index[x][y] = [];
-    entities[entity_data.id] = entity;
-    entities_index[x][y].push(entity);
+  var addEntity = function(entity_data, coords) {
+    var center_coords = data.subject.entities_index[entity_data.id];
+    var entity;
+    if (entities[entity_data.id]) {
+      entity = entities[entity_data.id];
+    }
+    else {
+      entity = new Action.Entity(_.extend(entity_data, {
+        place: center_coords,
+        hex: hex
+      }));
+      entities[entity_data.id] = entity;
+      entitiesElem.appendChild(entity.elem);
+    }
+    var x = coords[0], y = coords[1];
+    if (typeof entities_grid[x] === 'undefined') entities_grid[x] = [];
+    if (typeof entities_grid[x][y] === 'undefined') entities_grid[x][y] = [];
+    entities_grid[x][y].push(entity);
     return entity;
   };
 
@@ -698,14 +710,14 @@ Action.Generator = function(env, data) {
    *   entities
    * @property {Action.Grid<Action.SVGHex>} hexes - grid containing objects
    *   which represent individual hexagons.
-   * @property {Action.Grid} entities_index - grid containing Entity objects.
+   * @property {Action.Grid} entities_grid - grid containing Entity objects.
    * @property {object<Entity>} entities - object with "key => value" pairs,
    *   where "value" is an Entity object and "key" is its id.
    */
   var essence = Events.addEventsTo({
     field: field, cols: cols, rows: rows, width: width, height: height,
     hexesElem: hexesElem, entitiesElem: entitiesElem, hexes: hexes,
-    entities: entities, entities_index: entities_index, hex: hex
+    entities: entities, entities_grid: entities_grid, hex: hex
   });
   var BindActionListeners = function() {
     var hovered_hex = null, focused = null;

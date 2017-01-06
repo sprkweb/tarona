@@ -7,9 +7,24 @@ describe('Action.Generator', function() {
       happen: jasmine.createSpy('io#happen')
     };
     area = document.querySelector(selector);
+    var man = {
+      id: 'man',
+      svg_id: 'mysymbol',
+      hexes: { odd_row: [[0, 0], [1, 1]], even_row: [[0, 0], [0, 1]] }
+    };
+    var woman = {
+      id: 'woman',
+      svg_id: 'mysymbol2',
+      hexes: { odd_row: [[0, 0], [0, -1]], even_row: [[0, 0], [-1, -1]] }
+    };
     subject = {
       hex_size: 10,
-      landscape: [[{ g: { svg_id: 'mypattern' }, e: [{ id: 'man', svg_id: 'mysymbol' }] }, {}], [{}, {}], [{ e: [{ id: 'woman', svg_id: 'mysymbol2' }] }, {}]],
+      landscape: [
+        [{ g: { svg_id: 'mypattern' }, e: [man] }, { e: [man] }],
+        [{}, {}],
+        [{ e: [woman] }, { e: [woman] }]
+      ],
+      entities_index: { man: [0, 0], woman: [2, 1] },
       dependencies: '<g id="check_deps"></g>'
     };
     script = jasmine.createSpy('script');
@@ -143,6 +158,19 @@ describe('Action.Generator', function() {
       var entity = document.querySelector('#field > svg > g#entities > use');
       expect(entity.getAttribute('data-entity_id')).toEqual('man');
     });
+
+    it('shows entities accordingly to entities_index', function() {
+      var entity2 =
+        document.querySelectorAll('#field > svg > g#entities > use')[1];
+      expect(entity2.getAttribute('x')).toEqual('51.96152422706631');
+      expect(entity2.getAttribute('y')).toEqual('25');
+    });
+
+    it('shows each entity once though they has multiple places', function() {
+      var entities =
+        document.querySelectorAll('#field > svg > g#entities > use');
+      expect(entities.length).toEqual(2);
+    });
   });
 
   describe('scripts', function() {
@@ -220,8 +248,22 @@ describe('Action.Generator', function() {
       expect(entity.elem.getAttribute('href')).toEqual('#mysymbol');
     });
 
-    it('includes objects of entities', function() {
-      expect(essence.entities_index[0][0][0]).toBe(essence.entities['man']);
+    it('includes objects of all entities', function() {
+      var entity = essence.entities['woman'];
+      expect(entity instanceof Action.Entity).toBeTruthy();
+      expect(entity.coordinates).toEqual([2, 1]);
+      expect(entity.hex).toBe(essence.hex);
+      expect(entity.elem.getAttribute('href')).toEqual('#mysymbol2');
+    });
+
+    it('includes grid of entities', function() {
+      var man = essence.entities['man'];
+      var woman = essence.entities['woman'];
+      expect(essence.entities_grid).toEqual([
+        [[man], [man]],
+        undefined,
+        [[woman], [woman]],
+      ]);
     });
 
     describe('events', function() {
