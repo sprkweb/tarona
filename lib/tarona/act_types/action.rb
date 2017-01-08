@@ -11,6 +11,12 @@ module Tarona
   #   * Proc `landscape` - proc which builds landscape object for this act
   #   * Proc `entities_index` - proc which builds index of entities.
   #     Format: `{ entity.id => [x, y] }` where x and y are coordinates.
+  #
+  # Given toolkit must contain attribute `session` with hash as its value.
+  # Some information about action will be stored under the `:act_inf` key of
+  # session:
+  # - `:landscape` - instance of {Tarona::Action::Landscape} for this Action.
+  # - `:entities_index` - see `.subject[:entities_index]` above.
   class Action < Act
     act_type :action
 

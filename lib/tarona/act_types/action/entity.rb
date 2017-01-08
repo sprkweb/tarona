@@ -14,8 +14,16 @@ module Tarona
     #       { even_row: [[0, 0], [-1, 1]], odd_row: [[0, 0], [0, 1]] }
     #       # when the entity's coordinates are [x, y] and y is event,
     #       # then it "stands" on both [x, y] and [(x - 1), (y + 1)] places.
+    # @!attribute [r] ai
+    #   @return [#call] artificial intelligence which controls the
+    #     entity. It can be any object which has `#call(entity, session)` method
+    #     and is serializable to YAML.
+    #     Each time the entity "thinks" (its turn is come), the `#call` method
+    #     of its AI must be called with arguments:
+    #     - `entity` - the entity itself;
+    #     - `session` - see {Tarona::Action}.
     class Entity
-      attr_reader :id, :template, :hexes
+      attr_reader :id, :template, :hexes, :ai
 
       # @param id [Symbol] identificator of your entity.
       # @param template [Symbol] id of SVG definition without `#` (hash) symbol.
