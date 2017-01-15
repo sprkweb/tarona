@@ -5,7 +5,7 @@ module Tarona
     # It contains information about every place on the field.
     #
     # Coordinate system is "odd-r" (see
-    # [there](http://www.redblobgames.com/grids/hexagons/#coordinates))
+    # [there](http://www.redblobgames.com/grids/hexagons/#coordinates)).
     # Hexes are pointy topped.
     class Landscape
       NEIGHBORS = {

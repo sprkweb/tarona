@@ -35,13 +35,13 @@ class PriorityQueue
     result
   end
 
-  # @return [TrueClass,FalseClass] `true` if there is no elements in this queue,
-  #   `false` otherwise.
+  # @return [TrueClass,FalseClass] `true` if there are no elements
+  #    in this queue, `false` otherwise.
   def empty?
     size == 0
   end
 
-  # @return [Integer] how much elements does this queue contains
+  # @return [Integer] how much elements does this queue contain
   def size
     @heap.size - 1
   end

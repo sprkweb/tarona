@@ -6,8 +6,8 @@ module Tarona
       # It expects that "movement cost" of place means "energy which is spent
       # to get to this place from any its neighbor".
       #
-      # You need to set attributes `map`, `entity`, `from`, `to` using `#call`
-      # options (see `Tardvig::Command`).
+      # You need to set attributes {#map}, {#entity}, {#from}, {#to} using
+      # `#call` options (see `Tardvig::Command`).
       # @!attribute [r] map
       #   @return [Tarona::Action::Landscape] landscape on which path must
       #     be found.
@@ -25,6 +25,7 @@ module Tarona
       #     It contains `:found` key, which contains boolean:
       #     whether path is found or not.
       #     If path is found, it also contains:
+      #
       #     - `:path` (Array) - the path itself. It is array containing
       #       sequential coordinates (in format of `[x, y]`) of each place
       #       of path from the first to the last

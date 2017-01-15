@@ -3,8 +3,8 @@ module Tarona
     module Pathfinder
       # Find all reachable places from point A and shortest ways to them.
       #
-      # You need to set attributes `map`, `from`, `entity` (optional),
-      # `max_cost` (optional) using `#call` options (see `Tardvig::Command`).
+      # You need to set attributes {#map}, {#from}, {#entity} (optional),
+      # {#max_cost} (optional) using `#call` options (see `Tardvig::Command`).
       # @!attribute [r] map
       #   @return [Tarona::Action::Landscape] landscape on which path must
       #     be found.
@@ -21,12 +21,14 @@ module Tarona
       #     unavailable places.
       # @!attribute [r] result
       #   @return [Hash] result, which consists of following keys:
+      #
       #     - `:places` (Hash) contains reachable places as keys and neighboring
       #       places from which those places are reachable faster as values.
       #       Actually, if you want to find only reachable places, you can
       #       use `result[:places].keys`, values are needed only for finding
       #       full paths to individual places along the chain
-      #       (see "code to reconstruct paths" from http://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search).
+      #       (see "code to reconstruct paths" from
+      #       <http://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search>).
       #     - `:costs` (Hash) contains reachable places as keys and costs to
       #       get to them as values.
       #   @example

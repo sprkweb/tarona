@@ -14,6 +14,8 @@ module Tarona
     #     there are just tools for you to set this ways by yourself.
     #     You can, for, example, set a limit of available movement per turn for
     #     an entity using energy.
+    #
+    #     Default energy value is {#max_energy}.
     module Workable
       attr_accessor :user_controlled, :max_energy
       attr_writer :energy
@@ -39,7 +41,7 @@ module Tarona
         end
       end
 
-      # Restore energy (action points) spent with `tire` method
+      # Restore energy (action points) which is spent with the {#tire} method
       # @param how_much [Integer,nil] how much action points should be restored.
       #   If `nil` is given, restore all energy.
       # @return [Integer] how much energy does entity have now

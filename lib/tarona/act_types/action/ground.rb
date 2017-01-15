@@ -1,7 +1,7 @@
 module Tarona
   class Action
-    # Represents landscape and natural objects (ground, water, stones, etc.) or
-    # floor or any other object which has no interaction options, including
+    # Represents landscape and natural objects (ground, water, stones, etc.), or
+    # floor, or any other object which has no interaction options, including
     # movement (of ground), dynamic creation or destroying.
     #
     # Takes one cell of landscape.
@@ -18,7 +18,7 @@ module Tarona
       end
 
       # @return content of the object expressed through common standard types.
-      #   It is hash with those keys: `id`, `svg_id` (second is #template).
+      #   It is hash with those keys: `id`, `svg_id` (second is {#template}).
       def raw
         { id: @id, svg_id: @template }
       end

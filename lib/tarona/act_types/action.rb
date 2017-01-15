@@ -15,6 +15,7 @@ module Tarona
   # Given toolkit must contain attribute `session` with hash as its value.
   # Some information about action will be stored under the `:act_inf` key of
   # session:
+  #
   # - `:landscape` - instance of {Tarona::Action::Landscape} for this Action.
   # - `:entities_index` - see `.subject[:entities_index]` above.
   class Action < Act

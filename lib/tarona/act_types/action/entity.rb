@@ -3,6 +3,8 @@ module Tarona
     # Represents any object which has interaction options: creatures, buildings,
     # etc. Unlike {Ground}, it can take several places of landscape, can be
     # moved, can have AI and is extendable in many ways.
+    #
+    # You can set attributes using {#initialize}.
     # @!attribute [r] hexes
     #   @return [Hash<Array<Array>>] what places does the entity takes
     #     relatively to itself. The hash must contain keys: `:even_row`, which
@@ -20,6 +22,7 @@ module Tarona
     #     and is serializable to YAML.
     #     Each time the entity "thinks" (its turn is come), the `#call` method
     #     of its AI must be called with arguments:
+    #
     #     - `entity` - the entity itself;
     #     - `session` - see {Tarona::Action}.
     class Entity
