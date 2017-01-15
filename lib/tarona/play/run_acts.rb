@@ -1,6 +1,8 @@
 module Tarona
   class Play
     # Part of the Play command which is responsible for sequently running acts.
+    #
+    # For options which you need to set, see the list of attributes.
     # @!attribute [r] acts
     #   @return [Hash] hash containing your acts as values and their
     #     identificators as keys.

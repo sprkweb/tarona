@@ -12,6 +12,8 @@ require 'rack'
 require 'faye/websocket'
 require 'sinatra/base'
 
+require 'lib/priority_queue'
+
 require 'lib/tarona/version'
 
 require 'lib/tarona/act'
@@ -28,6 +30,9 @@ require 'lib/tarona/act_types/action/entity'
 require 'lib/tarona/act_types/action/entity/workable'
 require 'lib/tarona/act_types/action/place_entity'
 require 'lib/tarona/act_types/action/landscape'
+require 'lib/tarona/act_types/action/pathfinder'
+require 'lib/tarona/act_types/action/pathfinder/find_path'
+require 'lib/tarona/act_types/action/pathfinder/find_reachable'
 
 # The main namespace for the gem
 module Tarona

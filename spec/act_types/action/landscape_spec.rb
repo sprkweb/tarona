@@ -50,6 +50,11 @@ describe Tarona::Action::Landscape do
       expect(landscape.neighbors(3, 3)).to eq([[3, 2]])
     end
 
+    it 'does not include negative numbers' do
+      landscape.add [0, 0], [0, 1]
+      expect(landscape.neighbors(0, 0)).to eq([[0, 1]])
+    end
+
     example do
       # [rows_numbers, columns_numbers]
       size = [0..5, 0..5]

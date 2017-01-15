@@ -68,7 +68,7 @@ module Tarona
       end
 
       def clear_coords(coords)
-        coords.reject { |a| get(*a).nil? }
+        coords.reject { |a| get(*a).nil? || a[0] < 0 || a[1] < 0 }
       end
 
       def make_raw_place(place)

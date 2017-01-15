@@ -2,12 +2,12 @@ module Tarona
   class Action
     # Mixin for entities which can do something, tire,
     # obey orders (of an player) or not.
-    # @attribute [rw] user_controlled
+    # @!attribute [rw] user_controlled
     #   @return [TrueClass,FalseClass] whether this entity is controlled by
     #     player?
-    # @attribute [rw] max_energy
+    # @!attribute [rw] max_energy
     #   @return [Integer] maximal possible amount of energy
-    # @attribute [rw] energy
+    # @!attribute [rw] energy
     #   @return [Integer] amount of energy which this entity has now.
     #     Energy is numeric property which shows ability of this entity to
     #     perform work. This mixin does not controls ways to spend or earn it,
