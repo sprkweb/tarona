@@ -26,13 +26,12 @@ RSpec.describe Tarona::Doorman do
       raise "Unexpected event: #{event.inspect}" unless events.include? event
     end
     allow(io_instance).to receive(:response) { 'foo' }
-    allow(io_instance).to receive(:socket) {  }
+    allow(io_instance).to receive(:socket) {}
     allow(game).to receive(:call) { game_inst }
     allow(game_inst).to receive(:io) { io_instance }
   end
 
   describe '#call' do
-    # TODO: Refactor
     it 'gives care of connection to the server if it is not WebSocket' do
       expect(io).to receive(:player?).with(env) { false }
       expect(server).to receive(:call).with(env)
@@ -42,9 +41,7 @@ RSpec.describe Tarona::Doorman do
     it 'starts a new game if it is WebSocket' do
       expect(io).to receive(:player?).with(env).ordered { true }
       expect(io).to receive(:new).with(env).ordered { io_instance }
-      expect(game).to receive(:call).with(
-        hash_including(io: io_instance, valid: true)
-      )
+      expect(game).to receive(:call).with(io: io_instance, valid: true)
       expect(io_instance).to receive(:response) { 'foo' }
       expect(doorman.call(env)).to eq('foo')
     end
@@ -82,6 +79,15 @@ RSpec.describe Tarona::Doorman do
       expect(io_instance).to receive(:happen)
       expect(io_instance).not_to receive(:socket=)
       doorman.call env
+    end
+
+    it 'loads saved session if it exists' do
+      expect(io).to receive(:player?) { true }
+      expect(game).to receive(:call).with(
+        io: io_instance, valid: true, saved_data: :foo
+      )
+      display_options[:saved_session] = :foo
+      doorman.call(env)
     end
   end
 

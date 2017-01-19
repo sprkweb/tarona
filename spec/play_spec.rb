@@ -11,6 +11,7 @@ RSpec.describe Tarona::Play do
     allow(tk).to receive(:new).and_return(tk_inst)
     allow(tk_inst).to receive(:session).and_return(session)
     allow(io).to receive(:spy_on)
+    allow(io).to receive(:on)
   end
 
   it 'runs acts in a cycle' do
@@ -28,5 +29,27 @@ RSpec.describe Tarona::Play do
   it 'creates an instance of toolkit' do
     expect(tk).to receive(:new)
     subject.call
+  end
+
+  it 'can load saved session' do
+    saved_data = Object.new
+    expect(session).to receive(:load).with(saved_data)
+    subject.call saved_data: saved_data
+  end
+
+  it 'does not load saved session if it is not given' do
+    expect(session).not_to receive(:load)
+    subject.call
+  end
+
+  it 'can save current session when it is requested' do
+    callback = nil
+    expect(io).to receive(:on).with(:save).once do |*_, &block|
+      callback = block
+    end
+    subject.call
+    saved_data = Object.new
+    expect(session).to receive(:save).with(saved_data)
+    callback.call saved_data
   end
 end
