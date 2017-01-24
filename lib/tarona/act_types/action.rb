@@ -45,6 +45,9 @@ module Tarona
       @resources ||= []
     end
 
+    # @return [Hash] hash containing keys: `:hex_size`, `:landscape`
+    #   (value is {Landscape#raw}), `:entities_index` and `:dependencies`.
+    #   Dependencies are content of {.resources}.
     def display_format
       c = self.class
       {
@@ -53,6 +56,11 @@ module Tarona
         entities_index: @tk.session[:act_inf][:entities_index],
         dependencies: dependencies
       }
+    end
+
+    # You can redefine this method in order to set needed listeners.
+    # It is called after initialization of session, but before the action.
+    def set_listeners
     end
 
     private
@@ -65,8 +73,13 @@ module Tarona
       }
     end
 
+    def first_run?
+      @tk.session[:act_inf] == {}
+    end
+
     def execute
-      init_act
+      init_act if first_run?
+      set_listeners
       super
     end
 

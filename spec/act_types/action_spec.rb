@@ -18,7 +18,7 @@ RSpec.describe Tarona::Action do
 
   let(:io) { Tardvig::GameIO.new }
   let(:tk) { double }
-  let(:session) { {} }
+  let(:session) { { act_inf: {} } }
   let(:act) { TestAction.new io: io, tk: tk }
 
   before :each do
@@ -43,12 +43,22 @@ RSpec.describe Tarona::Action do
   end
 
   it 'stores some data in session' do
+    expect(session).to receive(:[]=).and_call_original
     act.call
     expect(session).to eq(act_inf:
     {
       landscape: TestAction::LANDSCAPE,
       entities_index: TestAction.subject[:entities_index].call
     })
+  end
+
+  it 'initializes session only if it is run first time' do
+    session[:act_inf] = {
+      landscape: TestAction::LANDSCAPE,
+      entities_index: TestAction.subject[:entities_index].call
+    }
+    expect(session).not_to receive(:[]=)
+    act.call
   end
 
   it 'allows to set resources' do
@@ -66,6 +76,22 @@ RSpec.describe Tarona::Action do
         dependencies: "<g>Some SVG markup here</g>\n<g>Good things.</g>\n"
       ))
     )
+    act.call
+  end
+
+  it 'calls #set_listeners before action' do
+    listeners_set = false
+    expect(act).to receive(:set_listeners) do
+      expect(session).to eq(act_inf:
+      {
+        landscape: TestAction::LANDSCAPE,
+        entities_index: TestAction.subject[:entities_index].call
+      })
+      listeners_set = true
+    end
+    expect(act).to receive(:process) do
+      expect(listeners_set).to be true
+    end
     act.call
   end
 end

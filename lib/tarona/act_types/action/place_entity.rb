@@ -1,6 +1,6 @@
 module Tarona
   class Action
-    # Module with methods for eathier placement and movement of entities
+    # Module with methods for eathier manipulations with entities
     # on landscape.
     # @note **"Coordinates of entity"** means array `[x, y]` with integer
     #   coordinates of its central point. Central point is a place with
@@ -35,7 +35,7 @@ module Tarona
       # @param landscape [Landscape] container of places.
       # @param entity [Entity] entity which you want to add to landscape.
       # @param here [Array] coordinates of the place you want to add entity to.
-      # @return entity
+      # @return [Entity] entity
       def add(landscape, entity, here)
         places_taken(entity, here).each do |hex|
           place_inf = landscape.get(*hex)
@@ -49,6 +49,7 @@ module Tarona
       # @param landscape [Landscape] container of places.
       # @param from [Array] coordinates of the entity.
       # @param entity [Entity] entity which you want to remove from landscape.
+      # @return [Entity] entity
       def remove(landscape, entity, from)
         places_taken(entity, from).each do |hex|
           place_inf = landscape.get(*hex)
@@ -63,7 +64,7 @@ module Tarona
       # @param entity [Entity] entity which you want to move.
       # @param from [Array] coordinates of the entity's center place
       # @param to [Array] coordinates of the place you want to move entity to.
-      # @return entity
+      # @return [Entity] entity
       def move(landscape, entity, from, to)
         remove landscape, entity, from
         add landscape, entity, to

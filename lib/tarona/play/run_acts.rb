@@ -50,6 +50,7 @@ module Tarona
 
       def execute_act
         @session[:act] = @current_act.class
+        @session[:act_inf] = {}
         @current_act.call @act_params
       end
 

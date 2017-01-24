@@ -68,6 +68,7 @@ RSpec.describe Tarona::Play::RunActs do
   end
 
   it 'saves id of last act to session' do
+    allow(session).to receive(:[]=)
     expect(session).to receive(:[]=).with(:act, FirstAct).ordered
     expect(session).to receive(:[]=).with(:act, SecondAct).ordered
     expect(session).to receive(:[]=).with(:act, ThirdAct).ordered
@@ -94,6 +95,12 @@ RSpec.describe Tarona::Play::RunActs do
     expect(TestAct.ended).to receive(:<<).with(kind_of(FirstAct)).ordered
     expect(TestAct.ended).to receive(:<<).with(kind_of(SecondAct)).ordered
     expect(TestAct.ended).to receive(:<<).with(kind_of(ThirdAct)).ordered
+    subject.call.thread.join
+  end
+
+  it 'clears act information before each new act' do
+    allow(session).to receive(:[]=)
+    expect(session).to receive(:[]=).with(:act_inf, {}).exactly(3).times
     subject.call.thread.join
   end
 end
