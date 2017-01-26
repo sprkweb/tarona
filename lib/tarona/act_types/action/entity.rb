@@ -25,8 +25,16 @@ module Tarona
     #
     #     - `entity` - the entity itself;
     #     - `session` - see {Tarona::Action}.
+    # @!attribute [r] tags
+    #   @return [Array<Symbol>] list of custom words which describe the entity:
+    #     its properties, membership in any groups, etc.
+    #     It is useful for extensions, for example: combat properties,
+    #     marking of allies...
+    #   @example
+    #     [:building, :elves] # Living house
+    #     [:creature, :intelligent, :movable, :long_range, :elves] # Elf-archer
     class Entity
-      attr_reader :id, :template, :hexes, :ai
+      attr_reader :id, :template, :hexes, :ai, :tags
 
       # @param id [Symbol] identificator of your entity.
       # @param template [Symbol] id of SVG definition without `#` (hash) symbol.
@@ -38,7 +46,8 @@ module Tarona
         @id = id
         @template = template
         default_options = {
-          hexes: { even_row: [[0, 0]], odd_row: [[0, 0]] }
+          hexes: { even_row: [[0, 0]], odd_row: [[0, 0]] },
+          tags: []
         }
         default_options.merge(options).each do |key, val|
           instance_variable_set "@#{key}".to_sym, val

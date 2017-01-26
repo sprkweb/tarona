@@ -30,4 +30,10 @@ RSpec.describe Tarona::Action::Entity do
       expect(subj.hexes).to eq(even_row: [[0, 0]], odd_row: [[0, 0]])
     end
   end
+
+  describe '#tags' do
+    it 'is empty array by default' do
+      expect(subj.tags).to eq([])
+    end
+  end
 end
