@@ -1,6 +1,6 @@
 module Tarona
   class Action
-    # Module with methods for eathier manipulations with entities
+    # Module with methods for easier manipulations with entities
     # on landscape.
     # @note **"Coordinates of entity"** means array `[x, y]` with integer
     #   coordinates of its central point. Central point is a place with

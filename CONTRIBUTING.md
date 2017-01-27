@@ -35,10 +35,12 @@ See `Rakefile`
 
 ## Code guide
 ### Back-end
-#### Core
+#### Abstraction level 0. Tardvig
+
 First, you need to read the documentation of the tardvig gem, because the
 structure of this project is based on it.
 
+#### Abstraction level 1. Core
 Back-end code is written in Ruby language. It is divided into two parts (and
 directories): `lib` and `game`. `lib` contents back-end engine and helper
 classes, `game` consists of the game itself: acts, texts, etc.
@@ -57,6 +59,22 @@ passing them some useful objects (`Toolkit`, `GameIO`) during the process.
 
 Entire time all of these objects actively interact with front-end through
 WebSocket, changing displayed things.
+
+#### Abstraction level 2. Action Core
+`Action` is a main type of acts (see its documentation).
+Its main part is `Landscape` (hexagonal grid), which consists of `Ground` 
+(static surfaces, such as water, mountains, floor) and `Entity`s (objects 
+which stands on the ground).
+
+It is important that ground always takes one hexagon. However, entities can 
+take multiple places and there are can be many entities at the same place. 
+This is why action core also includes `PlaceEntity` for easier movement
+of entities and `entities_index`, which contains coordinates for 
+"central" points of entities for faster access and recognition of 
+central entities' parts.
+
+When action is started, landscape with its content is converted into 
+simplier format and sent to front-end.
 
 # Maintenance
 ## Some statements
