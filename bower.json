@@ -3,6 +3,6 @@
   "dependencies": {
     "normalize.css": "~4.2.0",
     "underscore": "~1.8.3",
-    "arsenal-font": "http://webfonts.ru/arsenal/arsenal.zip"
+    "fira": "http://webfonts.ru/firasans/firasans.zip"
   }
 }
