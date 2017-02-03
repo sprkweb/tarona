@@ -74,7 +74,7 @@ of entities and `entities_index`, which contains coordinates for
 central entities' parts.
 
 When action is started, landscape with its content is converted into 
-simplier format and sent to front-end.
+a simplier format and sent to the front-end.
 
 # Maintenance
 ## Some statements

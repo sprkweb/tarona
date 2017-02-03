@@ -278,6 +278,15 @@ describe('Action.Generator', function() {
         });
         essence.field.dispatchEvent(mousemove);
       };
+      
+      beforeEach(function() {
+        essence.on('hoverHex', function(ev) {
+          expect(essence.hovered_hex).toEqual(ev.now);
+        });
+        essence.on('focusChange', function(ev) {
+          expect(essence.focused).toEqual(ev.now);
+        });
+      });
 
       it('triggers event when a hexagon is hovered', function() {
         listener = jasmine.createSpy('listener');

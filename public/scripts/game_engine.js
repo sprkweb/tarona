@@ -711,8 +711,13 @@ Action.Generator = function(env, data) {
    * @property {Action.Grid<Action.SVGHex>} hexes - grid containing objects
    *   which represent individual hexagons.
    * @property {Action.Grid} entities_grid - grid containing Entity objects.
-   * @property {object<Entity>} entities - object with "key => value" pairs,
-   *   where "value" is an Entity object and "key" is its id.
+   * @property {object<Action.Entity>} entities - object with "key => value" 
+   *   pairs, where "value" is an Entity object and "key" is its id.
+   * @property {?Action.Entity} focused - current focused entity.
+   *   See {@link ActionEssence#event:focusChange}
+   * @property {?Action.Coordinates} hovered_hex - hexagon which is hovered 
+   *   by player's pointer now.
+   *   See {@link ActionEssence#event:hoverHex}
    */
   var essence = Events.addEventsTo({
     field: field, cols: cols, rows: rows, width: width, height: height,
@@ -720,7 +725,7 @@ Action.Generator = function(env, data) {
     entities: entities, entities_grid: entities_grid, hex: hex
   });
   var BindActionListeners = function() {
-    var hovered_hex = null, focused = null;
+    essence.hovered_hex = null, essence.focused = null;
 
     var getHoveredHex = function(event) {
       var svg_position = field.getBoundingClientRect();
@@ -736,9 +741,9 @@ Action.Generator = function(env, data) {
     field.addEventListener('mousemove', function(event) {
       var now = getHoveredHex(event);
       var now_exist = hexes[now[0]] && hexes[now[0]][now[1]];
-      var was = hovered_hex;
-      hovered_hex = (now_exist ? now : null);
-      if (!hexesEqual(was, hovered_hex)) {
+      var was = essence.hovered_hex;
+      essence.hovered_hex = (now_exist ? now : null);
+      if (!hexesEqual(was, essence.hovered_hex)) {
         /**
          * A hexagon is hovered by the player's pointer.
          *
@@ -748,15 +753,15 @@ Action.Generator = function(env, data) {
          * @property {(Action.Coordinates|null)} now - the hexagon which is just
          *   hovered.
          */
-        essence.happen('hoverHex', { was: was, now: hovered_hex });
+        essence.happen('hoverHex', { was: was, now: essence.hovered_hex });
       }
     });
 
     field.addEventListener('click', function(event) {
       var id = event.target.getAttribute('data-entity_id');
-      var was = focused;
-      focused = essence.entities[id] || null;
-      if (was != focused) {
+      var was = essence.focused;
+      essence.focused = essence.entities[id] || null;
+      if (was != essence.focused) {
         /**
          * An entity is focused (selected) by the player. Usually it means that
          * all of the player's orders will be applied to this entity.
@@ -768,7 +773,7 @@ Action.Generator = function(env, data) {
          * @property {(Action.Coordinates|null)} now - entity which is just
          *   hovered.
          */
-        essence.happen('focusChange', { was: was, now: focused });
+        essence.happen('focusChange', { was: was, now: essence.focused });
       }
     });
   };
@@ -785,7 +790,7 @@ Action.Generator = function(env, data) {
  *
  * @see Action.Generator
  */
-function HighlightHexes(_env, _data, essence) {
+function HighlightHexes(env, _data, essence) {
   var Highlight = function(klass) {
     this.klass = klass;
     this.nowHighlighted = [];
@@ -818,12 +823,11 @@ function HighlightHexes(_env, _data, essence) {
   var focusedHighlight = new Highlight('focused');
   var changeFocusedHighlight = function(ev) {
     focusedHighlight.clear();
-    if (ev.now instanceof Action.Entity) {
-      focusedHighlight.highlight(ev.now.hexes());
+    var focused = (ev ? ev.now : essence.focused);
+    if (focused && focused.hexes) {
+      focusedHighlight.highlight(focused.hexes());
     }
   };
   essence.on('focusChange', changeFocusedHighlight);
-  // .on('move', function( ) {
-  //   if (focused.coordinates == to) changeFocusedHighlight();
-  // });
+  if (env) env.io.on('move', function() { changeFocusedHighlight() });
 }
