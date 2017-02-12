@@ -3,8 +3,9 @@ module Tarona
     module Pathfinder
       # Find all reachable places from point A and shortest ways to them.
       #
-      # You need to set attributes {#map}, {#from}, {#entity} (optional),
-      # {#max_cost} (optional) using `#call` options (see `Tardvig::Command`).
+      # You need to set attributes {#map}, {#from}, {#catalyst},
+      # {#entity} (optional), {#max_cost} (optional) using `#call` options
+      # (see `Tardvig::Command`).
       # @!attribute [r] map
       #   @return [Tarona::Action::Landscape] landscape on which path must
       #     be found.
@@ -12,7 +13,7 @@ module Tarona
       #   @return [Array<Integer>] start point, `[x, y]` coordinates
       # @!attribute [r] entity
       #   @return [Tarona::Action::Entity] entity which will follow these paths.
-      #     It is needed for finding pathless places with its AI, so
+      #     It is needed for finding pathless places, so
       #     you should better set this argument if you have such places.
       # @!attribute [r] max_cost
       #   @return [Integer] maximal available (energy) cost of paths,
@@ -31,6 +32,11 @@ module Tarona
       #       <http://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search>).
       #     - `:costs` (Hash) contains reachable places as keys and costs to
       #       get to them as values.
+      # @!attribute [r] catalyst
+      #   @return [#call] object (proc, for example) which rules: whether the
+      #     `entity` (1st argument given; {Tarona::Action::Entity}) can be
+      #     placed `here` (2nd argument given; `[x, y]` coordinates).
+      #     It must return `true` if it can be placed or `false` otherwise.
       #   @example
       #     # Start at (0, 0);
       #     # Map width is 2 hexes and height is 3 hexes;
@@ -78,8 +84,7 @@ module Tarona
         def register_place(previous, current)
           move_cost = 1 # move_cost current
           total_cost = @costs[previous] + move_cost
-          is_obstacles = (
-            @entity.respond_to?(:ai) ? @entity.ai.obstacles?(current) : false)
+          is_obstacles = !@catalyst.call(@entity, current)
           too_far = (@max_cost ? total_cost > @max_cost : false)
           better_paths = better_paths? current, total_cost
           return if better_paths || too_far || is_obstacles

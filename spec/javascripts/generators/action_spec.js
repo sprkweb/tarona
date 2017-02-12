@@ -259,7 +259,8 @@ describe('Action.Generator', function() {
     it('includes grid of entities', function() {
       var man = essence.entities['man'];
       var woman = essence.entities['woman'];
-      expect(essence.entities_grid).toEqual([
+      expect(essence.entities_grid instanceof Action.EntitiesGrid).toBeTruthy();
+      expect(essence.entities_grid.grid).toEqual([
         [[man], [man]],
         undefined,
         [[woman], [woman]],
@@ -278,7 +279,7 @@ describe('Action.Generator', function() {
         });
         essence.field.dispatchEvent(mousemove);
       };
-      
+
       beforeEach(function() {
         essence.on('hoverHex', function(ev) {
           expect(essence.hovered_hex).toEqual(ev.now);
@@ -396,6 +397,20 @@ describe('Action.Generator', function() {
         essence.on('focusChange', listener);
         createFakeMousemove(not_entity);
         expect(listener).not.toHaveBeenCalled();
+      });
+
+      var preventDefault;
+      var fakeRMBClick = function() {
+        var contextmenu = document.createEvent('CustomEvent');
+        contextmenu.initEvent('contextmenu', true, false, null);
+        preventDefault = jasmine.createSpy('preventDefault');
+        _.extend(contextmenu, { preventDefault: preventDefault });
+        essence.field.dispatchEvent(contextmenu);
+      };
+
+      it('blocks context menu', function() {
+        fakeRMBClick();
+        expect(preventDefault).toHaveBeenCalled();
       });
     });
   });

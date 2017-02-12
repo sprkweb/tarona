@@ -439,11 +439,16 @@ var Action = {
     };
 
     /**
+     * @param {?Action.Coordinates} coords - if it is given, hexes will be
+     *   calculated as if it is the entity's center.
      * @returns {Array<Action.Coordinates>} coordinates of hexes which is taken
      *   by the entity
      */
-    this.hexes = function() {
-      var x = this.coordinates[0], y = this.coordinates[1];
+    this.hexes = function(coords) {
+      if (coords)
+        var x = coords[0], y = coords[1];
+      else
+        var x = this.coordinates[0], y = this.coordinates[1];
       var relative_places = options.hexes[y % 2 == 0 ? 'even_row' : 'odd_row'];
       var hexes = [];
       relative_places.forEach(function(hex) {
@@ -539,6 +544,78 @@ var Action = {
       elem.setAttributeNS(NS.XLINK, 'href', '#' + this.options.templateId);
       return elem;
     };
+  },
+
+  /**
+   * Wrapper for {@link Action.Grid}. It contains an array of
+   * Entity objects (which are standing here) on each place.
+   *
+   * @constructor
+   * @param {?Action.Grid} grid - initial grid which will be wrapped (optional).
+   */
+  EntitiesGrid: function(grid) {
+    /**
+     * Raw grid.
+     * @type Action.Grid
+     */
+    this.grid = grid;
+    if (!this.grid) this.grid = [];
+
+    /**
+     * Add the given entity to place at the given coordinates.
+     * Place will be created if it does not exist.
+     *
+     * @param {Action.Coordinates} coords - the entity will be placed here.
+     * @param {Action.Entity} entity - the entity itself.
+     */
+    this.add = function(coords, entity) {
+      var self = this;
+      entity.hexes(coords).forEach(function(place) {
+        var x = place[0], y = place[1];
+        if (typeof self.grid[x] === 'undefined') self.grid[x] = [];
+        if (typeof self.grid[x][y] === 'undefined') self.grid[x][y] = [];
+        self.grid[x][y].push(entity);
+      });
+    };
+
+    var self = this;
+    var remove_from_place = function(coords, entity) {
+      var x = coords[0], y = coords[1];
+      if (!(self.grid[x] && self.grid[x][y])) return false;
+      var grid_index = self.grid[x][y].indexOf(entity);
+      if (grid_index < 0) return false;
+      self.grid[x][y].splice(grid_index, 1);
+      return true;
+    };
+
+    /**
+     * Remove the given entity from place at the given coordinates.
+     *
+     * @param {Action.Coordinates} coords - the entity will be placed here.
+     * @param {Action.Entity} entity - the entity itself.
+     * @returns {boolean} whether the entity is removed. Usually "false" means
+     *   there is no such entity at the place.
+     */
+    this.remove = function(coords, entity) {
+      var success;
+      entity.hexes(coords).forEach(function(place) {
+        if (remove_from_place(place, entity) && (success !== false))
+          success = true;
+        else
+          success = false;
+      });
+      return success;
+    };
+
+    /**
+     * @param {Action.Coordinates} coords - place from which you want to get
+     *   entities.
+     * @returns {Array<Action.Entity>} all the entities from the given place.
+     */
+    this.get = function(coords) {
+      var x = coords[0], y = coords[1];
+      return (this.grid[x] ? this.grid[x][y] : []) || [];
+    };
   }
 };
 
@@ -592,7 +669,7 @@ Action.Generator = function(env, data) {
   var cols = data.subject.landscape.length;
   var rows = _.max(data.subject.landscape, length).length;
   var hex = new Action.Hex(data.subject.hex_size);
-  var hexes = [], entities = {}, entities_grid = [];
+  var hexes = [], entities = {}, entities_grid = new Action.EntitiesGrid();
   var width, height;
   var hexesElem, entitiesElem;
 
@@ -654,11 +731,8 @@ Action.Generator = function(env, data) {
       }));
       entities[entity_data.id] = entity;
       entitiesElem.appendChild(entity.elem);
+      entities_grid.add(center_coords, entity);
     }
-    var x = coords[0], y = coords[1];
-    if (typeof entities_grid[x] === 'undefined') entities_grid[x] = [];
-    if (typeof entities_grid[x][y] === 'undefined') entities_grid[x][y] = [];
-    entities_grid[x][y].push(entity);
     return entity;
   };
 
@@ -710,12 +784,13 @@ Action.Generator = function(env, data) {
    *   entities
    * @property {Action.Grid<Action.SVGHex>} hexes - grid containing objects
    *   which represent individual hexagons.
-   * @property {Action.Grid} entities_grid - grid containing Entity objects.
-   * @property {object<Action.Entity>} entities - object with "key => value" 
+   * @property {Action.EntitiesGrid} entities_grid - grid which contains an
+   *   array of Entity objects (which are standing here) on each place.
+   * @property {object<Action.Entity>} entities - object with "key => value"
    *   pairs, where "value" is an Entity object and "key" is its id.
    * @property {?Action.Entity} focused - current focused entity.
    *   See {@link ActionEssence#event:focusChange}
-   * @property {?Action.Coordinates} hovered_hex - hexagon which is hovered 
+   * @property {?Action.Coordinates} hovered_hex - hexagon which is hovered
    *   by player's pointer now.
    *   See {@link ActionEssence#event:hoverHex}
    */
@@ -776,6 +851,10 @@ Action.Generator = function(env, data) {
         essence.happen('focusChange', { was: was, now: essence.focused });
       }
     });
+
+    field.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+    });
   };
 
   BindActionListeners();
@@ -821,13 +900,36 @@ function HighlightHexes(env, _data, essence) {
 
   // Focused entity highlight
   var focusedHighlight = new Highlight('focused');
-  var changeFocusedHighlight = function(ev) {
-    focusedHighlight.clear();
-    var focused = (ev ? ev.now : essence.focused);
-    if (focused && focused.hexes) {
-      focusedHighlight.highlight(focused.hexes());
+  essence.on('focusChange', function(inf) {
+    if (inf.now && inf.now.hexes) focusedHighlight.change(inf.now.hexes());
+  });
+  if (env) env.io.on('move', function(inf) {
+    var focused = essence.entities[inf.entity_id];
+    if (focused && inf.to) focusedHighlight.change(focused.hexes(inf.to));
+  });
+}
+
+/**
+ * Script for Action.Generator which handles interaction request from player.
+ * It means that it decides what does player want to do when he presses right
+ * mouse button (by default) and does it.
+ *
+ * @see Action.Generator
+ */
+function PlayerInteract(env, _data, essence) {
+  essence.field.addEventListener('contextmenu', function() {
+    var hovered_hex = essence.hovered_hex, focused = essence.focused;
+    if (focused && focused.id && hovered_hex) {
+      env.io.happen('move_request', { entity_id: focused.id, to: hovered_hex });
     }
-  };
-  essence.on('focusChange', changeFocusedHighlight);
-  if (env) env.io.on('move', function() { changeFocusedHighlight() });
+  });
+  // The code below needs some defence.
+  env.io.on('move', function(inf) {
+    var entity = essence.entities[inf.entity_id];
+    if (!(entity && inf.to)) return;
+    var prev_coords = entity.coordinates;
+    essence.entities_grid.remove(prev_coords, entity);
+    essence.entities_grid.add(inf.to, entity);
+    entity.move(inf.to);
+  });
 }

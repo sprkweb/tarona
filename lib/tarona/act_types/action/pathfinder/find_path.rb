@@ -6,8 +6,8 @@ module Tarona
       # It expects that "movement cost" of place means "energy which is spent
       # to get to this place from any its neighbor".
       #
-      # You need to set attributes {#map}, {#entity}, {#from}, {#to} using
-      # `#call` options (see `Tardvig::Command`).
+      # You need to set attributes {#map}, {#entity}, {#from}, {#to},
+      # {#catalyst} using `#call` options (see `Tardvig::Command`).
       # @!attribute [r] map
       #   @return [Tarona::Action::Landscape] landscape on which path must
       #     be found.
@@ -36,6 +36,11 @@ module Tarona
       #         to this place
       #       - `:last` (Integer) cost of movement from previous point of route
       #         to this place
+      # @!attribute [r] catalyst
+      #   @return [#call] object (proc, for example) which rules: whether the
+      #     `entity` (1st argument given; {Tarona::Action::Entity}) can be
+      #     placed `here` (2nd argument given; `[x, y]` coordinates).
+      #     It must return `true` if it can be placed or `false` otherwise.
       #   @example Route from (0, 0) to (1, 3)
       #     {
       #       found: true,
@@ -117,8 +122,7 @@ module Tarona
           total_cost = @costs[previous][:total] + move_cost
           another_path = @costs.key? current
           better_path = another_path && total_cost >= @costs[current][:total]
-          # TODO: #obstacles? for movable AI
-          obstacles = @entity.ai.obstacles? current
+          obstacles = !@catalyst.call(@entity, current)
           return false if better_path || obstacles
           @costs[current] = { total: total_cost, last: move_cost }
           @came_from[current] = previous

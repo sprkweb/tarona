@@ -1,12 +1,11 @@
 RSpec.describe Tarona::Action::Pathfinder::FindPath do
   let(:entity) { double }
-  let(:ai) { double }
+  let(:catalyst) { double }
   let :map do
     Tarona::Action::Landscape.new(Array.new(10) { Array.new(10) { {} } })
   end
   before :each do
-    allow(entity).to receive(:ai) { ai }
-    allow(ai).to receive(:obstacles?) { false }
+    allow(catalyst).to receive(:call) { true }
   end
 
   it 'can find the simplest straight path' do
@@ -18,7 +17,7 @@ RSpec.describe Tarona::Action::Pathfinder::FindPath do
     # -------| ^ y coordinates
     # 001122 <= x coordinates
     path = described_class.call(
-      map: map, entity: entity, from: [0, 0], to: [1, 3]
+      map: map, entity: entity, from: [0, 0], to: [1, 3], catalyst: catalyst
     )
     expect(path.result).to eq(
       found: true,
@@ -43,15 +42,15 @@ RSpec.describe Tarona::Action::Pathfinder::FindPath do
     # O O O O O O  | 6
     # -------------| ^ y coordinates
     # 001122334455 <= x coordinates
-    allow(ai).to receive(:obstacles?) do |here|
+    allow(catalyst).to receive(:call) do |_, here|
       mountains = [
         [0, 2], [1, 2], [2, 2], [3, 2],
         [4, 2], [3, 3], [3, 4], [2, 5]
       ]
-      mountains.include? here
+      !mountains.include?(here)
     end
     path = described_class.call(
-      map: map, entity: entity, from: [1, 4], to: [4, 0]
+      map: map, entity: entity, from: [1, 4], to: [4, 0], catalyst: catalyst
     )
     expect(path.result).to eq(
       found: true,
@@ -78,28 +77,28 @@ RSpec.describe Tarona::Action::Pathfinder::FindPath do
     # % % % O O  | 4
     # -----------| ^ y coordinates
     # 0011223344 <= x coordinates
-    allow(ai).to receive(:obstacles?) do |here|
+    allow(catalyst).to receive(:call) do |_, here|
       mountains = [
         [0, 1], [1, 1], [2, 1], [3, 1], [3, 2], [2, 3], [2, 4], [0, 4], [1, 4]
       ]
-      mountains.include? here
+      !mountains.include?(here)
     end
     path = described_class.call(
-      map: map, entity: entity, from: [1, 2], to: [3, 0]
+      map: map, entity: entity, from: [1, 2], to: [3, 0], catalyst: catalyst
     )
     expect(path.result).to eq(found: false)
   end
 
   it 'can not find path if the given start does not exist' do
     path = described_class.call(
-      map: map, entity: entity, from: [999, 2], to: [3, 2]
+      map: map, entity: entity, from: [999, 2], to: [3, 2], catalyst: catalyst
     )
     expect(path.result).to eq(found: false)
   end
 
   it 'can not find path if the given finish does not exist' do
     path = described_class.call(
-      map: map, entity: entity, from: [0, 2], to: [20, 2]
+      map: map, entity: entity, from: [0, 2], to: [20, 2], catalyst: catalyst
     )
     expect(path.result).to eq(found: false)
   end

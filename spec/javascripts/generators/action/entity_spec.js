@@ -97,5 +97,9 @@ describe('Action.Entity', function() {
       entity.move([5, 6]);
       expect(entity.hexes()).toEqual([[5, 6], [5, 7]]);
     });
+
+    it('can use given coordinates instead of current', function() {
+      expect(entity.hexes([3, 2])).toEqual([[3, 2], [3, 3]]);
+    });
   });
 });

@@ -45,7 +45,7 @@ describe('JS Engine runner', function() {
     expect(runner.display.env).toEqual({
       area_selector: '#area',
       io: runner.messenger,
-      scripts: [HighlightHexes]
+      scripts: [HighlightHexes, PlayerInteract]
     });
   });
 
