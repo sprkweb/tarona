@@ -900,12 +900,19 @@ function HighlightHexes(env, _data, essence) {
 
   // Focused entity highlight
   var focusedHighlight = new Highlight('focused');
+  var focusedEntity = null;
   essence.on('focusChange', function(inf) {
-    if (inf.now && inf.now.hexes) focusedHighlight.change(inf.now.hexes());
+    focusedHighlight.clear();
+    focusedEntity = null;
+    if (inf.now && inf.now.hexes) {
+      focusedHighlight.highlight(inf.now.hexes());
+      focusedEntity = inf.now;
+    }
   });
   if (env) env.io.on('move', function(inf) {
-    var focused = essence.entities[inf.entity_id];
-    if (focused && inf.to) focusedHighlight.change(focused.hexes(inf.to));
+    var entity = essence.entities[inf.entity_id];
+    if ((focusedEntity == entity) && inf.to)
+      focusedHighlight.change(entity.hexes(inf.to));
   });
 }
 

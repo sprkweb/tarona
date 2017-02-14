@@ -22,7 +22,7 @@ map:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
           user_controlled: true,
-          max_energy: 150
+          max_energy: 5
     - :g: *grass
       :e: [*man]
     - :g: *grass
@@ -69,8 +69,20 @@ map:
     - :g: *stone
     - :g: *stone
     - :g: *stone
+      :e:
+        - &enemy_man !ruby/object:Tarona::Action::WorkableEntity
+          id: enemy_man
+          template: man
+          tags: []
+          hexes:
+            :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
+            :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
+          user_controlled: false,
+          max_energy: 150
     - :g: *stone
+      :e: [*enemy_man]
     - :g: *stone
+      :e: [*enemy_man]
     - :g: *stone
     - :g: *stone
     - :g: *stone
@@ -79,10 +91,13 @@ map:
     - :g: *stone
     - :g: *stone
     - :g: *stone
+      :e: [*enemy_man]
     - :g: *stone
     - :g: *stone
+      :e: [*enemy_man]
     - :g: *stone
     - :g: *stone
     - :g: *stone
 entities:
   man: [1, 3]
+  enemy_man: [5, 5]

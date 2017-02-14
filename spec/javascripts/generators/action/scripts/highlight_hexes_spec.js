@@ -95,9 +95,17 @@ describe('HighlightHexes', function() {
     it('uses entity#hexes when the entity is moved', function() {
       var previous_hexes = entity.hexes();
       essence.happen('focusChange', { was: null, now: entity });
-      entity.hexes = jasmine.createSpy('entity#hexes');
+      spyOn(entity, 'hexes').and.callThrough();
       io.happen('move', { entity_id: 'cat', to: [0, 0] });
       expect(entity.hexes).toHaveBeenCalledWith([0, 0]);
+    });
+
+    it('does not use entity#hexes when another entity is moved', function() {
+      var previous_hexes = entity.hexes();
+      essence.happen('focusChange', { was: null, now: entity });
+      spyOn(entity, 'hexes').and.callThrough();
+      io.happen('move', { entity_id: 'dog', to: [0, 0] });
+      expect(entity.hexes).not.toHaveBeenCalled();
     });
   });
 });
