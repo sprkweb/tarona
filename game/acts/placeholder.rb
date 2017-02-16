@@ -12,11 +12,13 @@ module Tarona
     hex_size 15
 
     def set_listeners
-      Tarona::Action::Mobilize.call(
+      landscape = @tk.session[:act_inf][:landscape]
+      places_taken = Action::PlaceEntity.method(:places_taken)
+      Action::Mobilize.call(
         io: @io,
-        map: @tk.session[:act_inf][:landscape],
+        map: landscape,
         entities_index: @tk.session[:act_inf][:entities_index],
-        catalyst: proc { true }
+        catalyst: Action::Catalyst.new(places_taken, landscape)
       )
     end
   end

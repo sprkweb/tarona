@@ -34,6 +34,7 @@ require 'lib/tarona/act_types/action/pathfinder'
 require 'lib/tarona/act_types/action/pathfinder/find_path'
 require 'lib/tarona/act_types/action/pathfinder/find_reachable'
 require 'lib/tarona/act_types/action/mobilize'
+require 'lib/tarona/act_types/action/catalyst'
 
 # The main namespace for the gem
 module Tarona

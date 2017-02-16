@@ -22,7 +22,7 @@ map:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
           user_controlled: true,
-          max_energy: 5
+          max_energy: 10
     - :g: *grass
       :e: [*man]
     - :g: *grass
