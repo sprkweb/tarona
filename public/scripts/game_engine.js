@@ -680,10 +680,9 @@ Action.Generator = function(env, data) {
   var generateHexClipPath = function() {
     var clip = defs.appendChild(document.createElementNS(NS.SVG, 'clipPath'));
     clip.setAttribute('id', 'hexclip');
-    var clipEl = clip.appendChild(document.createElementNS(NS.SVG, 'use'));
-    clipEl.setAttribute('x', '0');
-    clipEl.setAttribute('y', '0');
-    clipEl.setAttribute('href', '#hex');
+    clip.setAttribute('clipPathUnits', 'objectBoundingBox');
+    var clipEl = clip.appendChild(document.createElementNS(NS.SVG, 'path'));
+    clipEl.setAttribute('d', 'M 1 0.75 L 0.5 1 L 0 0.75 L 0 0.25 L 0.5 0 L 1 0.25 Z');
   };
 
   var generateStandartHex = function() {

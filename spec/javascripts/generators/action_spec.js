@@ -66,8 +66,13 @@ describe('Action.Generator', function() {
       var clip = defs.getElementsByTagName('clipPath')[0];
       expect(clip).not.toBeNull();
       expect(clip.getAttribute('id')).toEqual('hexclip');
-      var path = clip.querySelector('use[href="#hex"][x="0"][y="0"]');
-      expect(path).not.toBeNull();
+      expect(clip.getAttribute('clipPathUnits')).toEqual('objectBoundingBox');
+      expect(clip.childNodes.length).toEqual(1);
+      var path = clip.firstChild;
+      expect(path.nodeName).toEqual('path');
+      expect(path.attributes.length).toEqual(1);
+      expect(path.attributes.getNamedItem('d').value)
+        .toEqual('M 1 0.75 L 0.5 1 L 0 0.75 L 0 0.25 L 0.5 0 L 1 0.25 Z');
     });
 
     it('includes container for hexes', function() {
