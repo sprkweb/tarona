@@ -9,6 +9,7 @@ module Tarona
     )
     resources << 'game/resources/ground.svg'
     resources << 'game/resources/entities.svg'
+    resources << 'game/resources/style.svg'
     hex_size 15
 
     def set_listeners
