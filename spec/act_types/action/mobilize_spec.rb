@@ -15,6 +15,10 @@ RSpec.describe Tarona::Action::Mobilize do
   let(:from) { [3, 5] }
   let(:to) { [5, 6] }
   let(:path) { { found: true, costs: { to => { total: 87 } } } }
+  FakeAction = Struct.new :io do
+    include Tardvig::Events
+  end
+  let(:act) { FakeAction.new(io) }
 
   before :each do
     map.get(*from)[:e] = [entity]
@@ -22,7 +26,8 @@ RSpec.describe Tarona::Action::Mobilize do
     allow(Tarona::Action::Pathfinder::FindPath).to receive(:call) { path_obj }
     allow(Tarona::Action::PlaceEntity).to receive(:move)
     allow(path_obj).to receive(:result) { path }
-    described_class.call io: io, map: map, entities_index: entities_index
+    allow(act).to receive(:io) { io }
+    described_class.call act: act, map: map, entities_index: entities_index
     allow(io).to receive(:happen).and_call_original
   end
 
@@ -45,6 +50,13 @@ RSpec.describe Tarona::Action::Mobilize do
 
   it 'sends message back if request is accepted' do
     expect(io).to receive(:happen).with(:move, entity_id: entity.id, to: to)
+    io.happen :move_request, entity_id: entity.id, to: to
+  end
+
+  it 'does not work after act is ended' do
+    act.happen :end
+    expect(Tarona::Action::PlaceEntity).not_to receive(:move)
+    expect(io).not_to receive(:happen).with(:move, entity_id: entity.id, to: to)
     io.happen :move_request, entity_id: entity.id, to: to
   end
 

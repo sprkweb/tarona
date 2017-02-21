@@ -14,8 +14,8 @@ module Tarona
     #
     # You must set attributes below using `Tardvig::Command` interface to
     # start this command.
-    # @!attribute [r] io
-    #   @return [Tardvig::Events] a way to request movement
+    # @!attribute [r] act
+    #   @return [Tarona::Action] entities will be mobilized for this act.
     # @!attribute [r] map
     #   @return [Tarona::Action::Landscape] landscape of the current action
     # @!attribute [r] entities_index
@@ -30,12 +30,9 @@ module Tarona
       private
 
       def process
-        @io.on :move_request do |msg|
-          from = @entities_index[msg[:entity_id]]
-          if from
-            entity = entity_obj from, msg[:entity_id]
-            move_it entity, from, msg[:to], msg if movable_by_player? entity
-          end
+        @act.io.on :move_request, &pr_manager
+        @act.on :end do
+          @act.io.remove_listener :move_request, pr_manager
         end
       end
 
@@ -56,7 +53,7 @@ module Tarona
         total_move_cost = path_data[:costs][to][:total]
         if entity.tire(total_move_cost)
           update_pos entity, from, to
-          io.happen :move, msg
+          @act.io.happen :move, msg
           true
         else
           false
@@ -72,6 +69,16 @@ module Tarona
         Tarona::Action::Pathfinder::FindPath.call(
           map: @map, entity: entity, from: from, to: to, catalyst: @catalyst
         ).result
+      end
+
+      def pr_manager
+        @pr_manager ||= proc do |msg|
+          from = @entities_index[msg[:entity_id]]
+          if from
+            entity = entity_obj from, msg[:entity_id]
+            move_it entity, from, msg[:to], msg if movable_by_player? entity
+          end
+        end
       end
     end
   end
