@@ -16,7 +16,7 @@ module Tarona
       landscape = @tk.session[:act_inf][:landscape]
       places_taken = Action::PlaceEntity.method(:places_taken)
       Action::Mobilize.call(
-        io: @io,
+        act: self,
         map: landscape,
         entities_index: @tk.session[:act_inf][:entities_index],
         catalyst: Action::Catalyst.new(places_taken, landscape)
