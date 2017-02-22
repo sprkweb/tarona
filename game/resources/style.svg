@@ -4,21 +4,21 @@
     $hex-border-width: 1px;
     stroke-width: $hex-border-width * 2;
     clip-path: url(#hexclip);
+  }
 
-    &.reachable {
-      stroke: #9FEE00;
-      stroke-opacity: 0.5;
-    }
+  #hexes use.reachable {
+    stroke: #9FEE00;
+    stroke-opacity: 0.5;
+  }
 
-    &.focused {
-      stroke: #FF0000;
-      stroke-opacity: 1;
-    }
+  #hexes use.focused {
+    stroke: #FF0000;
+    stroke-opacity: 1;
+  }
 
-    &.hovered_path {
-      stroke: #008500;
-      stroke-opacity: 1;
-    }
+  #hexes use.hovered_path {
+    stroke: #008500;
+    stroke-opacity: 1;
   }
   ]]>
 </style>
