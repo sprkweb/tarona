@@ -190,6 +190,93 @@ function Display(env) {
 }
 
 /**
+ * Interface between mouse + keyboard and their in-game functions.
+ * <br>
+ * The idea is to bind concrete actions (e.g. move the entity, select
+ * the entity under the mouse pointer) not to the keys (Esc, Right Mouse Button,
+ * etc.), but to their abstract functions (select, interact, up, right...).
+ * <br>
+ * It may seem like there is no difference between "concrete actions" and
+ * "abstract functions", but it is. An abstract function can mean many
+ * concrete actions depending on the context: "interact" function means
+ * "move the entity" when entity is focused and ground is clicked, but
+ * when NPC is clicked, it means "talk to him".
+ * <br>
+ * @constructor
+ * @param display {Display} - current Display object
+ */
+function Keybindings(display) {
+  /**
+   * Object with pairs "key_function => key".<br>
+   * Keys are: "Mouse1" for left mouse button, "Mouse2" for right mouse button,
+   * or any JS standard key code (see link below).<br>
+   * For description of "key_functions" see {@link Keybindings}.
+   * @type object
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code#Code_values
+   */
+  this.bindings = {
+    select: 'Mouse1',
+    interact: 'Mouse2',
+    up: 'KeyW',
+    down: 'KeyS',
+    left: 'KeyA',
+    right: 'KeyD'
+  };
+
+  var get_mouse1_event = function(action) {
+    switch(action) {
+      case 'press': return 'click'; break;
+      case 'down':  return 'mousedown'; break;
+      case 'up':    return 'mouseup'; break;
+    }
+  };
+  var get_event_id = function(action, key) {
+    if (!(action == 'up' || action == 'down' || action == 'press')) return null;
+    switch(key) {
+      case 'Mouse1': return get_mouse1_event(action); break;
+      case 'Mouse2': return (action == 'press' ? 'contextmenu' : null); break;
+      default: return 'key' + action;
+    }
+  };
+  var create_listener = function(key, func) {
+    if (key.slice(0, -1) == 'Mouse')
+      return func;
+    else
+      return function(ev) { if (ev.code == key) func(ev); };
+  };
+  var listeners = [];
+  /**
+   * Bind an event to a player's action.
+   * @param target {Element} - element which will receive player's action
+   * @param trigger {String} - what should the player do to trigger this event.
+   *   <br>
+   *   Format: "key_function:action". Key functions are described here:
+   *   {@link Keybindings};
+   *   and "action" is one of "press", "up", "down" (similar to standard
+   *   "keypress", "keyup", "keydown"). "Up" and "down" can not be bound to
+   *   Mouse2.<br>
+   *   Example: select:press, interact:down
+   * @param func {function} - this is listener will be called when the event is
+   *   triggered.
+   */
+  this.bind = function(target, trigger, func) {
+    var [key_func, action] = trigger.split(':');
+    var key = this.bindings[key_func];
+    if (!key || !action) return false;
+    var event_name = get_event_id(action, key);
+    if (!event_name) return false;
+    var listener = create_listener(key, func)
+    target.addEventListener(event_name, listener);
+    listeners.push([event_name, listener]);
+    return true;
+  };
+
+  // display.on('before_act', function() {
+  //   // TODO: Remove all the listeners when act is ended
+  // });
+};
+
+/**
  * Generator of text acts for Display
  * @see Display
  */
@@ -869,6 +956,7 @@ Action.Generator = function(env, data) {
  * @see Action.Generator
  */
 function HighlightHexes(env, _data, essence) {
+  // TODO: Remove when act is ended
   var Highlight = function(klass) {
     this.klass = klass;
     this.nowHighlighted = [];
@@ -923,6 +1011,7 @@ function HighlightHexes(env, _data, essence) {
  * @see Action.Generator
  */
 function PlayerInteract(env, _data, essence) {
+  // TODO: Remove when act is ended
   essence.field.addEventListener('contextmenu', function() {
     var hovered_hex = essence.hovered_hex, focused = essence.focused;
     if (focused && focused.id && hovered_hex) {

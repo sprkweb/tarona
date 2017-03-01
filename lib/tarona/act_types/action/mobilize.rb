@@ -6,7 +6,7 @@ module Tarona
     # `#user_controlled == true`
     # `:movable` entities must be {Workable}.
     #
-    # It moves entities when it is requested through {#io} event `:move_request`
+    # It moves entities when it is requested through `io` event `:move_request`
     # with argument: `Hash` with keys: `:entity_id` ({Entity#id}) and
     # `:to` ([x, y]).
     # Of course, it moves entity only if it has enough energy and path
