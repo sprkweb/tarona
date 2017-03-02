@@ -244,7 +244,16 @@ function Keybindings(display) {
     else
       return function(ev) { if (ev.code == key) func(ev); };
   };
-  var listeners = [];
+  var parse_trigger = function(trigger, func) {
+    var [key_func, action] = trigger.split(':');
+    var key = this.bindings[key_func];
+    if (!key || !action) return false;
+    var event_name = get_event_id(action, key);
+    if (!event_name) return false;
+    var listener = create_listener(key, func);
+    return [event_name, listener];
+  }
+  var to_remove = [];
   /**
    * Bind an event to a player's action.
    * @param target {Element} - element which will receive player's action
@@ -258,22 +267,24 @@ function Keybindings(display) {
    *   Example: select:press, interact:down
    * @param func {function} - this is listener will be called when the event is
    *   triggered.
+   * @param for_act {?boolean} - if it is true, this binding will be removed
+   *   after current act is finished (optional; default: true)
    */
-  this.bind = function(target, trigger, func) {
-    var [key_func, action] = trigger.split(':');
-    var key = this.bindings[key_func];
-    if (!key || !action) return false;
-    var event_name = get_event_id(action, key);
-    if (!event_name) return false;
-    var listener = create_listener(key, func)
+  this.bind = function(target, trigger, func, for_act) {
+    var binding = parse_trigger.apply(this, [trigger, func]);
+    if (!binding) return false;
+    var [event_name, listener] = binding;
     target.addEventListener(event_name, listener);
-    listeners.push([event_name, listener]);
+    if (for_act === undefined || for_act)
+      to_remove.push([target, event_name, listener]);
     return true;
   };
 
-  // display.on('before_act', function() {
-  //   // TODO: Remove all the listeners when act is ended
-  // });
+  display.on('before_act', function() {
+    to_remove.forEach(function([target, ev, listener]) {
+      target.removeEventListener(ev, listener);
+    });
+  });
 };
 
 /**
@@ -289,7 +300,7 @@ function TextGenerator(env, data) {
     document.removeEventListener('keyup', heRead);
     env.area.removeEventListener('click', heRead);
     env.io.happen('read');
- };
+  };
   document.addEventListener('keyup', heRead);
   env.area.addEventListener('click', heRead);
 }

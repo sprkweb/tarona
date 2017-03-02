@@ -14,11 +14,12 @@ describe('Keybindings', function() {
     target.dispatchEvent(ev);
     return ev;
   };
-  var subj, display, target, listener;
+  var subj, display, target, listener, listener2;
   beforeEach(function() {
-    display = jasmine.createSpy('display');
+    display = Events.addEventsTo({});
     target = document.createElement('div');
     listener = jasmine.createSpy('listener');
+    listener2 = jasmine.createSpy('listener2');
     subj = new Keybindings(display);
     subj.bindings = {
       foo: 'Mouse1',
@@ -105,5 +106,25 @@ describe('Keybindings', function() {
     expect(subj.bind(target, 'foobar:down', listener)).toBeTruthy();
     runFakeUserAction(target, 'keyup', { code: 'Pause' });
     expect(listener).not.toHaveBeenCalled();
+  });
+
+  it('removes listener after act is ended', function() {
+    subj.bind(target, 'foo:down', listener);
+    subj.bind(target, 'bar:press', listener2, true);
+    display.happen('before_act');
+    runFakeUserAction(target, 'mousedown');
+    runFakeUserAction(target, 'contextmenu');
+    expect(listener).not.toHaveBeenCalled();
+    expect(listener2).not.toHaveBeenCalled();
+  });
+
+  it('does not remove binding when act is ended and for_act arg is false', function() {
+    subj.bind(target, 'foo:down', listener);
+    subj.bind(target, 'bar:press', listener2, false);
+    display.happen('before_act');
+    runFakeUserAction(target, 'mousedown');
+    runFakeUserAction(target, 'contextmenu');
+    expect(listener).not.toHaveBeenCalled();
+    expect(listener2).toHaveBeenCalled();
   });
 });
