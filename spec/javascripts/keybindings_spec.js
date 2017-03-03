@@ -1,19 +1,4 @@
 describe('Keybindings', function() {
-  // TODO: Make it available for all the tests and remove other similar places
-  /**
-   * Create fake event and run it.
-   * @param target {Element} - element which will receive the event
-   * @param event {String} - name of the event, e. g. click
-   * @param additions {?object} - properties of the event, e.g. clientX
-   * @return {CustomEvent} the event
-   */
-  var runFakeUserAction = function(target, event_name, additions) {
-    var ev = document.createEvent('CustomEvent');
-    ev.initEvent(event_name, true, false, null);
-    if (additions) _.extend(ev, additions);
-    target.dispatchEvent(ev);
-    return ev;
-  };
   var subj, display, target, listener, listener2;
   beforeEach(function() {
     display = Events.addEventsTo({});
@@ -32,79 +17,79 @@ describe('Keybindings', function() {
 
   it('can bind an event to a key with a letter', function() {
     expect(subj.bind(target, 'baz:press', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'keypress', { code: 'KeyW' });
+    var ev = RunFakeUserAction(target, 'keypress', { code: 'KeyW' });
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind an event to a special key', function() {
     expect(subj.bind(target, 'foobar:down', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'keydown', { code: 'Pause' });
+    var ev = RunFakeUserAction(target, 'keydown', { code: 'Pause' });
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind an event to a key with a digit', function() {
     expect(subj.bind(target, 'barbaz:up', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'keyup', { code: 'Digit1' });
+    var ev = RunFakeUserAction(target, 'keyup', { code: 'Digit1' });
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind the keydown event to the left mouse button', function() {
     expect(subj.bind(target, 'foo:down', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'mousedown');
+    var ev = RunFakeUserAction(target, 'mousedown');
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind the keypress event to the left mouse button', function() {
     expect(subj.bind(target, 'foo:press', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'click');
+    var ev = RunFakeUserAction(target, 'click');
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind the keyup event to the left mouse button', function() {
     expect(subj.bind(target, 'foo:up', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'mouseup');
+    var ev = RunFakeUserAction(target, 'mouseup');
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('can bind an event to the right mouse button', function() {
     expect(subj.bind(target, 'bar:press', listener)).toBeTruthy();
-    var ev = runFakeUserAction(target, 'contextmenu');
+    var ev = RunFakeUserAction(target, 'contextmenu');
     expect(listener).toHaveBeenCalledWith(ev);
   });
 
   it('returns false if the given key function is not valid', function() {
     expect(subj.bind(target, 'big_red_button:press', listener)).toBeFalsy();
-    runFakeUserAction(target, 'keypress');
+    RunFakeUserAction(target, 'keypress');
     expect(listener).not.toHaveBeenCalled();
   });
 
   it('returns false if the given key action is not valid', function() {
     expect(subj.bind(target, 'foobar:dance', listener)).toBeFalsy();
-    runFakeUserAction(target, 'keydance');
+    RunFakeUserAction(target, 'keydance');
     expect(listener).not.toHaveBeenCalled();
   });
 
   it('returns false if you use mouse2 with "up" action', function() {
     expect(subj.bind(target, 'bar:up', listener)).toBeFalsy();
-    runFakeUserAction(target, 'keyup', { code: 'Mouse2' });
+    RunFakeUserAction(target, 'keyup', { code: 'Mouse2' });
     expect(listener).not.toHaveBeenCalled();
   });
 
   it('returns false if you use mouse2 with "down" action', function() {
     expect(subj.bind(target, 'bar:down', listener)).toBeFalsy();
-    runFakeUserAction(target, 'mousedown');
+    RunFakeUserAction(target, 'mousedown');
     expect(listener).not.toHaveBeenCalled();
   });
 
   it('does not trigger listener if another key is pressed', function() {
     expect(subj.bind(target, 'foobar:down', listener)).toBeTruthy();
-    runFakeUserAction(target, 'keydown', { code: 'Space' });
+    RunFakeUserAction(target, 'keydown', { code: 'Space' });
     expect(listener).not.toHaveBeenCalled();
   });
 
   it('does not trigger listener if another action is done', function() {
     expect(subj.bind(target, 'foobar:down', listener)).toBeTruthy();
-    runFakeUserAction(target, 'keyup', { code: 'Pause' });
+    RunFakeUserAction(target, 'keyup', { code: 'Pause' });
     expect(listener).not.toHaveBeenCalled();
   });
 
@@ -112,8 +97,8 @@ describe('Keybindings', function() {
     subj.bind(target, 'foo:down', listener);
     subj.bind(target, 'bar:press', listener2, true);
     display.happen('before_act');
-    runFakeUserAction(target, 'mousedown');
-    runFakeUserAction(target, 'contextmenu');
+    RunFakeUserAction(target, 'mousedown');
+    RunFakeUserAction(target, 'contextmenu');
     expect(listener).not.toHaveBeenCalled();
     expect(listener2).not.toHaveBeenCalled();
   });
@@ -122,8 +107,8 @@ describe('Keybindings', function() {
     subj.bind(target, 'foo:down', listener);
     subj.bind(target, 'bar:press', listener2, false);
     display.happen('before_act');
-    runFakeUserAction(target, 'mousedown');
-    runFakeUserAction(target, 'contextmenu');
+    RunFakeUserAction(target, 'mousedown');
+    RunFakeUserAction(target, 'contextmenu');
     expect(listener).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalled();
   });

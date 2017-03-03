@@ -1,19 +1,7 @@
 describe('TextGenerator', function() {
 
-  var area, selector, text, data, io, click, keyup;
-  var createFakeEvents = function() {
-    try {
-      click = new MouseEvent('click');
-      keyup = new KeyboardEvent('keyup');
-    } catch(_) {
-      click = document.createEvent('MouseEvent');
-      click.initEvent('click', true, false);
-      keyup = document.createEvent('KeyboardEvent');
-      keyup.initEvent('keyup', true, false);
-    }
-  };
+  var area, selector, text, data, io;
   beforeEach(function() {
-    createFakeEvents();
     selector = '#test_area';
     io = {
       on: jasmine.createSpy('io#on'),
@@ -33,12 +21,12 @@ describe('TextGenerator', function() {
   });
 
   it('says server to change act after player clicked', function() {
-    area.dispatchEvent(click);
+    RunFakeUserAction(area, 'click');
     expect(io.happen).toHaveBeenCalledWith('read');
   });
 
   it('says server to change act after player pushed a button', function() {
-    document.dispatchEvent(keyup);
+    RunFakeUserAction(document, 'keyup');
     expect(io.happen).toHaveBeenCalledWith('read');
   });
 
@@ -47,9 +35,9 @@ describe('TextGenerator', function() {
   });
 
   it('says server to change act only once', function() {
-    document.dispatchEvent(click);
-    document.dispatchEvent(click);
-    document.dispatchEvent(keyup);
+    RunFakeUserAction(area, 'click');
+    RunFakeUserAction(area, 'click');
+    RunFakeUserAction(document, 'keyup');
     expect(io.happen.calls.count()).toEqual(1);
   });
 

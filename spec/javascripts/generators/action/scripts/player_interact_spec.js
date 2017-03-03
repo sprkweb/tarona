@@ -1,10 +1,4 @@
 describe('PlayerInteract', function() {
-  var fakeRMBClick = function(target) {
-    var click = document.createEvent('CustomEvent');
-    click.initEvent('contextmenu', true, false, null);
-    target.dispatchEvent(click);
-  };
-
   var essence, env, entity;
   beforeEach(function() {
     entity = { coordinates: [3, 2], move: jasmine.createSpy('move') };

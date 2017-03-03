@@ -276,13 +276,10 @@ describe('Action.Generator', function() {
       var createFakeMousemove = function(offset) {
         var el = essence.field;
         var coords = el.getBoundingClientRect();
-        var mousemove = document.createEvent('CustomEvent');
-        mousemove.initEvent('mousemove', true, false, null);
-        _.extend(mousemove, {
+        RunFakeUserAction(el, 'mousemove', {
           pageX: coords.left + offset[0],
           pageY: coords.top + offset[1]
         });
-        essence.field.dispatchEvent(mousemove);
       };
 
       beforeEach(function() {
@@ -333,11 +330,6 @@ describe('Action.Generator', function() {
         expect(listener).toHaveBeenCalledWith({ was: [0, 1], now: null });
       });
 
-      var createFakeClick = function(target) {
-        var click = document.createEvent('CustomEvent');
-        click.initEvent('click', true, false, null);
-        target.dispatchEvent(click);
-      };
       var entity, entity2, not_entity;
       beforeEach(function() {
         entity = essence.entities['man'].elem;
@@ -348,7 +340,7 @@ describe('Action.Generator', function() {
       it('triggers focusChange event if entity is clicked', function() {
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         expect(listener).toHaveBeenCalledWith({
           was: null,
           now: essence.entities['man']
@@ -357,17 +349,17 @@ describe('Action.Generator', function() {
 
       it('does not trigger focusChange if it is the same entity', function() {
         listener = jasmine.createSpy('listener');
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         essence.on('focusChange', listener);
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         expect(listener).not.toHaveBeenCalled();
       });
 
       it('passes last entity to focusChange event', function() {
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
-        createFakeClick(entity2);
+        RunFakeUserAction(entity2, 'click');
         expect(listener).toHaveBeenCalledWith({
           was: essence.entities['man'],
           now: essence.entities['woman']
@@ -375,10 +367,10 @@ describe('Action.Generator', function() {
       });
 
       it('clears focus if you clicked not entity', function() {
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
-        createFakeClick(not_entity);
+        RunFakeUserAction(not_entity, 'click');
         expect(listener).toHaveBeenCalledWith({
           was: essence.entities['man'],
           now: null
@@ -387,10 +379,10 @@ describe('Action.Generator', function() {
 
       it('clears focus if non-existent entity clicked', function() {
         essence.entities['woman'] = undefined;
-        createFakeClick(entity);
+        RunFakeUserAction(entity, 'click');
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
-        createFakeClick(not_entity);
+        RunFakeUserAction(not_entity, 'click');
         expect(listener).toHaveBeenCalledWith({
           was: essence.entities['man'],
           now: null
@@ -404,17 +396,11 @@ describe('Action.Generator', function() {
         expect(listener).not.toHaveBeenCalled();
       });
 
-      var preventDefault;
-      var fakeRMBClick = function() {
-        var contextmenu = document.createEvent('CustomEvent');
-        contextmenu.initEvent('contextmenu', true, false, null);
-        preventDefault = jasmine.createSpy('preventDefault');
-        _.extend(contextmenu, { preventDefault: preventDefault });
-        essence.field.dispatchEvent(contextmenu);
-      };
-
       it('blocks context menu', function() {
-        fakeRMBClick();
+        preventDefault = jasmine.createSpy('preventDefault');
+        RunFakeUserAction(essence.field, 'contextmenu', {
+          preventDefault: preventDefault
+        });
         expect(preventDefault).toHaveBeenCalled();
       });
     });
