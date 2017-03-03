@@ -1,6 +1,6 @@
 describe('HighlightHexes', function() {
   describe('under focused entities', function() {
-    var essence, entity, entity2, io;
+    var essence, entity, entity2, io, display;
     beforeEach(function() {
       var fakeHex = function() {
         return {
@@ -24,7 +24,8 @@ describe('HighlightHexes', function() {
         entities: { cat: entity }
       });
       io = Events.addEventsTo({});
-      HighlightHexes({ io: io }, null, essence);
+      display = Events.addEventsTo({});
+      HighlightHexes({ io: io, display: display }, null, essence);
     });
     var contains = function(inThisList, coords) {
       return !!(_.find(inThisList, function(arr) {
@@ -105,6 +106,20 @@ describe('HighlightHexes', function() {
       essence.happen('focusChange', { was: null, now: entity });
       spyOn(entity, 'hexes').and.callThrough();
       io.happen('move', { entity_id: 'dog', to: [0, 0] });
+      expect(entity.hexes).not.toHaveBeenCalled();
+    });
+
+    it('does not highlight focused entities after act is ended', function() {
+      display.happen('before_act');
+      essence.happen('focusChange', { was: null, now: entity });
+      checkHexesStrict([], function() { expect(false).toBeTruthy(); });
+    });
+
+    it('does not move highlight of focused entities after end', function() {
+      essence.happen('focusChange', { was: null, now: entity });
+      display.happen('before_act');
+      spyOn(entity, 'hexes').and.callThrough();
+      io.happen('move', { entity_id: 'cat', to: [0, 0] });
       expect(entity.hexes).not.toHaveBeenCalled();
     });
   });

@@ -1001,19 +1001,25 @@ function HighlightHexes(env, _data, essence) {
   // Focused entity highlight
   var focusedHighlight = new Highlight('focused');
   var focusedEntity = null;
-  // TODO: Remove when act is ended
-  essence.on('focusChange', function(inf) {
+  var highlightNewFocus = function(inf) {
     focusedHighlight.clear();
     focusedEntity = null;
     if (inf.now && inf.now.hexes) {
       focusedHighlight.highlight(inf.now.hexes());
       focusedEntity = inf.now;
     }
-  });
-  if (env) env.io.on('move', function(inf) {
-    var entity = essence.entities[inf.entity_id];
-    if ((focusedEntity == entity) && inf.to)
-      focusedHighlight.change(entity.hexes(inf.to));
+  };
+  essence.on('focusChange', highlightNewFocus);
+  var move_highlight = function(inf) {
+   var entity = essence.entities[inf.entity_id];
+   if ((focusedEntity == entity) && inf.to)
+     focusedHighlight.change(entity.hexes(inf.to));
+  };
+  env.io.on('move', move_highlight);
+
+  env.display.on('before_act', function() {
+    essence.remove_listener('focusChange', highlightNewFocus);
+    env.io.remove_listener('move', move_highlight);
   });
 }
 
@@ -1025,20 +1031,26 @@ function HighlightHexes(env, _data, essence) {
  * @see Action.Generator
  */
 function PlayerInteract(env, _data, essence) {
-  // TODO: Remove when act is ended
-  essence.field.addEventListener('contextmenu', function() {
+  var interact = function() {
     var hovered_hex = essence.hovered_hex, focused = essence.focused;
     if (focused && focused.id && hovered_hex) {
       env.io.happen('move_request', { entity_id: focused.id, to: hovered_hex });
     }
-  });
+  };
+  essence.field.addEventListener('contextmenu', interact);
   // The code below needs some defence.
-  env.io.on('move', function(inf) {
+  var move_entity = function(inf) {
     var entity = essence.entities[inf.entity_id];
     if (!(entity && inf.to)) return;
     var prev_coords = entity.coordinates;
     essence.entities_grid.remove(prev_coords, entity);
     essence.entities_grid.add(inf.to, entity);
     entity.move(inf.to);
+  };
+  env.io.on('move', move_entity);
+
+  env.display.on('before_act', function() {
+    essence.field.removeEventListener('contextmenu', interact);
+    env.io.remove_listener('move', move_entity);
   });
 }

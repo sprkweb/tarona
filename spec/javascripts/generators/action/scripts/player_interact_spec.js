@@ -9,7 +9,10 @@ describe('PlayerInteract', function() {
   beforeEach(function() {
     entity = { coordinates: [3, 2], move: jasmine.createSpy('move') };
     essence = {
-      field: { addEventListener: jasmine.createSpy('field#addEventListener') },
+      field: {
+        addEventListener: jasmine.createSpy('field#addEventListener'),
+        removeEventListener: jasmine.createSpy('field#addEventListener'),
+      },
       hovered_hex: [3, 2],
       focused: { id: 'man' },
       entities_grid: {
@@ -21,8 +24,10 @@ describe('PlayerInteract', function() {
     env = {
       io: {
         happen: jasmine.createSpy('io#happen'),
-        on: jasmine.createSpy('io#on')
-      }
+        on: jasmine.createSpy('io#on'),
+        remove_listener: jasmine.createSpy('io#remove_listener')
+      },
+      display: Events.addEventsTo({})
     };
     PlayerInteract(env, null, essence);
   });
@@ -49,6 +54,14 @@ describe('PlayerInteract', function() {
     expect(env.io.happen).not.toHaveBeenCalled();
   });
 
+  it('does not request movement after act is ended', function() {
+    expect(essence.field.removeEventListener).not.toHaveBeenCalled();
+    env.display.happen('before_act');
+    var added = essence.field.addEventListener.calls.argsFor(0);
+    var removed = essence.field.removeEventListener.calls.argsFor(0);
+    expect(added).toEqual(removed);
+  });
+
   it('moves entity when it is ordered from io', function() {
     var listener = env.io.on.calls.argsFor(0);
     expect(listener[0]).toEqual('move');
@@ -72,5 +85,13 @@ describe('PlayerInteract', function() {
     expect(essence.entities_grid.remove).not.toHaveBeenCalled();
     expect(essence.entities_grid.add).not.toHaveBeenCalled();
     expect(entity.move).not.toHaveBeenCalled();
+  });
+
+  it('does not move entity after act is ended', function() {
+    expect(env.io.remove_listener).not.toHaveBeenCalled();
+    env.display.happen('before_act');
+    var added = env.io.on.calls.argsFor(0);
+    var removed = env.io.remove_listener.calls.argsFor(0);
+    expect(added).toEqual(removed);
   });
 });
