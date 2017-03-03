@@ -14,6 +14,10 @@ describe('Display', function() {
     expect(display.env).toBe(env);
   });
 
+  it('adds self to env variable', function() {
+    expect(display.env.display).toBe(display);
+  });
+
   it('keeps records of generators and invokes them', function() {
     display.generate(generator_name);
     expect(generator).toHaveBeenCalled();

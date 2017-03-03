@@ -139,6 +139,7 @@ function Display(env) {
    * @see arguments given
    */
   this.env = env;
+  this.env.display = this;
 
   /**
    * List of generators which you have previously added:
@@ -969,7 +970,6 @@ Action.Generator = function(env, data) {
  * @see Action.Generator
  */
 function HighlightHexes(env, _data, essence) {
-  // TODO: Remove when act is ended
   var Highlight = function(klass) {
     this.klass = klass;
     this.nowHighlighted = [];
@@ -1001,6 +1001,7 @@ function HighlightHexes(env, _data, essence) {
   // Focused entity highlight
   var focusedHighlight = new Highlight('focused');
   var focusedEntity = null;
+  // TODO: Remove when act is ended
   essence.on('focusChange', function(inf) {
     focusedHighlight.clear();
     focusedEntity = null;
