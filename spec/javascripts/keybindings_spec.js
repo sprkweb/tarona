@@ -112,4 +112,11 @@ describe('Keybindings', function() {
     expect(listener).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalled();
   });
+
+  it('returns Binding', function() {
+    var binding = subj.bind(target, 'baz:press', listener);
+    binding.remove();
+    var ev = RunFakeUserAction(target, 'keypress', { code: 'KeyW' });
+    expect(listener).not.toHaveBeenCalled();
+  });
 });

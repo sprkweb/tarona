@@ -208,6 +208,18 @@ function Display(env) {
  */
 function Keybindings(display) {
   /**
+   * Represents binding of a listener to a key function.
+   *
+   * @interface Keybindings.Binding
+   */
+  /**
+   * Removes the binding, so the listener will not be called anymore.
+   *
+   * @function
+   * @name Keybindings.Binding#remove
+   */
+
+  /**
    * Object with pairs "key_function => key".<br>
    * Keys are: "Mouse1" for left mouse button, "Mouse2" for right mouse button,
    * or any JS standard key code (see link below).<br>
@@ -224,6 +236,7 @@ function Keybindings(display) {
     right: 'KeyD'
   };
 
+  var self = this;
   var get_mouse1_event = function(action) {
     switch(action) {
       case 'press': return 'click'; break;
@@ -248,7 +261,7 @@ function Keybindings(display) {
   var parse_trigger = function(trigger, func) {
     var t = trigger.split(':')
     var key_func = t[0], action = t[1];
-    var key = this.bindings[key_func];
+    var key = self.bindings[key_func];
     if (!key || !action) return false;
     var event_name = get_event_id(action, key);
     if (!event_name) return false;
@@ -271,22 +284,22 @@ function Keybindings(display) {
    *   triggered.
    * @param for_act {?boolean} - if it is true, this binding will be removed
    *   after current act is finished (optional; default: true)
+   * @return {?Keybindings.Binding} the binding itself
    */
   this.bind = function(target, trigger, func, for_act) {
-    var binding = parse_trigger.apply(this, [trigger, func]);
+    var binding = parse_trigger(trigger, func);
     if (!binding) return false;
     var event_name = binding[0], listener = binding[1];
     target.addEventListener(event_name, listener);
-    if (for_act === undefined || for_act)
-      to_remove.push([target, event_name, listener]);
-    return true;
+    var binding = {
+      remove: function() { target.removeEventListener(event_name, listener) }
+    };
+    if (for_act === undefined || for_act) to_remove.push(binding);
+    return binding;
   };
 
   display.on('before_act', function() {
-    to_remove.forEach(function(binding) {
-      var target = binding[0], ev = binding[1], listener = binding[2];
-      target.removeEventListener(ev, listener);
-    });
+    to_remove.forEach(function(binding) { binding.remove() });
   });
 };
 
