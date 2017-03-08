@@ -3,6 +3,7 @@ describe('JS Engine runner', function() {
   beforeAll(function() {
     document.cookie = 'session_id = 0; expires=Mon, 2 May 2011 07:42:03 GMT';
     WebSocket = jasmine.createSpy('WebSocket');
+    Keybindings = function(display) { this.display = display };
     runner = new Runner();
     runner.messenger.socket = { send: function() {} }
   });
@@ -17,6 +18,11 @@ describe('JS Engine runner', function() {
     ].forEach(function(type) {
       expect(runner.display.generators[type[0]]).toBe(type[1]);
     });
+  });
+
+  it('creates Keybindings object', function() {
+    expect(runner.keybindings instanceof Keybindings).toBeTruthy();
+    expect(runner.keybindings.display).toBe(runner.display);
   });
 
   it('creates a new connection', function() {
@@ -45,8 +51,9 @@ describe('JS Engine runner', function() {
     expect(runner.display.env).toEqual({
       area_selector: '#area',
       io: runner.messenger,
-      scripts: [HighlightHexes, PlayerInteract],
-      display: runner.display
+      scripts: [HighlightHexes, PlayerInteract, FovOperator],
+      display: runner.display,
+      keybindings: runner.keybindings
     });
   });
 

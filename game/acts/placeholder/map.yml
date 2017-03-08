@@ -9,6 +9,16 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
   - - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -32,6 +42,16 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
   - - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -39,6 +59,16 @@ map:
     - :g: *grass
     - :g: *grass
       :e: [*man]
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
     - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -54,7 +84,27 @@ map:
     - :g: *water
     - :g: *water
     - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
   - - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
     - :g: *water
     - :g: *water
     - :g: *water
@@ -86,6 +136,16 @@ map:
     - :g: *stone
     - :g: *stone
     - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
   - - :g: *stone
     - :g: *stone
     - :g: *stone
@@ -98,6 +158,47 @@ map:
     - :g: *stone
     - :g: *stone
     - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+  - &stone_line
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
+  - *stone_line
 entities:
   man: [1, 3]
   enemy_man: [5, 5]
