@@ -22,7 +22,7 @@ module Tarona
       # @return [TrueClass,FalseClass] whether the entity has passed all the
       #   filters and can be placed here.
       def call(entity, here)
-        places_exist?(entity, here)
+        places_exist?(entity, here) && not_occupied?(entity, here)
       end
 
       # @param entity [Tarona::Action::Entity] the entity itself
@@ -33,9 +33,36 @@ module Tarona
       #   the landscape when it is placed `here`.
       def places_exist?(entity, here)
         @get_places.call(entity, here).inject(true) do |exist, place|
-          natural_nums = place[0] >= 0 && place[1] >= 0
-          exist && natural_nums && !@landscape.get(*place).nil?
+          exist && positive_coords?(place) && !@landscape.get(*place).nil?
         end
+      end
+
+      # @param entity [Tarona::Action::Entity] entity which wants to get there
+      # @param here [Array] coordinates `[x, y]` of the place
+      # @return [TrueClass,FalseClass] true if there is no incompatible
+      #   entity at the given place. Incompatible entity is an entity which
+      #   can not stand at the same place with the given entity.
+      def not_occupied?(entity, here)
+        @get_places.call(entity, here).each do |coords|
+          return false unless positive_coords?(coords)
+          entities_here = (@landscape.get(*coords) || next)[:e] || next
+          entities_here.each do |e|
+            return false unless (e == entity) || compatible?(entity, e)
+          end
+        end
+        true
+      end
+
+      private
+
+      def positive_coords?(place)
+        place[0] >= 0 && place[1] >= 0
+      end
+
+      def compatible?(_entity1, _entity2)
+        # TODO: There are no entities which need to be compatible now, so
+        # this method must be written as soon as they appear.
+        false
       end
     end
   end
