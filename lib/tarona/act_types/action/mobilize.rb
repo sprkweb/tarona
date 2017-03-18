@@ -2,8 +2,7 @@ module Tarona
   class Action
     # Command which gives player ability to move his entities
     #
-    # It mobilizes only entities with tag `:movable` and attribute
-    # `#user_controlled == true`
+    # It mobilizes only entities with tags `:movable` and `:user_controlled`.
     # `:movable` entities must be {Workable}.
     #
     # It moves entities when it is requested through `io` event `:move_request`
@@ -43,7 +42,7 @@ module Tarona
       end
 
       def movable_by_player?(entity)
-        entity.respond_to?(:user_controlled) && entity.user_controlled &&
+        entity.tags.include?(:user_controlled) &&
           entity.tags.include?(:movable)
       end
 

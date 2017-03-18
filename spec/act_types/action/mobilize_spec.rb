@@ -9,7 +9,7 @@ RSpec.describe Tarona::Action::Mobilize do
   let :entity do
     Tarona::Action::WorkableEntity.new(
       :me, :man,
-      tags: [:movable], user_controlled: true, max_energy: 100
+      tags: [:movable, :user_controlled], max_energy: 100
     )
   end
   let(:from) { [3, 5] }
@@ -68,7 +68,7 @@ RSpec.describe Tarona::Action::Mobilize do
     end
 
     it 'is not controlled by user' do
-      entity.user_controlled = false
+      entity.tags.delete :user_controlled
       expect(Tarona::Action::PlaceEntity).not_to receive(:move)
       io.happen :move_request, entity_id: entity.id, to: to
       expect(entities_index[entity.id]).to eq(from)

@@ -1,15 +1,4 @@
 RSpec.describe Tarona::Action::WorkableEntity do
-  it 'can be controlled by user' do
-    entity = described_class.new :wolf, :wolf_template, user_controlled: true
-    expect(entity.user_controlled).to be true
-  end
-
-  it 'can be not controlled by user' do
-    entity = described_class.new :wolf, :wolf_template
-    entity.user_controlled = false
-    expect(entity.user_controlled).to be false
-  end
-
   it 'has maximal amount of energy' do
     entity = described_class.new :wolf, :wolf_template, max_energy: 80
     expect(entity.max_energy).to eq(80)

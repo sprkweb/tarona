@@ -28,10 +28,10 @@ map:
           template: man
           tags:
             - :movable
+            - :user_controlled
           hexes:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
-          user_controlled: true,
           max_energy: 10
     - :g: *grass
       :e: [*man]
@@ -127,7 +127,6 @@ map:
           hexes:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
-          user_controlled: false,
           max_energy: 150
     - :g: *stone
       :e: [*enemy_man]
