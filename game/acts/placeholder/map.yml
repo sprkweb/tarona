@@ -23,7 +23,7 @@ map:
     - :g: *grass
     - :g: *grass
       :e:
-        - &man !ruby/object:Tarona::Action::WorkableEntity
+        - &man !ruby/object:Tarona::Game::ActingEntity
           id: man
           template: man
           tags:
@@ -120,7 +120,7 @@ map:
     - :g: *stone
     - :g: *stone
       :e:
-        - &enemy_man !ruby/object:Tarona::Action::WorkableEntity
+        - &enemy_man !ruby/object:Tarona::Game::ActingEntity
           id: enemy_man
           template: man
           tags: []

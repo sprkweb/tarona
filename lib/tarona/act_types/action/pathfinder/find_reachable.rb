@@ -12,7 +12,8 @@ module Tarona
       # @!attribute [r] from
       #   @return [Array<Integer>] start point, `[x, y]` coordinates
       # @!attribute [r] entity
-      #   @return [Tarona::Action::Entity] entity which will follow these paths.
+      #   @return [Tarona::Action::Movable] entity which will follow
+      #     these paths.
       #     It is needed for finding pathless places, so
       #     you should better set this argument if you have such places.
       # @!attribute [r] max_cost
@@ -54,6 +55,8 @@ module Tarona
       class FindReachable < Tardvig::Command
         attr_reader :result
 
+        # TODO: Refactor? Delete repetitions with FindPath?
+
         def process
           unless @map.get(*@from)
             @result = { places: {}, costs: {} }
@@ -82,7 +85,7 @@ module Tarona
         end
 
         def register_place(previous, current)
-          move_cost = 1 # move_cost current
+          move_cost = get_move_cost previous, current
           total_cost = @costs[previous] + move_cost
           is_obstacles = !@catalyst.call(@entity, current)
           too_far = (@max_cost ? total_cost > @max_cost : false)
@@ -95,6 +98,12 @@ module Tarona
 
         def better_paths?(current, cost)
           @costs.key?(current) && cost >= @costs[current]
+        end
+
+        def get_move_cost(start, finish)
+          start_obj = @map.get(*start)[:g]
+          finish_obj = @map.get(*finish)[:g]
+          @entity.move_cost start_obj, finish_obj
         end
       end
     end

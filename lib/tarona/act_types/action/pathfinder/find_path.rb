@@ -12,7 +12,7 @@ module Tarona
       #   @return [Tarona::Action::Landscape] landscape on which path must
       #     be found.
       # @!attribute [r] entity
-      #   @return [Tarona::Action::Entity] entity which will follow this path.
+      #   @return [Tarona::Action::Movable] entity which will follow this path.
       #   @note It will not be moved whilst pathfinding, it is needed for
       #     finding obstacles and movement costs, which can be individual
       #     for each entity.
@@ -54,6 +54,8 @@ module Tarona
       #     }
       class FindPath < Tardvig::Command
         attr_reader :result
+
+        # TODO: Refactor?
 
         def process
           init
@@ -118,7 +120,7 @@ module Tarona
         end
 
         def register_node(previous, current)
-          move_cost = 1 # move_cost current
+          move_cost = get_move_cost previous, current
           total_cost = @costs[previous][:total] + move_cost
           another_path = @costs.key? current
           better_path = another_path && total_cost >= @costs[current][:total]
@@ -127,6 +129,12 @@ module Tarona
           @costs[current] = { total: total_cost, last: move_cost }
           @came_from[current] = previous
           true
+        end
+
+        def get_move_cost(start, finish)
+          start_obj = @map.get(*start)[:g]
+          finish_obj = @map.get(*finish)[:g]
+          @entity.move_cost start_obj, finish_obj
         end
       end
     end

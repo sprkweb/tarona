@@ -1,3 +1,5 @@
+require 'game/module'
+require 'game/classes/acting_entity'
 require 'game/toolkit'
 require 'game/acts/introduction'
 require 'game/acts/placeholder'
