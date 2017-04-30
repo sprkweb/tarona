@@ -79,24 +79,10 @@ module Tarona
         def register_neighbors(current)
           @map.neighbors(*current).each do |neighbor|
             next unless register_node current, neighbor
-            priority = @costs[neighbor][:total] + distance(@to, neighbor)
+            distance = Cartographer.distance(@to, neighbor)
+            priority = @costs[neighbor][:total] + distance
             @frontier[priority] = neighbor
           end
-        end
-
-        # Number of hexes between given hexes.
-        def distance(a, b)
-          ax, ay, az = offset_to_cube a
-          bx, by, bz = offset_to_cube b
-          ((ax - bx).abs + (ay - by).abs + (az - bz).abs) / 2
-        end
-
-        def offset_to_cube(coords)
-          col, row = coords
-          x = col - (row - (row & 1)) / 2
-          z = row
-          y = -x - z
-          [x, y, z]
         end
 
         def format_result
