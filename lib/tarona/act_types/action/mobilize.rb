@@ -38,7 +38,7 @@ module Tarona
       def entity_obj(there, id)
         place = @map.get(*there)
         return nil unless place && place[:e]
-        @map.get(*there)[:e].find { |x| x.id == id }
+        place[:e].find { |x| x.id == id }
       end
 
       def movable_by_player?(entity)

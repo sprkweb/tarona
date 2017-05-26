@@ -304,6 +304,164 @@ function Keybindings(display) {
 };
 
 /**
+ * Pop-up window.
+ * @param area {Element} - container for current act.
+ * @param content {String} - inner HTML of the popup
+ * @param options {Object} - optional arguments.
+ * @param options.stick_to {String} - where should the popup be placed.
+ *   It is string: 'top-left', 'top-right', 'bottom-left' or 'bottom-right'.
+ *   Default is 'top-left'.
+ * @param options.closable {Boolean} - add close button? Default: true
+ * @constructor
+ */
+function PopUp(area, content, options) {
+  Events.addEventsTo(this);
+
+  /**
+   * Shows this window.
+   */
+  this.show = function() {
+    var closable = (options.closable === false ? false : true);
+
+    this._getContainer(area) || this._createContainer(area);
+    this._createMessage(content, closable);
+    this._findPlace(options.stick_to || 'top-left');
+  };
+
+  /**
+   * Closes this window
+   * @fires PopUp#event:close
+   */
+  this.close = function() {
+    /**
+     * The event which happens when the popup is closed.
+     * @event PopUp#event:close
+     */
+    this.happen('close');
+  };
+
+  var self = this
+  this.on('close', function() {
+    if (self.elem) self.elem.remove();
+  });
+
+  this._getContainer = function(area) {
+    if (!this._container)
+      this._container = document.getElementById('popup_container');
+    return this._container;
+  };
+
+  this._createMessage = function(content, closable) {
+    /**
+     * The element which shows popup.
+     * It exists only after the 'show' method is called.
+     * @type Element
+     */
+    this.elem = document.createElement('div');
+    this.elem.classList.add('message');
+    if (closable) this._createCloseButton();
+    var content_elem = this.elem.appendChild(document.createElement('div'));
+    content_elem.innerHTML = content;
+    content_elem.classList.add('message_content');
+    return this.elem;
+  };
+
+  this._createContainer = function(area) {
+    this._container = document.createElement('div');
+    area.insertBefore(this._container, area.firstChild);
+    this._container.setAttribute('id', 'popup_container');
+
+    var corners = this._container.appendChild(document.createElement('div'));
+    corners.classList.add('corners');
+
+    var top = corners.appendChild(document.createElement('div'));
+    top.classList.add('top');
+    var top_left = top.appendChild(document.createElement('div'));
+    top_left.classList.add('left');
+    top_left.setAttribute('id', 'popup_top-left');
+    var top_right = top.appendChild(document.createElement('div'));
+    top_right.classList.add('right');
+    top_right.setAttribute('id', 'popup_top-right');
+
+    var bottom = corners.appendChild(document.createElement('div'));
+    bottom.classList.add('bottom');
+    var bottom_left = bottom.appendChild(document.createElement('div'));
+    bottom_left.classList.add('left');
+    bottom_left.setAttribute('id', 'popup_bottom-left');
+    var bottom_right = bottom.appendChild(document.createElement('div'));
+    bottom_right.classList.add('right');
+    bottom_right.setAttribute('id', 'popup_bottom-right');
+
+    return this._container;
+  };
+
+  this._findPlace = function(stick_to) {
+    var align = document.getElementById('popup_' + stick_to);
+    if (align) align.appendChild(this.elem);
+  };
+
+  this._createCloseButton = function() {
+    /**
+     * The element which shows close button.
+     * It does not exist when appropriate option for the 'PopUp' constructor is
+     * false.
+     * @type Element
+     */
+    this.closeButton = this.elem.appendChild(document.createElement('span'));
+    this.closeButton.classList.add('close');
+    this.closeButton.onclick = function () {
+      self.happen('close');
+    };
+  };
+}
+
+/**
+ * Pop-up window with the `form` element.
+ * @augments PopUp
+ * @constructor
+ */
+function InteractivePopUp(area, content, options) {
+  PopUp.apply(this, arguments);
+
+  var super_show = this.show;
+  this.show = function() {
+    super_show.call(this);
+    this._waitForSubmit();
+  };
+
+  this._waitForSubmit = function () {
+    this._form = this.elem.getElementsByTagName('form')[0];
+    var buttons = this._form.querySelectorAll('button, input[type="button"]');
+    for (var j = 0; j < buttons.length; ++j)
+      buttons[j].onclick = this._handleSubmit;
+  };
+
+  var self = this;
+  this._handleSubmit = function (event) {
+    var formData = {};
+    var nodes = self._form.querySelectorAll('[name]');
+    for (var i = 0; i < nodes.length; ++i) {
+      if (nodes[i].name && nodes[i].value)
+        formData[nodes[i].name] = nodes[i].value;
+    }
+    var button = event.target.name;
+    if (button) formData.clicked = button;
+    /**
+     * The event which happens when the popup is closed.
+     * When it is closed because its form is filled and its button is pressed,
+     * form data is passed as an argument for the event.
+     * Keys are the 'name' attributes of *all* form fields and values are their
+     * contents.
+     * Also, it has the 'clicked' key which contents name of the clicked
+     * button.
+     * @event InteractivePopUp#event:close
+     * @type {?object}
+     */
+    self.happen('close', formData);
+  };
+}
+
+/**
  * Generator of text acts for Display
  * @see Display
  */
@@ -480,6 +638,22 @@ var Action = {
       return (cols + 0.5) * hex.width;
     },
 
+    /**
+     * Calculates distance from one point to another.
+     * @param {Action.Coordinates} from - first point
+     * @param {Action.Coordinates} to - second point
+     * @return {number} distance between them (in hexagons).
+     */
+    distance: function(from, to) {
+      var a = this._coords2axial(from);
+      var b = this._coords2axial(to);
+      return Math.ceil((
+          Math.abs(a.q - b.q) +
+          Math.abs(a.q + a.r - b.q - b.r) +
+          Math.abs(a.r - b.r)
+        ) / 2);
+    },
+
     _axial_coords_round: function (coords) {
       var x = coords[0],         z = coords[1],         y = - (x + z);
       var rx = Math.round(x),    rz = Math.round(z),    ry = Math.round(y);
@@ -490,9 +664,15 @@ var Action = {
         rz = - (rx + ry);
       return [rx, rz];
     },
+
     _axial2coords: function (axial) {
       var q = axial[0], r = axial[1];
       return [q + (r - (r % 2)) / 2, r];
+    },
+
+    _coords2axial: function(coords) {
+      var x = coords[0], y = coords[1];
+      return { q: Math.ceil(x - (y - (y % 2)) / 2), r: y };
     }
   },
 
@@ -515,6 +695,13 @@ var Action = {
    *   takes when it stands on row with even number, odd_row - with odd number.
    */
   Entity: function(options) {
+    /**
+     * Given options
+     * @see Entity
+     * @type object
+     */
+    this.options = options;
+
     /**
      * Changes entity's coordinates and moves its visualization.
      *
@@ -1044,15 +1231,33 @@ function HighlightHexes(env, _data, essence) {
  * @see Action.Generator
  */
 function PlayerInteract(env, _data, essence) {
-  var interact = function() {
-    var hovered_hex = essence.hovered_hex, focused = essence.focused;
-    if (focused && focused.id && hovered_hex) {
-      env.io.happen('move_request', { entity_id: focused.id, to: hovered_hex });
+  var self = this;
+  this._init = function() {
+    essence.field.addEventListener('contextmenu', self._handleInteraction);
+    env.io.on('move', self._moveEntity);
+
+    env.display.on('before_act', function() {
+      essence.field.removeEventListener('contextmenu', self._handleInteraction);
+      env.io.remove_listener('move', self._moveEntity);
+    });
+  };
+
+  var self = this;
+  this._handleInteraction = function(ev) {
+    var hoveredHex = essence.hovered_hex, focused = essence.focused;
+    if (focused && focused.id) {
+      var targetEntityId = ev.target.getAttribute('data-entity_id');
+      var targetEntity = essence.entities[targetEntityId];
+      if (targetEntityId == focused.id) return;
+      if (targetEntity)
+        PlayerInteract.EntityInteraction(env, focused, targetEntity);
+      else if (hoveredHex)
+        PlayerInteract.Movement(env, focused, hoveredHex);
     }
   };
-  essence.field.addEventListener('contextmenu', interact);
-  // The code below needs some defence.
-  var move_entity = function(inf) {
+
+  this._moveEntity = function(inf) {
+    // The code below needs some defence.
     var entity = essence.entities[inf.entity_id];
     if (!(entity && inf.to)) return;
     var prev_coords = entity.coordinates;
@@ -1060,13 +1265,89 @@ function PlayerInteract(env, _data, essence) {
     essence.entities_grid.add(inf.to, entity);
     entity.move(inf.to);
   };
-  env.io.on('move', move_entity);
 
-  env.display.on('before_act', function() {
-    essence.field.removeEventListener('contextmenu', interact);
-    env.io.remove_listener('move', move_entity);
-  });
+  this._init();
 }
+
+/**
+ * Part of the PlayerInteract script which handles situation when player wants
+ * his entity to interact with another entity.
+ *
+ * It asks player which interaction he wants. If everything is fine with the
+ * chosen interaction, it sends the `interaction_request` event to server with
+ * attributes `from_entity` (id of the player's Entity), `target` (id of the
+ * target Entity) and `interaction_id`.
+ *
+ * @param {object} env - environment variables (see {@link Action.Generator})
+ * @param {Action.Entity} initiator - Entity which initiates the interaction.
+ * @param {Action.Entity} target - Entity to which the interaction shall be
+ *   applied.
+ */
+PlayerInteract.EntityInteraction = function(env, initiator, target) {
+  this._request = function(initiator, target) {
+    var message = this._createAskingPopup(initiator, target);
+    if (message) {
+      message.on('close', function(formData) {
+        var interactionId = (formData ? formData.clicked : null);
+        if (interactionId) {
+          env.io.happen('interaction_request',
+            {
+              from_entity: initiator.id,
+              target: target.id,
+              interaction_id: interactionId
+            });
+        }
+      });
+      message.show();
+    }
+  };
+
+  this._createAskingPopup = function(initiator, target) {
+    var interactions = this._available(initiator, target);
+     if (!interactions || (Object.keys(interactions).length == 0)) return;
+    var stickTo = 'bottom-right';
+    var content = this._createChooseForm(interactions);
+    var message = new InteractivePopUp(env.area, content,
+      { closable: true, stick_to: stickTo });
+    return message;
+  };
+
+  this._createChooseForm = function(interactions) {
+    var content = '<form>';
+    _.each(interactions, function(interaction, id) {
+      content +=
+        '<button name="' + id + '">' + interaction.name + '</button>';
+    });
+    content += '</form>'
+    return content;
+  };
+
+  this._available = function(initiator, target) {
+    return _.pick(initiator.options.interactions, function(interaction) {
+      return (interaction.distance >= Action.HexGrid.distance(
+          initiator.coordinates, target.coordinates
+        ));
+    });
+  };
+
+  this._request(initiator, target);
+};
+
+/**
+ * Part of the PlayerInteract script which handles situation when player wants
+ * to move his entity.
+ *
+ * It sends the `move_request` event to server with the `entity_id` and `to`
+ * attributes.
+ *
+ * @param {object} env - environment variables (see {@link Action.Generator})
+ * @param {Action.Entity} entity - Entity which shall be moved
+ * @param {Action.Coordinates} to - target place of the movement.
+ */
+PlayerInteract.Movement = function(env, entity, to) {
+  env.io.happen('move_request',
+    { entity_id: entity.id, to: to });
+};
 
 /**
  * Script for Action.Generator which changes player's field of view when it is

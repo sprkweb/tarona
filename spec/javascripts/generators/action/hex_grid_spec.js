@@ -32,4 +32,20 @@ describe('Action.HexGrid', function() {
       expect(subj.width(4, hex2)).toBeCloseTo(116.91, 2);
     });
   });
+
+  describe('#distance', function() {
+    it('calculate the distance between two hexagons', function() {
+      var needed_results = [
+        [ [[1, 2], [4, 4]],     4 ],
+        [ [[0, 0], [1, 2]],     2 ],
+        [ [[135, 5], [135, 5]], 0 ],
+        [ [[7, 5], [7, 4]],     1 ],
+        [ [[0, 0], [0, 0]],      0 ]
+      ];
+      needed_results.forEach(function(a) {
+        var from = a[0][0], to = a[0][1], result = a[1];
+        expect(subj.distance(from, to)).toEqual(result);
+      });
+    });
+  });
 });

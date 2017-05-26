@@ -1,4 +1,5 @@
 require 'rack/test'
+require 'stringio'
 
 ENV['RACK_ENV'] = 'test'
 

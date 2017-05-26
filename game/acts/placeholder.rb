@@ -21,6 +21,10 @@ module Tarona
         entities_index: @tk.session[:act_inf][:entities_index],
         catalyst: Action::Catalyst.new(places_taken, landscape)
       )
+      Game::InteractionsJudge.call(
+        act: self,
+        session: @tk.session
+      )
     end
   end
 end

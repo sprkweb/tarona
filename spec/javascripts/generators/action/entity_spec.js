@@ -23,6 +23,10 @@ describe('Action.Entity', function() {
     expect(entity.hex).toBe(options.hex);
   });
 
+  it('saves given options', function() {
+    expect(entity.options).toBe(options);
+  });
+
   describe('element', function() {
     it('is saved as an "elem" attribute', function() {
       expect(entity.elem instanceof SVGUseElement).toBeTruthy();

@@ -1,19 +1,37 @@
 describe('PlayerInteract', function() {
-  var essence, env, entity;
+  var essence, env, entity, entity2, ev;
+
+  var realMovement, realEntityInteraction;
+  beforeAll(function() {
+    realMovement = PlayerInteract.Movement;
+    realEntityInteraction = PlayerInteract.EntityInteraction;
+  });
+  afterAll(function() {
+    PlayerInteract.Movement = realMovement;
+    PlayerInteract.EntityInteraction = realEntityInteraction;
+  });
+
   beforeEach(function() {
-    entity = { coordinates: [3, 2], move: jasmine.createSpy('move') };
+    PlayerInteract.EntityInteraction = jasmine.createSpy();
+    PlayerInteract.Movement = jasmine.createSpy();
+    entity = {
+      id: 'deadbeef',
+      coordinates: [3, 2],
+      move: jasmine.createSpy('move')
+    };
+    entity2 = { coordinates: [4, 4] };
     essence = {
       field: {
         addEventListener: jasmine.createSpy('field#addEventListener'),
         removeEventListener: jasmine.createSpy('field#addEventListener'),
       },
-      hovered_hex: [3, 2],
-      focused: { id: 'man' },
+      hovered_hex: [4, 4],
+      focused: entity,
       entities_grid: {
         add: jasmine.createSpy('entities_grid#add'),
         remove: jasmine.createSpy('entities_grid#remove')
       },
-      entities: { deadbeef: entity }
+      entities: { deadbeef: entity, enemy: entity2 }
     };
     env = {
       io: {
@@ -23,32 +41,56 @@ describe('PlayerInteract', function() {
       },
       display: Events.addEventsTo({})
     };
+    ev = {
+      target: document.createElement('div')
+    };
     PlayerInteract(env, null, essence);
   });
 
   it('requests movement to hovered hex when entity is focused', function() {
     var listener = essence.field.addEventListener.calls.argsFor(0);
     expect(listener[0]).toEqual('contextmenu');
-    listener[1]();
-    expect(env.io.happen).toHaveBeenCalledWith('move_request',
-      { entity_id: essence.focused.id, to: essence.hovered_hex });
+    listener[1](ev);
+    expect(PlayerInteract.Movement).toHaveBeenCalledWith(
+      env, essence.focused, essence.hovered_hex);
+    expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
   });
 
-  it('does not request movement when entity is not focused', function() {
+  it('requests entity interaction when entity is hovered', function() {
+    ev.target.setAttribute('data-entity_id', 'enemy');
+    var listener = essence.field.addEventListener.calls.argsFor(0);
+    listener[1](ev);
+    expect(PlayerInteract.EntityInteraction).toHaveBeenCalledWith(
+      env, essence.focused, entity2);
+    expect(PlayerInteract.Movement).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when the focused entity is hovered', function() {
+    ev.target.setAttribute('data-entity_id', 'deadbeef');
+    var listener = essence.field.addEventListener.calls.argsFor(0);
+    listener[1](ev);
+    expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
+    expect(PlayerInteract.Movement).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when entity is not focused', function() {
     essence.focused = null;
     var listener = essence.field.addEventListener.calls.argsFor(0);
-    listener[1]();
-    expect(env.io.happen).not.toHaveBeenCalled();
+    ev.target.setAttribute('data-entity_id', 'enemy');
+    listener[1](ev);
+    expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
+    expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });
 
-  it('does not request movement when hexagon is not hovered', function() {
+  it('does nothing when nothing is hovered', function() {
     essence.hovered_hex = null;
     var listener = essence.field.addEventListener.calls.argsFor(0);
-    listener[1]();
-    expect(env.io.happen).not.toHaveBeenCalled();
+    listener[1](ev);
+    expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
+    expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });
 
-  it('does not request movement after act is ended', function() {
+  it('does nothing after act is ended', function() {
     expect(essence.field.removeEventListener).not.toHaveBeenCalled();
     env.display.happen('before_act');
     var added = essence.field.addEventListener.calls.argsFor(0);

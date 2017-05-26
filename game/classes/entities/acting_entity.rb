@@ -3,7 +3,9 @@ module Tarona
     # Represents entity which can control itself and do some actions.
     class ActingEntity < Tarona::Action::Entity
       include Tarona::Action::Workable
+      include Tarona::Action::Movable
 
+      # TODO
       # @see Tarona::Action::Movable
       def move_cost(from, to)
         1

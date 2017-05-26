@@ -29,6 +29,49 @@
   }
 }
 
+#popup_container {
+  height: 0;
+  width: 0;
+
+  & > .corners {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    display: table;
+
+    & > div {
+      display: table-row;
+      height: 50%;
+
+      & > div {
+        display: flex;
+        width: 50%;
+        height: 100%;
+
+        &.left {
+          align-items: flex-start;
+        }
+
+        &.right {
+          align-items: flex-end;
+        }
+      }
+
+      &.top > div {
+        flex-direction: column;
+      }
+
+      &.bottom > div {
+        flex-direction: column-reverse;
+      }
+    }
+
+    .message {
+      max-width: 50%;
+    }
+  }
+}
+
 .blocking_panel {
   position: fixed;
   top: 0;
@@ -42,44 +85,31 @@
   @include shadow(2px 2px 10px 0 rgba(50, 50, 50, 0.3));
   @include rounded(2px);
 
+  position: relative;
   z-index: 10;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
   padding: 1em;
+  margin: 1em;
   background: white;
   overflow: hidden;
   box-sizing: content-box;
 
   .message_content {
-    overflow: auto;
+    width: 100%;
   }
 
   .close {
     display: inline-block;
     float: right;
-    width: 25px;
-    height: 25px;
+    line-height: 1;
+    font-size: 0.8em;
+    font-weight: bold;
     margin-top: -1em;
     margin-right: -1em;
-    padding-right: 3px;
-    padding-top: 3px;
-    text-align: center;
 
     &:before {
       cursor: pointer;
-      font-size: 25px;
-      line-height: 25px;
       display: inline-block;
-      content: '+';
-      -webkit-transform: rotate(45deg);
-      -moz-transform: rotate(45deg);
-      -ms-transform: rotate(45deg);
-      -o-transform: rotate(45deg);
-      transform: rotate(45deg);
+      content: '×';
     }
   }
 }

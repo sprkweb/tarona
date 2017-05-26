@@ -23,7 +23,7 @@ map:
     - :g: *grass
     - :g: *grass
       :e:
-        - &man !ruby/object:Tarona::Game::ActingEntity
+        - &man !ruby/object:Tarona::Game::Fighter
           id: man
           template: man
           tags:
@@ -33,6 +33,14 @@ map:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
           max_energy: 10
+          max_hp: 100
+          hp: 100
+          interactions:
+            hit: &hit !ruby/object:Tarona::Game::Attack
+              name: attacks/hit
+              distance: 2
+              owner: *man
+              damage: 34
     - :g: *grass
       :e: [*man]
     - :g: *grass
@@ -120,7 +128,7 @@ map:
     - :g: *stone
     - :g: *stone
       :e:
-        - &enemy_man !ruby/object:Tarona::Game::ActingEntity
+        - &enemy_man !ruby/object:Tarona::Game::Fighter
           id: enemy_man
           template: man
           tags: []
@@ -128,6 +136,10 @@ map:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
             :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
           max_energy: 150
+          max_hp: 100
+          hp: 100
+          interactions:
+            hit: *hit
     - :g: *stone
       :e: [*enemy_man]
     - :g: *stone
