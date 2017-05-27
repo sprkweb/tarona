@@ -1284,7 +1284,7 @@ function PlayerInteract(env, _data, essence) {
  *   applied.
  */
 PlayerInteract.EntityInteraction = function(env, initiator, target) {
-  this._request = function(initiator, target) {
+  this._request = function(env, initiator, target) {
     var message = this._createAskingPopup(initiator, target);
     if (message) {
       message.on('close', function(formData) {
@@ -1330,7 +1330,7 @@ PlayerInteract.EntityInteraction = function(env, initiator, target) {
     });
   };
 
-  this._request(initiator, target);
+  this._request(env, initiator, target);
 };
 
 /**
