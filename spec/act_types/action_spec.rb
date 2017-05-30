@@ -18,11 +18,13 @@ RSpec.describe Tarona::Action do
 
   let(:io) { Tardvig::GameIO.new }
   let(:tk) { double }
+  let(:i18n) { double }
   let(:session) { { act_inf: {} } }
   let(:act) { TestAction.new io: io, tk: tk }
 
   before :each do
     allow(tk).to receive(:session) { session }
+    allow(tk).to receive(:i18n) { i18n }
   end
 
   after :each do
@@ -36,7 +38,8 @@ RSpec.describe Tarona::Action do
       subject: hash_including(
         landscape: TestAction::LANDSCAPE.raw,
         entities_index: TestAction.subject[:entities_index].call,
-        hex_size: TestAction.hex_size
+        hex_size: TestAction.hex_size,
+        i18n: i18n
       )
     )
     act.call

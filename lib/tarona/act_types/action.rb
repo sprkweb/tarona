@@ -12,12 +12,15 @@ module Tarona
   #   * Proc `entities_index` - proc which builds index of entities.
   #     Format: `{ entity.id => [x, y] }` where x and y are coordinates.
   #
-  # Given toolkit must contain attribute `session` with hash as its value.
+  # Given toolkit must contain attributes `i18n` and `session` with
+  # hashes as their values.
   # Some information about action will be stored under the `:act_inf` key of
   # session:
   #
   # - `:landscape` - instance of {Tarona::Action::Landscape} for this Action.
   # - `:entities_index` - see `.subject[:entities_index]` above.
+  #
+  # The i18n must be a hash with translations of the code phrases.
   class Action < Act
     act_type :action
 
@@ -46,7 +49,8 @@ module Tarona
     end
 
     # @return [Hash] hash containing keys: `:hex_size`, `:landscape`
-    #   (value is {Landscape#raw}), `:entities_index` and `:dependencies`.
+    #   (value is {Landscape#raw}), `:entities_index`, `:i18n`
+    #   and `:dependencies`.
     #   Dependencies are content of {.resources}.
     def display_format
       c = self.class
@@ -54,6 +58,7 @@ module Tarona
         hex_size: c.hex_size,
         landscape: @tk.session[:act_inf][:landscape].raw,
         entities_index: @tk.session[:act_inf][:entities_index],
+        i18n: @tk.i18n,
         dependencies: dependencies
       }
     end
