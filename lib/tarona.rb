@@ -22,6 +22,7 @@ require 'lib/tarona/play/run_acts'
 require 'lib/tarona/doorman'
 require 'lib/tarona/web_server'
 require 'lib/tarona/web_socket'
+require 'lib/tarona/pr_manager'
 
 require 'lib/tarona/act_types/text_act'
 require 'lib/tarona/act_types/action'
