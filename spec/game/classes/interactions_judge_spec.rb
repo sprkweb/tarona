@@ -37,11 +37,11 @@ RSpec.describe Tarona::Game::InteractionsJudge do
     subj.call
   end
 
-  it 'is command' do
-    expect(described_class.ancestors.include?(Tardvig::Command)).to be true
+  it 'is extension for acts' do
+    expect(described_class.ancestors.include?(Tarona::PrManager)).to be true
   end
 
-  it 'applies interaction when everything is awesome' do
+  it 'applies interaction when player requests that' do
     expect(interaction).to receive(:apply).with(session, target)
     io.happen :interaction_request, event_args
   end
@@ -87,12 +87,6 @@ RSpec.describe Tarona::Game::InteractionsJudge do
   it 'does nothing when interaction is not interaction' do
     interaction = double 'fake_interaction'
     expect(owner).to receive(:interactions).and_return say_hi: interaction
-    expect(interaction).not_to receive(:apply)
-    io.happen :interaction_request, event_args
-  end
-
-  it 'does nothing when act is ended' do
-    act.happen :end
     expect(interaction).not_to receive(:apply)
     io.happen :interaction_request, event_args
   end

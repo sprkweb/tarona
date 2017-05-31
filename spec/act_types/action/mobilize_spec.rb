@@ -31,8 +31,8 @@ RSpec.describe Tarona::Action::Mobilize do
     allow(io).to receive(:happen).and_call_original
   end
 
-  it 'is command' do
-    expect(described_class.ancestors.include?(Tardvig::Command)).to be true
+  it 'is extension for acts' do
+    expect(described_class.ancestors.include?(Tarona::PrManager)).to be true
   end
 
   it 'moves entities on request' do
@@ -50,13 +50,6 @@ RSpec.describe Tarona::Action::Mobilize do
 
   it 'sends message back if request is accepted' do
     expect(io).to receive(:happen).with(:move, entity_id: entity.id, to: to)
-    io.happen :move_request, entity_id: entity.id, to: to
-  end
-
-  it 'does not work after act is ended' do
-    act.happen :end
-    expect(Tarona::Action::PlaceEntity).not_to receive(:move)
-    expect(io).not_to receive(:happen).with(:move, entity_id: entity.id, to: to)
     io.happen :move_request, entity_id: entity.id, to: to
   end
 
