@@ -25,14 +25,18 @@ module Tarona
     #     `entity` (1st argument given; {Tarona::Action::Entity}) can be
     #     placed `here` (2nd argument given; `[x, y]` coordinates).
     #     It must return `true` if it can be placed or `false` otherwise.
-    class Mobilize < Tardvig::Command
+    class Mobilize < Tarona::PrManager
       private
 
-      def process
-        @act.io.on :move_request, &pr_manager
-        @act.on :end do
-          @act.io.remove_listener :move_request, pr_manager
-        end
+      def job_type
+        :move
+      end
+
+      def job(msg)
+        from = @entities_index[msg[:entity_id]]
+        return unless from
+        entity = entity_obj from, msg[:entity_id]
+        move_it entity, from, msg[:to], msg if movable_by_player? entity
       end
 
       def entity_obj(there, id)
@@ -68,16 +72,6 @@ module Tarona
         Tarona::Action::Pathfinder::FindPath.call(
           map: @map, entity: entity, from: from, to: to, catalyst: @catalyst
         ).result
-      end
-
-      def pr_manager
-        @pr_manager ||= proc do |msg|
-          from = @entities_index[msg[:entity_id]]
-          if from
-            entity = entity_obj from, msg[:entity_id]
-            move_it entity, from, msg[:to], msg if movable_by_player? entity
-          end
-        end
       end
     end
   end

@@ -18,26 +18,21 @@ module Tarona
     #   @return [Tarona::Action] current act.
     # @!attribute [r] session
     #   @return [#[]] information about current game state.
-    class InteractionsJudge < Tardvig::Command
+    class InteractionsJudge < Tarona::PrManager
       private
 
-      def process
-        @act.io.on :interaction_request, &pr_manager
-        @act.on :end do
-          @act.io.remove_listener :interaction_request, pr_manager
-        end
+      def job_type
+        :interaction
       end
 
-      def pr_manager
-        @pr_manager ||= proc do |msg|
-          initiator = find_entity msg[:from_entity]
-          target = find_entity msg[:target]
-          if initiator && target && initiator.respond_to?(:interactions)
-            interaction = initiator.interactions[msg[:interaction_id]]
-            allowed = allowed? initiator, target, interaction
-            interaction.apply @session, target if allowed
-          end
-        end
+      def job(msg)
+        initiator = find_entity msg[:from_entity]
+        target = find_entity msg[:target]
+        right_initiator = initiator && initiator.respond_to?(:interactions)
+        return unless target && right_initiator
+        interaction = initiator.interactions[msg[:interaction_id]]
+        allowed = allowed? initiator, target, interaction
+        interaction.apply @session, target if allowed
       end
 
       def allowed?(from, to, interaction)

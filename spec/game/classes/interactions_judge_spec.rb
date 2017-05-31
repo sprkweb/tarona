@@ -38,7 +38,7 @@ RSpec.describe Tarona::Game::InteractionsJudge do
   end
 
   it 'is command' do
-    expect(described_class.superclass).to be(Tardvig::Command)
+    expect(described_class.ancestors.include?(Tardvig::Command)).to be true
   end
 
   it 'applies interaction when everything is awesome' do

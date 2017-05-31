@@ -32,7 +32,7 @@ RSpec.describe Tarona::Action::Mobilize do
   end
 
   it 'is command' do
-    expect(described_class.superclass).to be(Tardvig::Command)
+    expect(described_class.ancestors.include?(Tardvig::Command)).to be true
   end
 
   it 'moves entities on request' do
