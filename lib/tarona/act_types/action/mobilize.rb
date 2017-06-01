@@ -33,20 +33,15 @@ module Tarona
       end
 
       def job(msg)
-        from = @entities_index[msg[:entity_id]]
-        return unless from
-        entity = entity_obj from, msg[:entity_id]
+        id = msg[:entity_id]
+        from = @entities_index[id]
+        entity = PlaceEntity.find @map, @entities_index, id
         move_it entity, from, msg[:to], msg if movable_by_player? entity
       end
 
-      def entity_obj(there, id)
-        place = @map.get(*there)
-        return nil unless place && place[:e]
-        place[:e].find { |x| x.id == id }
-      end
-
       def movable_by_player?(entity)
-        entity.tags.include?(:user_controlled) &&
+        entity &&
+          entity.tags.include?(:user_controlled) &&
           entity.tags.include?(:movable)
       end
 

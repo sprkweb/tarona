@@ -26,13 +26,12 @@ module Tarona
       end
 
       def job(msg)
-        initiator = find_entity msg[:from_entity]
-        target = find_entity msg[:target]
-        right_initiator = initiator && initiator.respond_to?(:interactions)
-        return unless target && right_initiator
-        interaction = initiator.interactions[msg[:interaction_id]]
-        allowed = allowed? initiator, target, interaction
-        interaction.apply @session, target if allowed
+        initiator, target = get_entities msg
+        if target && initiator && initiator.respond_to?(:interactions)
+          interaction = initiator.interactions[msg[:interaction_id]]
+          allowed = allowed? initiator, target, interaction
+          interaction.apply @session, target if allowed
+        end
       end
 
       def allowed?(from, to, interaction)
@@ -41,12 +40,13 @@ module Tarona
           interaction.applicable?(@session, to)
       end
 
-      def find_entity(id)
-        coords = @session[:act_inf][:entities_index][id]
-        return nil unless coords
-        place = @session[:act_inf][:landscape].get(*coords)
-        return nil unless place && place[:e]
-        place[:e].find { |x| x.id == id }
+      def get_entities(msg)
+        map = @session[:act_inf][:landscape]
+        index = @session[:act_inf][:entities_index]
+        [
+          Tarona::Action::PlaceEntity.find(map, index, msg[:from_entity]),
+          Tarona::Action::PlaceEntity.find(map, index, msg[:target])
+        ]
       end
     end
   end

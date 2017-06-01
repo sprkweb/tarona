@@ -69,6 +69,20 @@ module Tarona
         remove landscape, entity, from
         add landscape, entity, to
       end
+
+      # Finds entity object by its identificator
+      # @param landscape [Landscape] container of places.
+      # @param entities_index [Hash] hash which contains pairs `id => [x, y]`
+      #   for each entity, where `x` and `y` are coordinates.
+      # @param id [Object] identificator attribute of the entity
+      # @return [Entity, nil] the found entity or nil if it was not found
+      def find(landscape, entities_index, id)
+        coords = entities_index[id]
+        return nil unless coords
+        place = landscape.get(*coords)
+        return nil unless place && place[:e]
+        place[:e].find { |x| x.id == id }
+      end
     end
   end
 end

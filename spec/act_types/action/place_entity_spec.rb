@@ -30,7 +30,7 @@ RSpec.describe Tarona::Action::PlaceEntity do
   let(:entity2) { double 'entity2' }
   before :each do
     allow(landscape).to receive(:get) do |x, y|
-      matrix[x][y]
+      matrix[x][y] if matrix[x]
     end
     allow(entity).to receive(:hexes)
       .and_return(even_row: [[0, 0], [0, 1]], odd_row: [[0, 0], [1, 0]])
@@ -140,6 +140,49 @@ RSpec.describe Tarona::Action::PlaceEntity do
       modul.add landscape, entity, [2, 3]
       result = modul.move landscape, entity, [2, 3], [2, 3]
       expect(result).to be(entity)
+    end
+  end
+
+  describe '#find' do
+    let(:entities_index) { {} }
+    before :each do
+      allow(entity).to receive(:id).and_return(:foo)
+      allow(entity2).to receive(:id).and_return(:bar)
+    end
+
+    it 'returns entity object' do
+      entities_index[:foo] = [4, 5]
+      matrix[4][5] = { e: [entity] }
+      expect(modul.find(landscape, entities_index, :foo)).to be entity
+    end
+
+    it 'returns nil if entity is not in index' do
+      matrix[4][5] = { e: [entity] }
+      expect(modul.find(landscape, entities_index, :foo)).to be nil
+    end
+
+    it 'returns nil if entity is not on the map' do
+      entities_index[:foo] = [4, 5]
+      matrix[4][5] = { e: [] }
+      expect(modul.find(landscape, entities_index, :foo)).to be nil
+    end
+
+    it 'returns nil if there is no such place' do
+      entities_index[:foo] = [13, 9]
+      matrix[4][5] = { e: [entity] }
+      expect(modul.find(landscape, entities_index, :foo)).to be nil
+    end
+
+    it 'returns nil if there there is no entities at the place' do
+      entities_index[:foo] = [4, 5]
+      expect(modul.find(landscape, entities_index, :foo)).to be nil
+    end
+
+    it 'can work with many entities at the place' do
+      entities_index[:foo] = [3, 2]
+      entities_index[:bar] = [3, 2]
+      matrix[3][2] = { e: [entity, entity2] }
+      expect(modul.find(landscape, entities_index, :bar)).to be entity2
     end
   end
 end
