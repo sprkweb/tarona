@@ -11,9 +11,18 @@ module Tarona
     #   @return [Integer] "Health Points" (HP) is measure which represents
     #     overall state of entity.
     #     The more HP an entity has the stronger attacks it can survive.
-    class Fighter < ActingEntity
+    class Fighter < Tarona::Action::Entity
+      include Tarona::Action::Workable
+      include Tarona::Action::Movable
+
       attr_reader :interactions, :max_hp
       attr_accessor :hp
+
+      # TODO
+      # @see Tarona::Action::Movable
+      def move_cost(from, to)
+        1
+      end
 
       def raw
         result = super
