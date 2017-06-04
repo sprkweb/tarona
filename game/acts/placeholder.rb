@@ -25,6 +25,10 @@ module Tarona
         act: self,
         session: @tk.session
       )
+      Game::HudSupport.call(
+        act: self,
+        session: @tk.session
+      )
     end
   end
 end
