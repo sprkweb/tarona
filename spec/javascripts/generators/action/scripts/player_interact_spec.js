@@ -1,5 +1,5 @@
 describe('PlayerInteract', function() {
-  var essence, env, entity, entity2, ev;
+  var essence, env, entity, entity2, ev, data;
 
   var realMovement, realEntityInteraction;
   beforeAll(function() {
@@ -44,7 +44,8 @@ describe('PlayerInteract', function() {
     ev = {
       target: document.createElement('div')
     };
-    PlayerInteract(env, null, essence);
+    data = {};
+    PlayerInteract(env, data, essence);
   });
 
   it('requests movement to hovered hex when entity is focused', function() {
@@ -52,7 +53,7 @@ describe('PlayerInteract', function() {
     expect(listener[0]).toEqual('contextmenu');
     listener[1](ev);
     expect(PlayerInteract.Movement).toHaveBeenCalledWith(
-      env, essence.focused, essence.hovered_hex);
+      env, data, essence.focused, essence.hovered_hex);
     expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
   });
 
@@ -61,7 +62,7 @@ describe('PlayerInteract', function() {
     var listener = essence.field.addEventListener.calls.argsFor(0);
     listener[1](ev);
     expect(PlayerInteract.EntityInteraction).toHaveBeenCalledWith(
-      env, essence.focused, entity2);
+      env, data, essence.focused, entity2);
     expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });
 

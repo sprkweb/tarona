@@ -1231,7 +1231,7 @@ function HighlightHexes(env, _data, essence) {
  *
  * @see Action.Generator
  */
-function PlayerInteract(env, _data, essence) {
+function PlayerInteract(env, data, essence) {
   var self = this;
   this._init = function() {
     essence.field.addEventListener('contextmenu', self._handleInteraction);
@@ -1251,9 +1251,9 @@ function PlayerInteract(env, _data, essence) {
       var targetEntity = essence.entities[targetEntityId];
       if (targetEntityId == focused.id) return;
       if (targetEntity)
-        PlayerInteract.EntityInteraction(env, focused, targetEntity);
+        PlayerInteract.EntityInteraction(env, data, focused, targetEntity);
       else if (hoveredHex)
-        PlayerInteract.Movement(env, focused, hoveredHex);
+        PlayerInteract.Movement(env, data, focused, hoveredHex);
     }
   };
 
@@ -1280,11 +1280,12 @@ function PlayerInteract(env, _data, essence) {
  * target Entity) and `interaction_id`.
  *
  * @param {object} env - environment variables (see {@link Action.Generator})
+ * @param {object} data - information about the action.
  * @param {Action.Entity} initiator - Entity which initiates the interaction.
  * @param {Action.Entity} target - Entity to which the interaction shall be
  *   applied.
  */
-PlayerInteract.EntityInteraction = function(env, initiator, target) {
+PlayerInteract.EntityInteraction = function(env, data, initiator, target) {
   this._request = function(env, initiator, target) {
     var message = this._createAskingPopup(initiator, target);
     if (message) {
@@ -1316,8 +1317,10 @@ PlayerInteract.EntityInteraction = function(env, initiator, target) {
   this._createChooseForm = function(interactions) {
     var content = '<form>';
     _.each(interactions, function(interaction, id) {
+      var label = data.subject.i18n[interaction.name];
+      if (!label) label = interaction.name
       content +=
-        '<button name="' + id + '">' + interaction.name + '</button>';
+        '<button name="' + id + '">' + label + '</button>';
     });
     content += '</form>'
     return content;
@@ -1342,10 +1345,11 @@ PlayerInteract.EntityInteraction = function(env, initiator, target) {
  * attributes.
  *
  * @param {object} env - environment variables (see {@link Action.Generator})
+ * @param {object} data - information about the action.
  * @param {Action.Entity} entity - Entity which shall be moved
  * @param {Action.Coordinates} to - target place of the movement.
  */
-PlayerInteract.Movement = function(env, entity, to) {
+PlayerInteract.Movement = function(env, data, entity, to) {
   env.io.happen('move_request',
     { entity_id: entity.id, to: to });
 };
@@ -1453,7 +1457,7 @@ var HUD = {
     var displayParam = function(container, name, display_text) {
       var param = container.appendChild(document.createElement('p'));
       var param_label = param.appendChild(document.createElement('span'));
-      param_label.innerHTML = data.subject.i18n['entity_info'][name] + ': ';
+      param_label.innerHTML = data.subject.i18n['entity_info/' + name] + ': ';
       var param_display = param.appendChild(document.createElement('span'));
       param_display.innerHTML = display_text;
     };

@@ -7,16 +7,8 @@ module Tarona
     # @!attribute [r] owner
     #   @return [Tarona::Entity] entity which will apply this interaction.
     # @!attribute [r] name
-    #   @return [String] name of the interaction.
-    #   @example Translation for name
-    #     if `game/i18n/en.yml` contents:
-    #
-    #       attacks:
-    #         hit: Hit
-    #
-    #     then Interaction#name may be:
-    #
-    #       'attacks/hit'
+    #   @return [String] name of the interaction. It can be either just the name
+    #     itself or its key in the i18n system.
     class Interaction
       attr_reader :distance, :owner, :name
 

@@ -2,7 +2,7 @@ module Tarona
   class WebServer
     get '/' do
       content = erb :menu, locals: { menu_items: [
-        ['/play', tk.i18n['menu']['continue']]
+        ['/play', tk.i18n['menu/continue']]
       ] }
       page_options = {
         title: tk.i18n['game_name'],
