@@ -26,6 +26,7 @@ map:
         - &man !ruby/object:Tarona::Game::Fighter
           id: man
           template: man
+          name: people/me
           tags:
             - :movable
             - :user_controlled
@@ -131,6 +132,7 @@ map:
         - &enemy_man !ruby/object:Tarona::Game::Fighter
           id: enemy_man
           template: man
+          name: people/enemy
           tags: []
           hexes:
             :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]

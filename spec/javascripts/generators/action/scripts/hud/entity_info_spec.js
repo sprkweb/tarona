@@ -32,26 +32,30 @@ describe('HUD.EntityInfo', function() {
   };
 
   it('shows entity information when it is received', function() {
-    var params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8 };
+    var params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8, name: 'abc' };
+    env.io.happen('entity_info_show', params);
+    var children = container.childNodes;
+    expect(children.length).toEqual(3);
+    expect(children[0].tagName).toEqual('P');
+    expect(children[0].innerHTML).toEqual('abc');
+    expect(children[1].tagName).toEqual('P');
+    expect(spanWithText(children[1].childNodes[0], 'bar')).toBe(true);
+    expect(spanWithText(children[1].childNodes[1], '2/3')).toBe(true);
+    expect(children[2].tagName).toEqual('P');
+    expect(spanWithText(children[2].childNodes[0], 'baz')).toBe(true);
+    expect(spanWithText(children[2].childNodes[1], '5/8')).toBe(true);
+  });
+
+  it('shows only received information', function() {
+    var params = { hp: 2, energy: 1, max_energy: 9, name: 'cba' };
     env.io.happen('entity_info_show', params);
     var children = container.childNodes;
     expect(children.length).toEqual(2);
     expect(children[0].tagName).toEqual('P');
-    expect(spanWithText(children[0].childNodes[0], 'bar')).toBe(true);
-    expect(spanWithText(children[0].childNodes[1], '2/3')).toBe(true);
+    expect(children[0].innerHTML).toEqual('cba');
     expect(children[1].tagName).toEqual('P');
     expect(spanWithText(children[1].childNodes[0], 'baz')).toBe(true);
-    expect(spanWithText(children[1].childNodes[1], '5/8')).toBe(true);
-  });
-
-  it('shows only received information', function() {
-    var params = { hp: 2, energy: 1, max_energy: 9 };
-    env.io.happen('entity_info_show', params);
-    var children = container.childNodes;
-    expect(children.length).toEqual(1);
-    expect(children[0].tagName).toEqual('P');
-    expect(spanWithText(children[0].childNodes[0], 'baz')).toBe(true);
-    expect(spanWithText(children[0].childNodes[1], '1/9')).toBe(true);
+    expect(spanWithText(children[1].childNodes[1], '1/9')).toBe(true);
   });
 
   it('cleans container before new information is shown', function() {

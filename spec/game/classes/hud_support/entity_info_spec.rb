@@ -11,7 +11,7 @@ RSpec.describe Tarona::Game::HudSupport::EntityInfo do
     { act_inf: { landscape: map, entities_index: entities_index } }
   end
   let(:entity) { double 'entity' }
-  let(:attrs) { { hp: 2, max_hp: 3, energy: 5, max_energy: 7 } }
+  let(:attrs) { { hp: 2, max_hp: 3, energy: 5, max_energy: 7, name: 'foo' } }
 
   before :each do
     allow(act).to receive(:on).with(:end)

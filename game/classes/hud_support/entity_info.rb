@@ -18,7 +18,7 @@ module Tarona
       # @see Tarona::PrManager
       class EntityInfo < Tarona::PrManager
         # Attributes of Entity which will be send if they exist.
-        ATTRIBUTES = [:hp, :max_hp, :energy, :max_energy].freeze
+        ATTRIBUTES = [:name, :hp, :max_hp, :energy, :max_energy].freeze
 
         def job_type
           :entity_info

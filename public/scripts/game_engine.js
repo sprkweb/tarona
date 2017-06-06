@@ -1448,6 +1448,11 @@ var HUD = {
 
     var showInfo = function(inf) {
       container.innerHTML = '';
+      // TODO: test
+      if (inf.name) {
+        var name_elem = container.appendChild(document.createElement('p'));
+        name_elem.innerHTML = data.subject.i18n[inf.name] || inf.name;
+      }
       if (inf.hp && inf.max_hp)
         displayParam(container, 'health', inf.hp + '/' + inf.max_hp);
       if (inf.energy && inf.max_energy)

@@ -29,5 +29,11 @@ RSpec.describe Tarona::Game::Fighter do
       )
       expect(subj.raw).to include interactions: { explode: :airplane }
     end
+
+    it 'also contains name' do
+      subj = described_class.new :foo, :foo_template, name: 'Bar'
+      expect(subj.name).to eq 'Bar'
+      expect(subj.raw).to include name: 'Bar'
+    end
   end
 end

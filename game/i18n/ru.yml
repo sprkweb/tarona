@@ -26,3 +26,6 @@ entity_info/health: Здоровье
 entity_info/energy: Энергия
 # Названия атак
 attacks/hit: Удар
+# Названия людей
+people/me: Я
+people/enemy: Враг
