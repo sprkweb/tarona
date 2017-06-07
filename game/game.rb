@@ -8,6 +8,7 @@ require 'game/classes/hud_support/entity_info'
 require 'game/toolkit'
 require 'game/acts/introduction'
 require 'game/acts/placeholder'
+require 'game/acts/the_end'
 require 'game/pages'
 
 toolkit = Tarona::Toolkit
@@ -17,7 +18,11 @@ doorman = Tarona::Doorman.new(
   server: Tarona::WebServer,
   game: Tarona::Play,
   game_options: {
-    acts: { intro: Tarona::Introduction, pholder: Tarona::Placeholder },
+    acts: {
+      intro: Tarona::Introduction,
+      pholder: Tarona::Placeholder,
+      the_end: Tarona::TheEnd
+    },
     first_act: :intro,
     tk: toolkit
   }
