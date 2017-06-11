@@ -1,10 +1,31 @@
 # Contributing
-## Dependencies
-It requires Ruby >2, git, npm for development. It also requires some
-development tools for compiling gems' native extensions: ruby-devel,
-gcc (including g++).
+[![Build Status](https://travis-ci.org/sprkweb/tarona.svg?branch=master)](https://travis-ci.org/sprkweb/tarona)
 
-### Installation
+## Table of Contents
+
+* [Features and Bugs](#features-and-bugs)
+* [Installation](#installation)
+  * [Dependencies](#dependencies)
+  * [How to build](#how-to-build)
+* [Code Style](#code-style)
+* [Rake Tasks](#rake-tasks)
+* [Code Guide](#code-guide)
+  * [Back end](#back-end)
+* [Maintenance](#maintenance)
+
+## Features and Bugs
+**[Issue tracker](https://github.com/sprkweb/tarona/issues)**
+
+You can add your pull request if you want to add any feature or bug fix. Also
+you can write an issue if you do not want to/can not do it yourself.
+
+## Installation
+#### Dependencies
+It requires `ruby v2.x`, `git`, `npm` for development. It also requires some
+development tools for compiling gems' native extensions: `ruby-devel`,
+`gcc` (including `g++`).
+
+#### How to build
 You need to install the `bundler` and `rake` gems first:
 
     $ gem install bundler
@@ -17,11 +38,7 @@ Then you should build this project:
 *This process must have access to read and write to the directory of the
 project. Internet connection is also needed for dependency installation.*
 
-## Features and bugs
-You can add your pull request if you want to add any feature or bug fix. Also
-you can write an issue if you do not want/can to do it yourself.
-
-## Code style
+## Code Style
 Required:
 - BDD (coverage as full as possible). RSpec for Ruby, Jasmine for JS.
 - Docs. YARD for Ruby, JSDoc for JS.
@@ -30,17 +47,20 @@ Optional:
 - No warnings from `rubocop` (for Ruby)
 - JavaScript: semicolons, max line width = 80.
 
-## Rake tasks
+Versioning is SemVer
+
+## Rake Tasks
+are useful for development.
 See `Rakefile`
 
-## Code guide
+## Code Guide
 ### Back-end
-#### Abstraction level 0. Tardvig
+#### Level 0. Tardvig
 
 First, you need to read the documentation of the tardvig gem, because the
 structure of this project is based on it.
 
-#### Abstraction level 1. Core
+#### Level 1. Core
 Back-end code is written in Ruby language. It is divided into two parts (and
 directories): `lib` and `game`. `lib` contents back-end engine and helper
 classes, `game` consists of the game itself: acts, texts, etc.
@@ -60,24 +80,47 @@ passing them some useful objects (`Toolkit`, `GameIO`) during the process.
 Entire time all of these objects actively interact with front-end through
 WebSocket, changing displayed things.
 
-#### Abstraction level 2. Action Core
+#### Level 2. Action Core
+See `lib/tarona/act_types/action/`.
+
 `Action` is a main type of acts (see its documentation).
-Its main part is `Landscape` (hexagonal grid), which consists of `Ground` 
-(static surfaces, such as water, mountains, floor) and `Entity`s (objects 
+Its main part is `Landscape` (hexagonal grid), which consists of `Ground`
+(static surfaces, such as water, mountains, floor) and `Entity`s (objects
 which stands on the ground).
 
-It is important that ground always takes one hexagon. However, entities can 
-take multiple places and there are can be many entities at the same place. 
+It is important that ground always takes one hexagon. However, entities can
+take multiple places and there are can be many entities at the same place.
 This is why action core also includes `PlaceEntity` for easier movement
-of entities and `entities_index`, which contains coordinates for 
-"central" points of entities for faster access and recognition of 
+of entities and `entities_index`, which contains coordinates for
+"central" points of entities for faster access and recognition of
 central entities' parts.
 
-When action is started, landscape with its content is converted into 
+When action is started, landscape with its content is converted into
 a simplier format and sent to the front-end.
 
-# Maintenance
-## Some statements
+### Front-end
+See `public/scripts`.
+
+#### Level 1. Core
+The front-end structure is similar to back-end. The main part is `Runner`.
+It initializes `Messenger` (event-driven wrapper for WebSockets) and, using it,
+requests server either to open a new session or to load an old one, depending
+on the cookies.
+
+When it gets session information, it gives it to the `Display`, which runs
+`generator`s (function which generates DOM for the certain type of acts) when
+server runs acts.
+
+#### Level 2. Action.Generator
+`Action.Generator` generates hexagonal field and entities on it when the
+`Action` is started.
+
+It is extensible through `Scripts`, which are given to it as a part of one
+of arguments. They are run at the end of generation. They are used to listen
+for events and do something when they happen.
+
+## Maintenance
+### Some statements
 *There are some obvious statements. Of course, you already know them.
 I am writing them to myself.*
 * Only maintainer do things like publishing a new release and he is doing that
@@ -88,6 +131,3 @@ It contains only files which are needed in runtime + user documentation,
 license.
 It also must not require to run rake tasks: files inside the gem must include
 non-gem dependencies.
-
-## Versioning
-SemVer
