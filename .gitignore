@@ -10,4 +10,5 @@
 /vendor/
 /.byebug_history
 /*.gem
+/*.zip
 /Gemfile.lock

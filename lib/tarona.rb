@@ -3,7 +3,13 @@ Dir.chdir PROJECT_ROOT
 $LOAD_PATH.unshift PROJECT_ROOT
 
 require 'rubygems'
-require 'bundler/setup'
+begin
+  # For case when Bundler is installed globally
+  require 'bundler/setup'
+rescue LoadError
+  # For standalone mode, when Bundler is installed to the local directory.
+  require 'vendor/bundle/bundler/setup'
+end
 
 require 'json'
 
