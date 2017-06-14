@@ -67,14 +67,13 @@ if is_jruby
 
   def download(server_uri, path, filename)
     puts
-    print "Downloading #{server_uri}/#{path}"
+    puts "Downloading #{server_uri}#{path}"
     Net::HTTP.start server_uri do |server|
       file = File.open filename, 'wb'
       begin
         server.request_get path do |r|
           r.read_body do |part|
             file.write part
-            print '.'
           end
         end
       ensure
