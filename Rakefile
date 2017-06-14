@@ -59,9 +59,10 @@ if is_jruby
 
     sh 'bundle install --path vendor/bundle --standalone'
 
-    pack_files = Gem::Specification.load('tarona.gemspec').files
+    spec_file = 'tarona.gemspec'
+    pack_files = Gem::Specification.load(spec_file).files
     pack_files += Dir['.bundle/**/*', 'vendor/**/*']
-    pack_files += ['Gemfile', 'Gemfile.lock']
+    pack_files += ['Gemfile', 'Gemfile.lock', spec_file]
     zip_files pack_files, 'package.zip'
   end
 
@@ -84,13 +85,12 @@ if is_jruby
   end
 
   def zip_files(list, target)
-    command = "zip -@ -sf- #{target}"
+    command = "zip -@q #{target}"
     puts
     puts command
     IO.popen command, 'r+' do |io|
       list.each { |file| io.puts file }
       io.close_write
-      puts io.gets
     end
   end
 end

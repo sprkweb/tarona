@@ -1,5 +1,5 @@
 #!/bin/sh
-bin_path=$(dirname -- "$0")
+bin_path=$(dirname -- "$(realpath $0)")
 proj_path=$(dirname -- "$bin_path")
 jruby_path=$proj_path/vendor/jruby.jar
 
