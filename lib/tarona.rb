@@ -9,7 +9,6 @@ begin
 rescue LoadError
   # For standalone mode, when Bundler is installed to the local directory.
   require 'vendor/bundle/bundler/setup'
-  # TODO: bundler install --path vendor/bundle --standalone
 end
 
 require 'json'

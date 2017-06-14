@@ -1,6 +1,12 @@
 #!/bin/sh
-BIN_PATH=$(dirname -- "$0")
-PROJ_PATH=$(dirname -- "$BIN_PATH")
-# TODO: Env будут не нужны при bundler standalone mode
-# GEM_HOME=$PROJ_PATH/vendor/bundle/$PLATFORM GEM_PATH=$PROJ_PATH/vendor/bundle/$PLATFORM
-$PROJ_PATH/vendor/ruby/bin/ruby $BIN_PATH/tarona
+bin_path=$(dirname -- "$0")
+proj_path=$(dirname -- "$bin_path")
+jruby_path=$proj_path/vendor/jruby.jar
+
+if [ -n $(which java) ] && [ -r $jruby_path ]
+then
+  java -jar $jruby_path $bin_path/tarona
+else
+  echo 'No available embedded Ruby is detected.'
+  echo 'If you have installed Ruby, run the tarona file.'
+fi

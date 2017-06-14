@@ -2,7 +2,7 @@ language: ruby
 rvm:
   - 2.0.0
   - ruby-head
-  - jruby-head
+  - jruby
 dist: trusty
 sudo: false
 install: gem install rake bundler
