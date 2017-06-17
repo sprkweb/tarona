@@ -1,5 +1,5 @@
 describe('HUD.EntityInfo', function() {
-  var env, data, essence, area, container, entity, listener;
+  var env, data, essence, area, container, entity, listener, params;
   beforeEach(function() {
     area = document.createElement('div');
     env = {
@@ -14,6 +14,7 @@ describe('HUD.EntityInfo', function() {
     entity = { id: 'foo' };
     listener = jasmine.createSpy();
     container = HUD.EntityInfo(env, data, essence);
+    params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8, name: 'abc' };
   });
 
   it('creates container', function() {
@@ -32,22 +33,36 @@ describe('HUD.EntityInfo', function() {
   };
 
   it('shows entity information when it is received', function() {
-    var params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8, name: 'abc' };
     env.io.happen('entity_info_show', params);
     var children = container.childNodes;
     expect(children.length).toEqual(3);
+  });
+
+  it('shows name of the entity', function() {
+    env.io.happen('entity_info_show', params);
+    var children = container.childNodes;
     expect(children[0].tagName).toEqual('P');
     expect(children[0].innerHTML).toEqual('abc');
+  });
+
+  it('shows HP of the entity', function() {
+    env.io.happen('entity_info_show', params);
+    var children = container.childNodes;
     expect(children[1].tagName).toEqual('P');
     expect(spanWithText(children[1].childNodes[0], 'bar')).toBe(true);
     expect(spanWithText(children[1].childNodes[1], '2/3')).toBe(true);
+  });
+
+  it('shows energy of the entity', function() {
+    env.io.happen('entity_info_show', params);
+    var children = container.childNodes;
     expect(children[2].tagName).toEqual('P');
     expect(spanWithText(children[2].childNodes[0], 'baz')).toBe(true);
     expect(spanWithText(children[2].childNodes[1], '5/8')).toBe(true);
   });
 
   it('shows only received information', function() {
-    var params = { hp: 2, energy: 1, max_energy: 9, name: 'cba' };
+    params = { hp: 2, energy: 1, max_energy: 9, name: 'cba' };
     env.io.happen('entity_info_show', params);
     var children = container.childNodes;
     expect(children.length).toEqual(2);
@@ -59,7 +74,7 @@ describe('HUD.EntityInfo', function() {
   });
 
   it('cleans container before new information is shown', function() {
-    var params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8 };
+    params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8 };
     env.io.happen('entity_info_show', params);
     env.io.happen('entity_info_show', {});
     expect(container.childNodes.length).toEqual(0);
