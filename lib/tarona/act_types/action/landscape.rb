@@ -20,7 +20,7 @@ module Tarona
       end
 
       # Add places to the landscape. They are empty hashes by default.
-      # @param *places [Array<Integer>] places' coordinates (x and y).
+      # @param places [Array<Integer>] places' coordinates (x and y).
       #   See example
       # @return [Array<Hash>] added places
       # @example Add places with coordinates A(1, 2) and B(1, 0)

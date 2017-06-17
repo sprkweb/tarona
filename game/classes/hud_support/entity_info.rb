@@ -2,7 +2,7 @@ module Tarona
   module Game
     class HudSupport
       # Sends short information about entity when it is requested through
-      # {Tarona::GameIO}
+      # `Tardvig::GameIO`
       #
       # It responds to the `entity_info_request` event with attributes: `id`
       # (Entity's identificator).

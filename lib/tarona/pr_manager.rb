@@ -1,6 +1,6 @@
 module Tarona
   # Command for {Tarona::Act} which extends it by doing jobs when it
-  # is requested through its {Tardvig::GameIO}.
+  # is requested through its `Tardvig::GameIO`.
   # @abstract You need to make another class which inherits this. One job per
   #   class. Read description of abstract methods of this class and redefine
   #   them. You should not redefine the `#process` method.
