@@ -39,7 +39,8 @@ describe('PlayerInteract', function() {
         on: jasmine.createSpy('io#on'),
         remove_listener: jasmine.createSpy('io#remove_listener')
       },
-      display: Events.addEventsTo({})
+      display: Events.addEventsTo({}),
+      keybindings: { bind: jasmine.createSpy('keybindings#bind') }
     };
     ev = {
       target: document.createElement('div')
@@ -49,9 +50,11 @@ describe('PlayerInteract', function() {
   });
 
   it('requests movement to hovered hex when entity is focused', function() {
-    var listener = essence.field.addEventListener.calls.argsFor(0);
-    expect(listener[0]).toEqual('contextmenu');
-    listener[1](ev);
+    var listener = env.keybindings.bind.calls.argsFor(0);
+    expect(listener.length).toEqual(3);
+    expect(listener[0]).toEqual(essence.field);
+    expect(listener[1]).toEqual('interact:press');
+    listener[2](ev);
     expect(PlayerInteract.Movement).toHaveBeenCalledWith(
       env, data, essence.focused, essence.hovered_hex);
     expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
@@ -59,8 +62,8 @@ describe('PlayerInteract', function() {
 
   it('requests entity interaction when entity is hovered', function() {
     ev.target.setAttribute('data-entity_id', 'enemy');
-    var listener = essence.field.addEventListener.calls.argsFor(0);
-    listener[1](ev);
+    var listener = env.keybindings.bind.calls.argsFor(0);
+    listener[2](ev);
     expect(PlayerInteract.EntityInteraction).toHaveBeenCalledWith(
       env, data, essence.focused, entity2);
     expect(PlayerInteract.Movement).not.toHaveBeenCalled();
@@ -68,25 +71,25 @@ describe('PlayerInteract', function() {
 
   it('does nothing when the focused entity is hovered', function() {
     ev.target.setAttribute('data-entity_id', 'deadbeef');
-    var listener = essence.field.addEventListener.calls.argsFor(0);
-    listener[1](ev);
+    var listener = env.keybindings.bind.calls.argsFor(0);
+    listener[2](ev);
     expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
     expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });
 
   it('does nothing when entity is not focused', function() {
     essence.focused = null;
-    var listener = essence.field.addEventListener.calls.argsFor(0);
+    var listener = env.keybindings.bind.calls.argsFor(0);
     ev.target.setAttribute('data-entity_id', 'enemy');
-    listener[1](ev);
+    listener[2](ev);
     expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
     expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });
 
   it('does nothing when nothing is hovered', function() {
     essence.hovered_hex = null;
-    var listener = essence.field.addEventListener.calls.argsFor(0);
-    listener[1](ev);
+    var listener = env.keybindings.bind.calls.argsFor(0);
+    listener[2](ev);
     expect(PlayerInteract.EntityInteraction).not.toHaveBeenCalled();
     expect(PlayerInteract.Movement).not.toHaveBeenCalled();
   });

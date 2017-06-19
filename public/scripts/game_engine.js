@@ -256,7 +256,9 @@ function Keybindings(display) {
     if (key.slice(0, -1) == 'Mouse')
       return func;
     else
-      return function(ev) { if (ev.code == key) func(ev); };
+      return function(ev) {
+        if (ev.code == key) func(ev);
+      };
   };
   var parse_trigger = function(trigger, func) {
     var t = trigger.split(':')
@@ -934,6 +936,7 @@ var Action = {
  *   Following arguments will be passed: <br>
  *   "env", "data" - the same variables which you passed to this generator.<br>
  *   "essence" - see {@link Action.Essence}.
+ * @param {Keybindings} env.keybindings - Keybindings instance
  * @param {object} data - information about the action.
  * @param {object} data.subject - description of the action.
  * @param {number} data.subject.hex_size - relative size of hexagons
@@ -1133,7 +1136,7 @@ Action.Generator = function(env, data) {
       }
     });
 
-    field.addEventListener('click', function(event) {
+    env.keybindings.bind(field, 'select:press', function(event) {
       var id = event.target.getAttribute('data-entity_id');
       var was = essence.focused;
       essence.focused = essence.entities[id] || null;
@@ -1234,11 +1237,10 @@ function HighlightHexes(env, _data, essence) {
 function PlayerInteract(env, data, essence) {
   var self = this;
   this._init = function() {
-    essence.field.addEventListener('contextmenu', self._handleInteraction);
+    env.keybindings.bind(
+      essence.field, 'interact:press', self._handleInteraction);
     env.io.on('move', self._moveEntity);
-
     env.display.on('before_act', function() {
-      essence.field.removeEventListener('contextmenu', self._handleInteraction);
       env.io.remove_listener('move', self._moveEntity);
     });
   };

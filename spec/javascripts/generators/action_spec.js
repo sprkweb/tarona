@@ -1,5 +1,5 @@
 describe('Action.Generator', function() {
-  var run, area, selector, subject, io, env, data, script;
+  var run, area, selector, subject, io, env, data, script, keybindings;
   beforeEach(function() {
     selector = '#test_area';
     io = {
@@ -28,9 +28,10 @@ describe('Action.Generator', function() {
       dependencies: '<g id="check_deps"></g>'
     };
     script = jasmine.createSpy('script');
+    keybindings = new Keybindings(Events.addEventsTo({}));
     run = function() {
       area.innerHTML = '';
-      env = { area: area, io: io, scripts: [script] };
+      env = { area: area, io: io, scripts: [script], keybindings: keybindings };
       data = { subject: subject };
       Action.Generator(env, data);
     };
@@ -337,13 +338,27 @@ describe('Action.Generator', function() {
         not_entity = essence.hexes[0][1].backgroundElem;
       });
 
-      it('triggers focusChange event if entity is clicked', function() {
+      it('triggers focusChange event if entity is selected', function() {
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
         RunFakeUserAction(entity, 'click');
         expect(listener).toHaveBeenCalledWith({
           was: null,
           now: essence.entities['man']
+        });
+      });
+
+      it('uses keybindings to detect entity selection', function() {
+        keybindings.bindings.select = 'KeyJ';
+        run();
+        listener = jasmine.createSpy('listener');
+        essence = script.calls.argsFor(1)[2];
+        entity = essence.entities['man'];
+        essence.on('focusChange', listener);
+        RunFakeUserAction(entity.elem, 'keypress', { code: 'KeyJ' });
+        expect(listener).toHaveBeenCalledWith({
+          was: null,
+          now: entity
         });
       });
 
@@ -366,7 +381,7 @@ describe('Action.Generator', function() {
         });
       });
 
-      it('clears focus if you clicked not entity', function() {
+      it('clears focus if you selected not entity', function() {
         RunFakeUserAction(entity, 'click');
         listener = jasmine.createSpy('listener');
         essence.on('focusChange', listener);
@@ -377,7 +392,7 @@ describe('Action.Generator', function() {
         });
       });
 
-      it('clears focus if non-existent entity clicked', function() {
+      it('clears focus if non-existent entity selected', function() {
         essence.entities['woman'] = undefined;
         RunFakeUserAction(entity, 'click');
         listener = jasmine.createSpy('listener');
