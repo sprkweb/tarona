@@ -60,20 +60,39 @@ passing them some useful objects (`Toolkit`, `GameIO`) during the process.
 Entire time all of these objects actively interact with front-end through
 WebSocket, changing displayed things.
 
+The important part is saving mechanism. In this level it is realized as
+the `#session` attribute of the `Toolkit`. It is hash which contains all the
+information about current game state. Whilst game it is filled with the
+information in such way that:
+
+1. It contains everything about the game, so
+2. it can be saved anytime as YAML file without any additional processing and
+  when it is loaded, the game is in the same state.
+
+Therefore, all parts of the game is divided into information and processors.
+
+Information is stored in the `session` and must not contain any events or
+attributes which is not contained in the `session`. Examples: `Entity`,
+`Ground`, `Landscape`.
+
+Processors base their activity on information from the `session`, not their
+attributes (they will be lost as soon as the game is saved and loaded).
+Examples: descendants of `PrManager`, `PlaceEntity`, `Pathfinder`.
+
 #### Abstraction level 2. Action Core
 `Action` is a main type of acts (see its documentation).
-Its main part is `Landscape` (hexagonal grid), which consists of `Ground` 
-(static surfaces, such as water, mountains, floor) and `Entity`s (objects 
+Its main part is `Landscape` (hexagonal grid), which consists of `Ground`
+(static surfaces, such as water, mountains, floor) and `Entity`s (objects
 which stands on the ground).
 
-It is important that ground always takes one hexagon. However, entities can 
-take multiple places and there are can be many entities at the same place. 
+It is important that ground always takes one hexagon. However, entities can
+take multiple places and there are can be many entities at the same place.
 This is why action core also includes `PlaceEntity` for easier movement
-of entities and `entities_index`, which contains coordinates for 
-"central" points of entities for faster access and recognition of 
+of entities and `entities_index`, which contains coordinates for
+"central" points of entities for faster access and recognition of
 central entities' parts.
 
-When action is started, landscape with its content is converted into 
+When action is started, landscape with its content is converted into
 a simplier format and sent to the front-end.
 
 # Maintenance
