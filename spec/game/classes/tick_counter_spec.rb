@@ -30,10 +30,8 @@ RSpec.describe Tarona::Game::TickCounter do
     end
 
     it 'triggers the `:tick_start` event' do
-      listener = double
-      subj.on(:tick_start, &listener)
       session[:act_inf][:tick] = 2
-      expect(listener).to receive(:call).with(3)
+      expect(subj).to receive(:happen).with(:tick_start, num: 3)
       subj.tick
     end
 
@@ -66,7 +64,7 @@ RSpec.describe Tarona::Game::TickCounter do
     end
 
     it 'sequentially chooses all candidates' do
-      subj.candidate.merge! [entity, entity2, entity3]
+      subj.candidates.concat [entity, entity2, entity3]
       expect(subj.whose(1)).to eq(entity.id)
       expect(subj.whose(2)).to eq(entity2.id)
       expect(subj.whose(3)).to eq(entity3.id)
