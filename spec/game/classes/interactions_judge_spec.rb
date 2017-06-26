@@ -129,4 +129,26 @@ RSpec.describe Tarona::Game::InteractionsJudge do
     expect(subj).not_to receive(:happen).with(:after_interact, anything)
     io.happen :interaction_request, event_args
   end
+
+  context 'with context_acceptable option' do
+    let(:context_acceptable) { double }
+    let :subj do
+      described_class.new(
+        act: act, session: session, context_acceptable: context_acceptable
+      )
+    end
+
+    it 'does nothing when context is unacceptable' do
+      expect(context_acceptable).to receive(:call)
+        .with(owner, target, interaction).and_return(false)
+      expect(interaction).not_to receive(:apply)
+      io.happen :interaction_request, event_args
+    end
+
+    it 'applies interaction when context is acceptable' do
+      expect(context_acceptable).to receive(:call).and_return(true)
+      expect(interaction).to receive(:apply)
+      io.happen :interaction_request, event_args
+    end
+  end
 end

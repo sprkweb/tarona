@@ -18,6 +18,12 @@ module Tarona
     #   @return [Tarona::Action] current act.
     # @!attribute [r] session
     #   @return [#[]] information about current game state.
+    # @!attribute [r] context_acceptable
+    #   @return [#call] object which decides whether context is acceptable
+    #     for the interaction. It gets the initiator, the target and the
+    #     interaction objects as attributes and returns true or false.
+    #     If it returns false, the interaction will not be executed in any case.
+    #     *Optional*.
     class InteractionsJudge < Tarona::PrManager
       include Tardvig::Events
 
@@ -39,7 +45,9 @@ module Tarona
       def allowed?(from, to, interaction)
         from.tags.include?(:user_controlled) &&
           interaction.respond_to?(:applicable?) &&
-          interaction.applicable?(@session, to)
+          interaction.applicable?(@session, to) &&
+          (@context_acceptable.nil? ||
+            @context_acceptable.call(from, to, interaction))
       end
 
       def get_entities(msg)
