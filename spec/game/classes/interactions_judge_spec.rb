@@ -34,6 +34,7 @@ RSpec.describe Tarona::Game::InteractionsJudge do
     map.get(*target_place)[:e] = [target]
     allow(interaction).to receive(:applicable?)
       .with(session, target).and_return(true)
+    allow(interaction).to receive(:apply)
     subj.call
   end
 
@@ -111,5 +112,21 @@ RSpec.describe Tarona::Game::InteractionsJudge do
       :interaction_request,
       from_entity: :alice, target: :bob, interaction_id: :look
     )
+  end
+
+  it 'triggers the `:after_interact` event' do
+    expect(subj).to receive(:happen).with(
+      :after_interact, from: owner, to: target, interaction: interaction
+    ) do
+      expect(interaction).to have_received(:apply)
+    end
+    io.happen :interaction_request, event_args
+  end
+
+  it 'does not trigger the `:after_interact` event without interact' do
+    expect(interaction).to receive(:applicable?)
+      .with(session, target).and_return(false)
+    expect(subj).not_to receive(:happen).with(:after_interact, anything)
+    io.happen :interaction_request, event_args
   end
 end

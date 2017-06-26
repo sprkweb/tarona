@@ -19,6 +19,9 @@ RSpec.describe Tarona::Action::Mobilize do
     include Tardvig::Events
   end
   let(:act) { FakeAction.new(io) }
+  let :subj do
+    described_class.new act: act, map: map, entities_index: entities_index
+  end
 
   before :each do
     map.get(*from)[:e] = [entity]
@@ -27,7 +30,7 @@ RSpec.describe Tarona::Action::Mobilize do
     allow(Tarona::Action::PlaceEntity).to receive(:move)
     allow(path_obj).to receive(:result) { path }
     allow(act).to receive(:io) { io }
-    described_class.call act: act, map: map, entities_index: entities_index
+    subj.call
     allow(io).to receive(:happen).and_call_original
   end
 
@@ -67,7 +70,7 @@ RSpec.describe Tarona::Action::Mobilize do
       expect(entities_index[entity.id]).to eq(from)
     end
 
-    it 'is not movable entities' do
+    it 'is not movable' do
       entity.tags.delete :movable
       expect(Tarona::Action::PlaceEntity).not_to receive(:move)
       io.happen :move_request, entity_id: entity.id, to: to
@@ -100,5 +103,26 @@ RSpec.describe Tarona::Action::Mobilize do
       io.happen :move_request, entity_id: entity.id, to: to
       expect(entities_index[entity.id]).to eq(from)
     end
+  end
+
+  it 'triggers the `:after_move` event' do
+    expect(subj).to receive(:happen).with(
+      :after_move, entity: entity, from: from, to: to
+    ) do
+      expect(Tarona::Action::PlaceEntity).to have_received(:move)
+    end
+    io.happen :move_request, entity_id: entity.id, to: to
+  end
+
+  it 'does not trigger the `:after_move` event when entity is not movable' do
+    expect(subj).not_to receive(:happen).with(:after_move, anything)
+    entity.tags.delete :movable
+    io.happen :move_request, entity_id: entity.id, to: to
+  end
+
+  it 'does not trigger the `:after_move` event when entity is tired' do
+    expect(subj).not_to receive(:happen).with(:after_move, anything)
+    path[:costs][to][:total] = 121
+    io.happen :move_request, entity_id: entity.id, to: to
   end
 end

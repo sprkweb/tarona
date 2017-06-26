@@ -19,6 +19,8 @@ module Tarona
     # @!attribute [r] session
     #   @return [#[]] information about current game state.
     class InteractionsJudge < Tarona::PrManager
+      include Tardvig::Events
+
       private
 
       def job_type
@@ -26,12 +28,12 @@ module Tarona
       end
 
       def job(msg)
-        initiator, target = get_entities msg
-        if target && initiator && initiator.respond_to?(:interactions)
-          interaction = initiator.interactions[msg[:interaction_id]]
-          allowed = allowed? initiator, target, interaction
-          interaction.apply @session, target if allowed
-        end
+        from, to = get_entities msg
+        return unless to && from && from.respond_to?(:interactions)
+        interaction = from.interactions[msg[:interaction_id]]
+        return unless allowed?(from, to, interaction)
+        interaction.apply @session, to
+        happen :after_interact, from: from, to: to, interaction: interaction
       end
 
       def allowed?(from, to, interaction)

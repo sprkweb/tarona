@@ -26,6 +26,8 @@ module Tarona
     #     placed `here` (2nd argument given; `[x, y]` coordinates).
     #     It must return `true` if it can be placed or `false` otherwise.
     class Mobilize < Tarona::PrManager
+      include Tardvig::Events
+
       private
 
       def job_type
@@ -36,7 +38,9 @@ module Tarona
         id = msg[:entity_id]
         from = @entities_index[id]
         entity = PlaceEntity.find @map, @entities_index, id
-        move_it entity, from, msg[:to], msg if movable_by_player? entity
+        return unless movable_by_player?(entity)
+        return unless move_it(entity, from, msg[:to], msg)
+        happen :after_move, entity: entity, from: from, to: msg[:to]
       end
 
       def movable_by_player?(entity)
