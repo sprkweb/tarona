@@ -18,7 +18,7 @@ module Tarona
       end
 
       # Executes given closure for the current tick and starts a new one.
-      # Triggers the `:tick` event for this object and passes an arguments:
+      # Triggers the `:tick_start` event for this object and passes arguments:
       # hash with keys: `:num` - number of the new tick.
       def tick
         yield if block_given?
