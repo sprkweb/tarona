@@ -1,20 +1,11 @@
 module Tarona
   # This is just placeholding act.
-  class Placeholder < Action
-    raw_sources = Dir.chdir(__dir__) { File.read('placeholder/map.yml') }
-    sources = proc { YAML.load raw_sources }
-    subject(
-      landscape: proc { Landscape.new(sources.call['map']) },
-      entities_index: proc { sources.call['entities'] }
-    )
+  class Placeholder < Game::StandardAction
+    name :placeholder
     resources << 'game/resources/ground.svg'
     resources << 'game/resources/entities.svg'
-    resources << 'game/resources/style.svg'
-    hex_size 15
 
-    def set_listeners
-      Game::StandardRules.call act: self, session: @tk.session
-      Game::HudSupport.call act: self, session: @tk.session
+    def process
       set_victory_conditions
     end
 
