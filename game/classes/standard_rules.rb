@@ -3,7 +3,7 @@ module Tarona
     # Command which combines and calls all the game's rules on top of Action
     # core: ticks, movement, interactions, etc.
     #
-    # It runs {Mobilize} and {InteractionsJudge}, so you can send their
+    # It runs {Action::Mobilize} and {InteractionsJudge}, so you can send their
     # incoming events through IO after you run this command.
     #
     # You must set the {#act} and {#session} attributes using
