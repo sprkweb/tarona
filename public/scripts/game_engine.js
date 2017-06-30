@@ -1437,6 +1437,7 @@ var HUD = {
 
     var init = function() {
       essence.on('focusChange', requestInfo);
+      env.io.on('tick_start', requestInfo);
       env.io.on('entity_info_show', showInfo);
       env.display.on('before_act', function() {
         essence.remove_listener('focusChange', requestInfo);
@@ -1444,8 +1445,9 @@ var HUD = {
       });
     };
 
-    var requestInfo = function(ev) {
-      env.io.happen('entity_info_request', { id: ev.now.id });
+    var requestInfo = function() {
+      if (essence.focused)
+        env.io.happen('entity_info_request', { id: essence.focused.id });
     };
 
     var showInfo = function(inf) {

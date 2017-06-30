@@ -7,7 +7,7 @@ RSpec.describe Tarona::Game::HudSupport do
   end
 
   it 'calls its parts' do
-    parts = [described_class::EntityInfo]
+    parts = [described_class::Informer, described_class::EntityInfo]
     parts.each do |part|
       expect(part).to receive(:call).with(act: act, session: session)
     end

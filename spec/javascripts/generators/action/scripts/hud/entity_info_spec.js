@@ -10,8 +10,8 @@ describe('HUD.EntityInfo', function() {
     data = {
       subject: { i18n: { entity_info: { health: 'bar', energy: 'baz' } } }
     };
-    essence = Events.addEventsTo({});
     entity = { id: 'foo' };
+    essence = Events.addEventsTo({ focused: entity });
     listener = jasmine.createSpy();
     container = HUD.EntityInfo(env, data, essence);
     params = { hp: 2, max_hp: 3, energy: 5, max_energy: 8, name: 'abc' };
@@ -26,6 +26,20 @@ describe('HUD.EntityInfo', function() {
     env.io.on('entity_info_request', listener);
     essence.happen('focusChange', { now: entity });
     expect(listener).toHaveBeenCalledWith({ id: entity.id });
+  });
+
+  it('requests information again when there is new tick', function() {
+    env.io.on('entity_info_request', listener);
+    env.io.happen('tick_start');
+    expect(listener).toHaveBeenCalledWith({ id: entity.id });
+  });
+
+  it('does not request information when entity is not focused', function() {
+    env.io.on('entity_info_request', listener);
+    essence.focused = null;
+    env.io.happen('tick_start');
+    essence.happen('focusChange', { now: null });
+    expect(listener).not.toHaveBeenCalled();
   });
 
   var spanWithText = function(elem, text) {
