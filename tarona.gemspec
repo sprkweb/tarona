@@ -3,13 +3,23 @@ require File.expand_path(File.dirname(__FILE__) + '/lib/tarona/version.rb')
 Gem::Specification.new do |s|
   s.name = 'tarona'
   s.version = Tarona::VERSION
-  s.summary = ''
+  s.summary = 'Fantasy strategic game'
   s.description = <<DOC
+Fantasy strategic game about society management.
 DOC
-  s.homepage = ''
+  s.homepage = 'https://github.com/sprkweb/tarona'
   s.author = 'Vadim Saprykin'
   s.email = 'sprkweb@ya.ru'
-  # TODO: s.files =
+  s.files = Dir[
+      'bin/**/*',
+      'game/**/*',
+      'lib/**/*',
+      'public/**/*',
+      'views/**/*'
+    ] + [
+      'LICENSE',
+      'README.md'
+    ]
   s.license = 'MIT'
 
   s.required_ruby_version = '>= 2.0.0'
