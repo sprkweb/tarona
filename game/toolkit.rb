@@ -23,8 +23,9 @@ module Tarona
 
     class << self
       def load_hash(from)
+        file = File.new from, 'r', encoding: Encoding::UTF_8
         hash = Tardvig::HashContainer.new
-        hash.load from
+        hash.load file
         yield hash if block_given?
         hash
       end
