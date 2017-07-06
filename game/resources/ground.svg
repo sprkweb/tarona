@@ -1,12 +1,121 @@
-<pattern height="10" id="ground" patternUnits="userSpaceOnUse" width="10">
-  <rect fill="#755c48" height="10" width="10"/>
+<g id="pieces">
+  <g fill="#000000" fill-opacity="0.15">
+    <path
+      d="M 1.2990381057 0.75 L 0 1.5 L -1.2990381057 0.75
+        L -1.2990381057 -0.75 L 0 -1.5 L 1.2990381057 -0.75 Z"
+      transform="translate(1.5, 2.5)" />
+    <path
+      d="M 0.8660254038 0.5 L 0 1 L -0.8660254038 0.5
+        L -0.8660254038 -0.5 L 0 -1 L 0.8660254038 -0.5 Z"
+      transform="translate(10.5, 8.5)" />
+    <path
+      d="M 0.8660254038 0.5 L 0 1 L -0.8660254038 0.5
+        L -0.8660254038 -0.5 L 0 -1 L 0.8660254038 -0.5 Z"
+      transform="translate(2.5, 12.5)" />
+  </g>
+  <g fill="#ffffff" fill-opacity="0.15">
+    <path
+      d="M 1.2990381057 0.75 L 0 1.5 L -1.2990381057 0.75
+        L -1.2990381057 -0.75 L 0 -1.5 L 1.2990381057 -0.75 Z"
+      transform="translate(11.5, 12.5)" />
+    <path
+      d="M 0.8660254038 0.5 L 0 1 L -0.8660254038 0.5
+        L -0.8660254038 -0.5 L 0 -1 L 0.8660254038 -0.5 Z"
+      transform="translate(4.5, 5.5)" />
+    <path
+      d="M 0.8660254038 0.5 L 0 1 L -0.8660254038 0.5
+        L -0.8660254038 -0.5 L 0 -1 L 0.8660254038 -0.5 Z"
+      transform="translate(11.5, 1.5)" />
+  </g>
+  <g fill="#b3b3b3" fill-opacity="0.5">
+    <path
+      d="M 1.2990381057 0.75 L 0 1.5 L -1.2990381057 0.75
+        L -1.2990381057 -0.75 L 0 -1.5 L 1.2990381057 -0.75 Z"
+      transform="translate(8.5, 4.5)" />
+    <path
+      d="M 0.8660254038 0.5 L 0 1 L -0.8660254038 0.5
+        L -0.8660254038 -0.5 L 0 -1 L 0.8660254038 -0.5 Z"
+      transform="translate(6.5, 9.5)" />
+  </g>
+</g>
+
+<pattern id="ground" patternUnits="userSpaceOnUse"
+  height="15" width="15">
+  <rect width="15" height="15" fill="#a86a3b" />
+  <use xlink:href="#pieces" />
 </pattern>
-<pattern height="10" id="grass" patternUnits="userSpaceOnUse" width="10">
-  <rect fill="#5da130" height="10" width="10"/>
+
+<pattern id="sand" patternUnits="userSpaceOnUse"
+  width="15" height="15">
+  <rect height="15" width="15" fill="#ffe991" />
+  <use xlink:href="#pieces" />
 </pattern>
-<pattern height="10" id="water" patternUnits="userSpaceOnUse" width="10">
-  <rect fill="#6eb8e0" height="10" width="10"/>
+
+<pattern id="grass" patternUnits="userSpaceOnUse"
+  width="30" height="30" x="15" y="15">
+  <rect fill="#329632" height="30" width="30"/>
+  <g fill="none" stroke="#327D32" stroke-width="1">
+    <path
+        d="m 20,19.75 c 0,0 -0.125,-6.375 3.5625,-9.5" />
+    <path
+        d="M 25.1875,14.3125 C 21.125,14.625 20,19.8125 20,19.8125
+          c 0,0 -0.9375,-8.625 -3.6875,-6" />
+    <path
+        d="m 11.0625,12.1875 c 0,0 -0.8125,-7.1250001 3.5,-8.1875001" />
+    <path
+        d="M 5.375,13.875 C 7.5625,14.1875 9.3125,21 9.3125,21
+          c 0,0 -0.375,-7.9375 3.375,-4.1875" />
+    <path
+        d="m 15.8125,26.75 c 0,0 0.5625,-7 -2.5625,-5.4375" />
+  </g>
 </pattern>
-<pattern height="10" id="stone" patternUnits="userSpaceOnUse" width="10">
-  <rect fill="#808080" height="10" width="10"/>
+
+<pattern id="water" patternUnits="userSpaceOnUse"
+  width="30" height="30" x="15" y="15">
+  <rect fill="#4bafff" height="30" width="30"/>
+  <g fill="none" stroke="#b6e0ff" stroke-width="1">
+    <path
+      d="m 5.1916261,14.7552 c 0,0 1.8119612,-2.1655 3.9774752,0
+        2.1655147,2.1655 4.0216697,0 4.0216697,0" />
+    <path
+      d="m 13.883253,22.4792 c 0,0 1.811961,-2.1655 3.977475,0
+        2.165515,2.1655 4.02167,0 4.02167,0" />
+    <path
+      d="m 17.488961,9.4793 c 0,0 1.811961,-2.1655 3.977475,0
+        2.165515,2.1655 4.02167,0 4.02167,0"/>
+  </g>
+</pattern>
+
+<pattern id="stone" patternUnits="userSpaceOnUse"
+  width="30" height="30" x="15" y="15">
+  <rect fill="#808080" height="30" width="30"/>
+  <g fill="none" stroke-width="1" stroke="#969696">
+    <path
+      d="m 5.347495,5.7815927 2.784233,5.1265243 3.668116,4.242641
+        0.132583,3.049398 -2.1074563,3.668116 -2.032932,3.623922" />
+    <path
+      d="m 5.7452426,13.780738 0.5303301,2.298097" />
+    <path
+      d="m 3.314563,17.227884 3.6239223,0.353553 5.6568547,2.43068
+        2.209708,1.811961 3.663824,6.345929" />
+    <path
+      d="m 17.235728,10.068428 5.966213,9.457553 -7.601398,0.795495" />
+    <path
+      d="M 9.5017474,9.8032625 17.412505,8.4332431 20.594485,2.9973597" />
+  </g>
+  <g fill="none" stroke-width="1" stroke="#646464">
+    <path
+      d="M 21.301592,3.3951073 17.944748,9.2093321 9.1923882,10.687146" />
+    <path
+      d="m 17.854446,9.2287383 6.938486,10.9159607 -9.457554,1.06066" />
+    <path
+      d="M 6,5.3124999 9.0900034,10.664543 12.625,14.78125 12.75,19.125
+        7.25,16.71875 6.40625,13.53125" />
+    <path
+      d="M 7.3125,16.71875 3.21875,16.4375" />
+    <path
+      d="M 19.26866,27.790291 15.49081,21.246863 12.683728,18.907262" />
+    <path
+      d="m 8.40625,26.234375 4.09197,-7.087499" />
+  </g>
 </pattern>

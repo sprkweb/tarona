@@ -6,9 +6,9 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
-    - :g: *grass
-    - :g: *grass
-    - :g: *grass
+    - :g: &ground !ruby/object:Tarona::Action::Ground { id: ground, template: ground }
+    - :g: *ground
+    - :g: *ground
     - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -31,8 +31,8 @@ map:
             - :movable
             - :user_controlled
           hexes:
-            :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
-            :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
+            :even_row: [[0, 0], [-1, 1], [0, 1]]
+            :odd_row: [[0, 0], [0, 1], [1, 1]]
           max_energy: 10
           max_hp: 100
           hp: 100
@@ -49,9 +49,9 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
-    - :g: *grass
-    - :g: *grass
-    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
     - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -71,9 +71,9 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
-    - :g: *grass
-    - :g: *grass
-    - :g: *grass
+    - :g: &stone !ruby/object:Tarona::Action::Ground { id: stone, template: stone }
+    - :g: *stone
+    - :g: *stone
     - :g: *grass
     - :g: *grass
     - :g: *grass
@@ -91,9 +91,9 @@ map:
     - :g: *water
     - :g: *water
     - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
+    - :g: *stone
+    - :g: *stone
+    - :g: *stone
     - :g: *water
     - :g: *water
     - :g: *water
@@ -111,23 +111,23 @@ map:
     - :g: *water
     - :g: *water
     - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-    - :g: *water
-  - - :g: &stone !ruby/object:Tarona::Action::Ground { id: stone, template: stone }
     - :g: *stone
     - :g: *stone
     - :g: *stone
-    - :g: *stone
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+    - :g: *water
+  - - :g: &sand !ruby/object:Tarona::Action::Ground { id: sand, template: sand }
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
       :e:
         - &enemy_man !ruby/object:Tarona::Game::Fighter
           id: enemy_man
@@ -135,83 +135,272 @@ map:
           name: people/enemy
           tags: []
           hexes:
-            :even_row: [[0, 0], [-1, -1], [-1, 1], [0, -1], [0, 1]]
-            :odd_row: [[0, 0], [0, -1], [0, 1], [1, -1], [1, 1]]
+            :even_row: [[0, 0], [-1, 1], [0, 1]]
+            :odd_row: [[0, 0], [0, 1], [1, 1]]
           max_energy: 150
           max_hp: 100
           hp: 100
           interactions:
             hit: *hit
-    - :g: *stone
+    - :g: *sand
       :e: [*enemy_man]
-    - :g: *stone
+    - :g: *sand
       :e: [*enemy_man]
+    - :g: *sand
     - :g: *stone
     - :g: *stone
     - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-  - - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
       :e: [*enemy_man]
-    - :g: *stone
-    - :g: *stone
+    - :g: *grass
+    - :g: *grass
       :e: [*enemy_man]
+    - :g: *grass
     - :g: *stone
     - :g: *stone
     - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-  - &stone_line
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-    - :g: *stone
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
-  - *stone_line
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+    - :g: *sand
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+  - - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *ground
+    - :g: *ground
+    - :g: *ground
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
+    - :g: *grass
 entities:
   man: [1, 3]
   enemy_man: [5, 5]
