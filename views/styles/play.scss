@@ -12,10 +12,31 @@
   margin: 2em auto;
 }
 
+#area {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr 15em;
+  flex-grow: 1;
+}
+
+#area #field {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  max-height: 100%;
+  overflow: hidden;
+  display: grid;
+  box-sizing: border-box;
+
+  svg {
+    margin: auto;
+  }
+}
+
 .hud {
   @include shadow(2px 2px 10px 0 rgba(50, 50, 50, 0.3));
 
-  width: 20em;
+  grid-column: 2;
   padding: 3px 6px;
   background-color: rgb(250, 250, 250);
 
@@ -38,24 +59,13 @@
   }
 }
 
-#area {
-  @include flexbox;
-  flex-grow: 1;
-  overflow: hidden;
-
-  #field {
-    margin: auto;
-  }
-}
-
 #popup_container {
-  height: 0;
-  width: 0;
+  grid-column: 1;
+  grid-row: 1;
 
   & > .corners {
     height: 100%;
     width: 100%;
-    position: fixed;
     display: table;
     visibility: hidden;
 

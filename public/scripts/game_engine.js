@@ -1364,7 +1364,7 @@ PlayerInteract.Movement = function(env, data, entity, to) {
  */
 function FovOperator(env, _data, _essence) {
   var speed = document.body.clientHeight / 500;
-  var fov = env.area;
+  var fov = env.area.querySelector('#field');
   var directions = {
     up: function(start, dist) { fov.scrollTop = start[0] - dist },
     down: function(start, dist) { fov.scrollTop = start[0] + dist },
