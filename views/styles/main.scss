@@ -141,11 +141,12 @@ nav.menu ul {
   width: 100%;
 }
 
-.button {
+button, input[type="submit"], input[type="button"] {
   @include rounded(2px);
   @include button(rgb(210, 210, 210), rgb(230, 230, 230), 3px);
-  padding: 5px;
   font-size: $font-size * 0.9;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
 }
 
 input[type="text"], textarea {
