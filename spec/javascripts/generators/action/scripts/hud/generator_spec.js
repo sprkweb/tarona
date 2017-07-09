@@ -1,10 +1,12 @@
 describe('HUD.Generator', function() {
-  var realEntityInfo;
+  var realEntityInfo, realHighlightHexes;
   beforeAll(function() {
     realEntityInfo = HUD.EntityInfo;
+    realHighlightHexes = HUD.HighlightHexes;
   });
   afterAll(function() {
     HUD.EntityInfo = realEntityInfo;
+    HUD.HighlightHexes = realHighlightHexes;
   });
 
   var env, data, essence, area, parts;
@@ -13,7 +15,7 @@ describe('HUD.Generator', function() {
     env = { area: area };
     data = {};
     essence = {};
-    parts = ['EntityInfo'];
+    parts = ['EntityInfo', 'HighlightHexes'];
     parts.forEach(function(part) {
       var elem = document.createElement('div');
       elem.innerHTML = part;

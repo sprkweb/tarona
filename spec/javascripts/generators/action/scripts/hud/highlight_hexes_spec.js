@@ -1,4 +1,4 @@
-describe('HighlightHexes', function() {
+describe('HUD.HighlightHexes', function() {
   describe('under focused entities', function() {
     var essence, entity, entity2, io, display;
     beforeEach(function() {
@@ -25,7 +25,7 @@ describe('HighlightHexes', function() {
       });
       io = Events.addEventsTo({});
       display = Events.addEventsTo({});
-      HighlightHexes({ io: io, display: display }, null, essence);
+      HUD.HighlightHexes({ io: io, display: display }, null, essence);
     });
     var contains = function(inThisList, coords) {
       return !!(_.find(inThisList, function(arr) {

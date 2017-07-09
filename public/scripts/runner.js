@@ -34,7 +34,7 @@ function Runner() {
   this.display = new Display({
     area_selector: '#area',
     io: this.messenger,
-    scripts: [HighlightHexes, PlayerInteract, FovOperator, HUD.Generator]
+    scripts: [PlayerInteract, FovOperator, HUD.Generator]
   });
   this.display.addGenerator('text', TextGenerator);
   this.display.addGenerator('action', Action.Generator);

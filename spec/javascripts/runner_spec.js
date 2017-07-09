@@ -51,7 +51,7 @@ describe('JS Engine runner', function() {
     expect(runner.display.env).toEqual({
       area_selector: '#area',
       io: runner.messenger,
-      scripts: [HighlightHexes, PlayerInteract, FovOperator, HUD.Generator],
+      scripts: [PlayerInteract, FovOperator, HUD.Generator],
       display: runner.display,
       keybindings: runner.keybindings
     });
