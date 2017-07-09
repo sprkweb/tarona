@@ -31,7 +31,7 @@ make_task :doc, 'Generating documentation' do
 end
 
 make_task :js_doc, 'Generating JavaScript documentation' do
-  sh NODEJS_BIN_PATH + 'jsdoc public/scripts/game_engine.js -d jsdoc'
+  sh NODEJS_BIN_PATH + 'jsdoc public/scripts -r -d jsdoc'
 end
 
 make_task :gems, 'Installing required rubygems' do

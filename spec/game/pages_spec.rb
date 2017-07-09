@@ -55,4 +55,30 @@ RSpec.describe 'Web pages' do
       expect(last_response.body).to include('<title>foo</title>')
     end
   end
+
+  describe '/scripts' do
+    it 'joins multiple scripts as one file' do
+      get(
+        '/scripts?s[]=action/scripts/fov_operator.js&s[]=action/scripts/hud.js'
+      )
+      content_type = last_response.headers['content-type']
+      expect(content_type).to start_with('application/javascript')
+      expect(last_response.body).to include('FovOperator')
+      expect(last_response.body).to include('HUD')
+    end
+
+    it 'contains nothing when the parameter is incorrect' do
+      get '/scripts?s=mySuperInjection'
+      content_type = last_response.headers['content-type']
+      expect(content_type).to start_with('application/javascript')
+      expect(last_response.body).to eq('')
+    end
+
+    it 'contains nothing when there is no parameters' do
+      get '/scripts'
+      content_type = last_response.headers['content-type']
+      expect(content_type).to start_with('application/javascript')
+      expect(last_response.body).to eq('')
+    end
+  end
 end
