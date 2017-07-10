@@ -31,11 +31,6 @@ module Tarona
       #       <http://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search>).
       #     - `:costs` (Hash) contains reachable places as keys and costs to
       #       get to them as values.
-      # @!attribute [r] catalyst
-      #   @return [#call] object (proc, for example) which rules: whether the
-      #     `entity` (1st argument given; {Tarona::Action::Entity}) can be
-      #     placed `here` (2nd argument given; `[x, y]` coordinates).
-      #     It must return `true` if it can be placed or `false` otherwise.
       #   @example
       #     # Start at (0, 0);
       #     # Map width is 2 hexes and height is 3 hexes;
@@ -50,6 +45,11 @@ module Tarona
       #         [1, 1] => 2,      [1, 2] => 2,      [0, 2] => 2
       #       }
       #     }
+      # @!attribute [r] catalyst
+      #   @return [#call] object (proc, for example) which rules: whether the
+      #     `entity` (1st argument given; {Tarona::Action::Entity}) can be
+      #     placed `here` (2nd argument given; `[x, y]` coordinates).
+      #     It must return `true` if it can be placed or `false` otherwise.
       class FindReachable < Tardvig::Command
         attr_reader :result
 
