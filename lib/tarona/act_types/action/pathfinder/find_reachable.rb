@@ -4,7 +4,7 @@ module Tarona
       # Find all reachable places from point A and shortest ways to them.
       #
       # You need to set attributes {#map}, {#from}, {#catalyst},
-      # {#entity} (optional), {#max_cost} (optional) using `#call` options
+      # {#entity}, {#max_cost} (optional) using `#call` options
       # (see `Tardvig::Command`).
       # @!attribute [r] map
       #   @return [Tarona::Action::Landscape] landscape on which path must
@@ -14,8 +14,6 @@ module Tarona
       # @!attribute [r] entity
       #   @return [Tarona::Action::Movable] entity which will follow
       #     these paths.
-      #     It is needed for finding pathless places, so
-      #     you should better set this argument if you have such places.
       # @!attribute [r] max_cost
       #   @return [Integer] maximal available (energy) cost of paths,
       #     algorithm will not go further. It is needed when you, for example,

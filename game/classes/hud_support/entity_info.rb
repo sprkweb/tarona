@@ -20,6 +20,8 @@ module Tarona
         # Attributes of Entity which will be send if they exist.
         ATTRIBUTES = [:name, :hp, :max_hp, :energy, :max_energy].freeze
 
+        private
+
         def job_type
           :entity_info
         end
