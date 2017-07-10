@@ -23,7 +23,8 @@ var HUD = {
     var parts = [HUD.EntityInfo, HUD.HighlightHexes];
     var container = createContainer(env);
     parts.forEach(function(part) {
-      container.appendChild(part(env, data, essence));
+      var partElem = part(env, data, essence);
+      if (partElem instanceof Element) container.appendChild(partElem);
     });
   },
 

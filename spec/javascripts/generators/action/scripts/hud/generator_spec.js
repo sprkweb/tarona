@@ -9,17 +9,22 @@ describe('HUD.Generator', function() {
     HUD.HighlightHexes = realHighlightHexes;
   });
 
-  var env, data, essence, area, parts;
+  var env, data, essence, area, parts, partsWithElems, partsWithoutElems;
   beforeEach(function() {
     area = document.createElement('div');
     env = { area: area };
     data = {};
     essence = {};
-    parts = ['EntityInfo', 'HighlightHexes'];
-    parts.forEach(function(part) {
+    partsWithElems = ['EntityInfo'];
+    partsWithoutElems = ['HighlightHexes'];
+    parts = partsWithoutElems.concat(partsWithElems);
+    partsWithElems.forEach(function(part) {
       var elem = document.createElement('div');
       elem.innerHTML = part;
       spyOn(HUD, part).and.returnValue(elem);
+    });
+    partsWithoutElems.forEach(function(part) {
+      spyOn(HUD, part).and.returnValue('foo');
     });
     HUD.Generator(env, data, essence);
   });
@@ -37,9 +42,10 @@ describe('HUD.Generator', function() {
     });
   });
 
-  it('appends returned values from parts to the container', function() {
+  it('appends returned Elements from parts to the container', function() {
     var container = area.childNodes[0];
-    parts.forEach(function(part, num) {
+    expect(partsWithElems.length).toEqual(container.childNodes.length)
+    partsWithElems.forEach(function(part, num) {
       expect(container.childNodes[num].innerHTML).toEqual(part);
     });
   });
