@@ -137,9 +137,31 @@ var HUD = {
     };
     env.io.on('move', move_highlight);
 
+    // Available movement highlight
+    var reachableHighlight = new Highlight('reachable');
+    var requestMovementPotential = function() {
+      reachableHighlight.clear();
+      var focused = essence.focused;
+      if (focused)
+        env.io.happen('movement_potential_request', { entity_id: focused.id });
+    };
+    essence.on('focusChange', requestMovementPotential);
+    env.io.on('tick_start', requestMovementPotential);
+    var showMovementPotential = function(msg) {
+      var sameEntity = msg.entity_id == essence.focused.id;
+      var samePlace = msg.from == essence.focused.coordinates;
+      if (sameEntity && samePlace)
+        reachableHighlight.change(_.map(msg.reachable.places, _.first));
+    };
+    env.io.on('movement_potential_show', showMovementPotential);
+
     env.display.on('before_act', function() {
       essence.remove_listener('focusChange', highlightNewFocus);
       env.io.remove_listener('move', move_highlight);
+
+      essence.remove_listener('focusChange', requestMovementPotential);
+      env.io.remove_listener('tick_start', requestMovementPotential);
+      env.io.remove_listener('movement_potential_show', showMovementPotential);
     });
   }
 };

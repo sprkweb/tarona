@@ -1,14 +1,13 @@
 <style type="text/css">
   <![CDATA[
   #hexes use {
-    $hex-border-width: 1px;
-    stroke-width: $hex-border-width * 2;
+    stroke-width: 2;
     clip-path: url(#hexclip);
   }
 
   #hexes use.reachable {
-    stroke: #9FEE00;
-    stroke-opacity: 0.5;
+    stroke: #96e6ff;
+    stroke-opacity: 1;
   }
 
   #hexes use.focused {
@@ -17,7 +16,7 @@
   }
 
   #hexes use.hovered_path {
-    stroke: #008500;
+    stroke: #0a46ff;
     stroke-opacity: 1;
   }
   ]]>

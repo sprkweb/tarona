@@ -13,7 +13,7 @@ module Tarona
       private
 
       def process
-        parts = [Informer, EntityInfo]
+        parts = [Informer, EntityInfo, MovementPotential]
         parts.each do |part|
           part.call act: @act, session: @session
         end
