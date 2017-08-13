@@ -32,8 +32,11 @@ module Tarona
       # @param tick_num [Integer] number of the tick
       # @return [Object] entity id
       def whose(tick_num)
-        # TODO: Advanced cycle generation based on entity's attributes
-        cycle = candidates
+        cycle = []
+        candidates.each do |entity|
+          speed = (entity.respond_to?(:speed) ? entity.speed : 1)
+          cycle.concat(Array.new(speed) { entity })
+        end
         cycle_start = tick_num / cycle.length * cycle.length + 1
         cycle[tick_num - cycle_start].id
       end

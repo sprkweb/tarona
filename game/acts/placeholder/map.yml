@@ -37,6 +37,7 @@ map:
           max_energy: 10
           max_hp: 100
           hp: 100
+          speed: 2
           interactions:
             hit: &hit !ruby/object:Tarona::Game::Attack
               name: attacks/hit
@@ -142,6 +143,7 @@ map:
           max_energy: 150
           max_hp: 100
           hp: 100
+          speed: 2
           interactions:
             hit: *hit
     - :g: *sand

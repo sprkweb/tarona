@@ -16,11 +16,13 @@ module Tarona
     # @!attribute [r] side
     #   @return [Symbol] side of conflict (if there is conflict).
     #     Entities with same side are allies.
+    # @!attribute [r] speed
+    #   @return [Integer] how much actions can it do in a row.
     class Fighter < Tarona::Action::Entity
       include Tarona::Action::Workable
       include Tarona::Action::Movable
 
-      attr_reader :name, :interactions, :max_hp, :side
+      attr_reader :name, :interactions, :max_hp, :side, :speed
       attr_accessor :hp
 
       # TODO

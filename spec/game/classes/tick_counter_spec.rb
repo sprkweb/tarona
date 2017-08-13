@@ -53,10 +53,10 @@ RSpec.describe Tarona::Game::TickCounter do
   end
 
   describe '#whose' do
-    entity_struct = Struct.new(:id)
-    let(:entity) { entity_struct.new(:foo) }
-    let(:entity2) { entity_struct.new(:bar) }
-    let(:entity3) { entity_struct.new(:baz) }
+    entity_struct = Struct.new(:id, :speed)
+    let(:entity) { entity_struct.new(:foo, 2) }
+    let(:entity2) { entity_struct.new(:bar, 0) }
+    let(:entity3) { Struct.new(:id).new(:baz) }
 
     it 'always returns the candidate\'s id when it is only candidate' do
       subj.candidates << entity
@@ -66,7 +66,7 @@ RSpec.describe Tarona::Game::TickCounter do
     it 'sequentially chooses all candidates' do
       subj.candidates.concat [entity, entity2, entity3]
       expect(subj.whose(1)).to eq(entity.id)
-      expect(subj.whose(2)).to eq(entity2.id)
+      expect(subj.whose(2)).to eq(entity.id)
       expect(subj.whose(3)).to eq(entity3.id)
       expect(subj.whose(4)).to eq(entity.id)
     end
