@@ -13,11 +13,14 @@ module Tarona
     #     The more HP an entity has the stronger attacks it can survive.
     # @!attribute [r] name
     #   @return [String] name of the entity for display or its i18n key.
+    # @!attribute [r] side
+    #   @return [Symbol] side of conflict (if there is conflict).
+    #     Entities with same side are allies.
     class Fighter < Tarona::Action::Entity
       include Tarona::Action::Workable
       include Tarona::Action::Movable
 
-      attr_reader :name, :interactions, :max_hp
+      attr_reader :name, :interactions, :max_hp, :side
       attr_accessor :hp
 
       # TODO

@@ -27,6 +27,7 @@ map:
           id: man
           template: man
           name: people/me
+          side: player
           tags:
             - :movable
             - :user_controlled
@@ -133,6 +134,7 @@ map:
           id: enemy_man
           template: man
           name: people/enemy
+          side: enemy
           tags: []
           hexes:
             :even_row: [[0, 0], [-1, 1], [0, 1]]
