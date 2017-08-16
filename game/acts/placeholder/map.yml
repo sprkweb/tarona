@@ -130,6 +130,7 @@ map:
     - :g: *sand
     - :g: *sand
     - :g: *sand
+    - :g: *sand
       :e:
         - &enemy_man !ruby/object:Tarona::Game::Fighter
           id: enemy_man
@@ -146,8 +147,6 @@ map:
           speed: 2
           interactions:
             hit: *hit
-    - :g: *sand
-      :e: [*enemy_man]
     - :g: *sand
       :e: [*enemy_man]
     - :g: *sand
@@ -168,7 +167,6 @@ map:
     - :g: *grass
     - :g: *grass
     - :g: *grass
-      :e: [*enemy_man]
     - :g: *grass
     - :g: *grass
       :e: [*enemy_man]
