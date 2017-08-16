@@ -149,7 +149,9 @@ var HUD = {
     env.io.on('tick_start', requestMovementPotential);
     var showMovementPotential = function(msg) {
       var sameEntity = msg.entity_id == essence.focused.id;
-      var samePlace = msg.from == essence.focused.coordinates;
+      var shownCenter = essence.focused.coordinates;
+      var samePlace =
+        msg.from[0] == shownCenter[0] && msg.from[1] == shownCenter[1];
       if (sameEntity && samePlace)
         reachableHighlight.change(_.map(msg.reachable.places, _.first));
     };

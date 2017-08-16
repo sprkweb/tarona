@@ -162,7 +162,7 @@ describe('HUD.HighlightHexes', function() {
     it('highlights reachable places after their list is received', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'cat', from: [1, 1], reachable: reachable
       });
       checkHexesStrict([[1, 2], [1, 0]], highlightAdded);
     });
@@ -170,7 +170,7 @@ describe('HUD.HighlightHexes', function() {
     it('does not highlight received places for other entity', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity2.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'dog', from: [1, 1], reachable: reachable
       });
       checkHexesStrict([], function() { expect(false).toBeTruthy(); });
     });
@@ -178,7 +178,7 @@ describe('HUD.HighlightHexes', function() {
     it('does not highlight received places with other center', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity2.coordinates, reachable: reachable
+        entity_id: 'cat', from: [2, 2], reachable: reachable
       });
       checkHexesStrict([], function() { expect(false).toBeTruthy(); });
     });
@@ -186,7 +186,7 @@ describe('HUD.HighlightHexes', function() {
     it('clears highlight when entity loses focus', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'cat', from: [1, 1], reachable: reachable
       });
       essence.happen('focusChange', { was: entity, now: null });
       checkHexes([[1, 2], [1, 0]], highlightRemoved);
@@ -195,7 +195,7 @@ describe('HUD.HighlightHexes', function() {
     it('clears highlight when new tick is started', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'cat', from: [1, 1], reachable: reachable
       });
       io.happen('tick_start');
       checkHexes([[1, 2], [1, 0]], highlightRemoved);
@@ -211,7 +211,7 @@ describe('HUD.HighlightHexes', function() {
     it('clears highlight when new entity gets focus', function() {
       essence.focused = entity;
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'cat', from: [1, 1], reachable: reachable
       });
       essence.happen('focusChange', { was: entity, now: entity2 });
       checkHexes([[1, 2], [1, 0]], highlightRemoved);
@@ -237,7 +237,7 @@ describe('HUD.HighlightHexes', function() {
       essence.focused = entity;
       display.happen('before_act');
       io.happen('movement_potential_show', {
-        entity_id: entity.id, from: entity.coordinates, reachable: reachable
+        entity_id: 'cat', from: [1, 1], reachable: reachable
       });
       checkHexesStrict([], function() { expect(false).toBeTruthy(); });
     });
