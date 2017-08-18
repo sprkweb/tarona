@@ -1,5 +1,3 @@
-
-
 /**
  * Script for Action.Generator which handles interaction request from player.
  * It means that it decides what does player want to do when he presses right
@@ -12,10 +10,6 @@ function PlayerInteract(env, data, essence) {
   this._init = function() {
     env.keybindings.bind(
       essence.field, 'interact:press', self._handleInteraction);
-    env.io.on('move', self._moveEntity);
-    env.display.on('before_act', function() {
-      env.io.remove_listener('move', self._moveEntity);
-    });
   };
 
   var self = this;
@@ -30,16 +24,6 @@ function PlayerInteract(env, data, essence) {
       else if (hoveredHex)
         PlayerInteract.Movement(env, data, focused, hoveredHex);
     }
-  };
-
-  this._moveEntity = function(inf) {
-    // The code below needs some defence.
-    var entity = essence.entities[inf.entity_id];
-    if (!(entity && inf.to)) return;
-    var prev_coords = entity.coordinates;
-    essence.entities_grid.remove(prev_coords, entity);
-    essence.entities_grid.add(inf.to, entity);
-    entity.move(inf.to);
   };
 
   this._init();

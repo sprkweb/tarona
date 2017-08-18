@@ -6,6 +6,7 @@ RSpec.describe Tarona::Game::StandardRules do
   let :session do
     { act_inf: { landscape: landscape, entities_index: entities_index } }
   end
+  let(:io) { double 'io' }
   let(:act) { double 'act' }
   let(:subj) { described_class.call act: act, session: session }
 
@@ -25,6 +26,7 @@ RSpec.describe Tarona::Game::StandardRules do
     entities_index.merge!(
       just_entity: place, ai_entity: place, user_entity: place
     )
+    allow(act).to receive(:io).and_return(io)
     allow(Tarona::Action::Catalyst).to receive(:new).and_return(catalyst_inst)
     allow(Tarona::Action::Mobilize).to receive(:call) do |*args|
       empty_command.call(*args)
@@ -32,6 +34,7 @@ RSpec.describe Tarona::Game::StandardRules do
     allow(Tarona::Game::InteractionsJudge).to receive(:call) do |*args|
       empty_command.call(*args)
     end
+    allow(Tarona::Game::Death).to receive(:call)
     allow(subj.tick_counter).to receive(:whose) do |num|
       case num
       when 11 then :just_entity
@@ -130,5 +133,14 @@ RSpec.describe Tarona::Game::StandardRules do
       check = subj.interactions_judge.context_acceptable
       expect(check.call(just_entity, user_entity, [3, 2])).to be false
     end
+  end
+
+  it 'calls death' do
+    expect(Tarona::Game::Death).to have_received(:call).with(
+      io: io,
+      landscape: landscape,
+      entities_index: entities_index,
+      tick_counter: subj.tick_counter
+    )
   end
 end

@@ -24,6 +24,7 @@ module Tarona
         init_tick_counter
         provide_movement
         provide_interactions
+        provide_death
       end
 
       def init_tick_counter
@@ -61,6 +62,15 @@ module Tarona
           end
         )
         @interactions_judge.on(:after_interact) { @tick_counter.tick }
+      end
+
+      def provide_death
+        @death = Death.call(
+          tick_counter: @tick_counter,
+          landscape: @landscape,
+          entities_index: @entities_index,
+          io: @act.io
+        )
       end
 
       def activity_candidates

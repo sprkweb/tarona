@@ -26,6 +26,7 @@ module Tarona
             'scripts/game_engine.js',
             ('scripts?' +
               %w[
+                action/scripts/move_entity.js
                 action/scripts/fov_operator.js
                 action/scripts/player_interact.js
                 action/scripts/hud.js

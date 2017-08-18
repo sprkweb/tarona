@@ -10,12 +10,8 @@ module Tarona
     end
 
     def set_victory_conditions
-      landscape = @tk.session[:act_inf][:landscape]
-      entities_index = @tk.session[:act_inf][:entities_index]
-      @io.on :interaction_request do |msg|
-        id = msg[:target]
-        target = Action::PlaceEntity.find landscape, entities_index, id
-        happen :end, :the_end if target.id == 'enemy_man' && target.hp <= 0
+      @io.on :remove do |msg|
+        happen :end, :the_end if msg[:entity_id] == 'enemy_man'
       end
     end
   end

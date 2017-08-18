@@ -1,5 +1,5 @@
 describe('Action.Entity', function() {
-  var entity, options;
+  var entity, parentElem, options;
   beforeEach(function() {
     options = {
       id: 'me',
@@ -8,7 +8,9 @@ describe('Action.Entity', function() {
       place: [10, 15],
       hexes: { even_row: [[0, 0], [0, 1]], odd_row: [[0, 0], [1, 1]] }
     };
+    parentElem = document.createElement('div');
     entity = new Action.Entity(options);
+    parentElem.appendChild(entity.elem);
   });
 
   it('saves its id', function() {
@@ -65,6 +67,14 @@ describe('Action.Entity', function() {
       entity.move(new_place);
       expect(entity.elem.getAttribute('x')).toEqual('142.89419162443235');
       expect(entity.elem.getAttribute('y')).toEqual('150');
+    });
+  });
+
+  describe('#remove', function() {
+    it('removes entity\'s element', function() {
+      expect(parentElem.childNodes.length).toEqual(1);
+      entity.remove();
+      expect(parentElem.childNodes.length).toEqual(0);
     });
   });
 

@@ -717,6 +717,13 @@ var Action = {
     };
 
     /**
+     * Removes entity's visualization.
+     */
+    this.remove = function() {
+      this.elem.parentNode.removeChild(this.elem);
+    };
+
+    /**
      * Moves visualization of the entity.
      * Unlike #move, it does not changes its coordinates and receives
      * coordinates in pixels.
