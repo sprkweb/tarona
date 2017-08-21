@@ -118,6 +118,19 @@ central entities' parts.
 When action is started, landscape with its content is converted into
 a simplier format and sent to the front-end.
 
+#### Level 3. Extensions for Action
+See `lib/tarona/act_types/action/` and `game/classes`.
+
+It is where the game engine ends and the game mechanics begin.
+
+There are a lot of various commands which extends game with their mechanics.
+I do not want to list them here, because it is the most actively developing
+part of the game. You can just read names of the files from the directories
+above.
+
+Some of them, just for example: `Mobilize` command allows player to move some
+of his entities and `Death` removes killed entities from map.
+
 ### Front-end
 See `public/scripts`.
 
