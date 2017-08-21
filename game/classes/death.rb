@@ -1,6 +1,7 @@
 module Tarona
   module Game
-    # Command which "kills" entities when their HPs are <= 0.
+    # Command which "kills" entities when their HPs are <= 0. The entities
+    # must have tag `:mortal` to be killed.
     # You must set the `:landscape`, `:entities_index`, `:tick_counter`
     # and `:io` options.
     class Death < Tardvig::Command
