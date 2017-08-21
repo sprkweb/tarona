@@ -20,16 +20,10 @@ module Tarona
     #   @return [Integer] how much actions can it do in a row.
     class Fighter < Tarona::Action::Entity
       include Tarona::Action::Workable
-      include Tarona::Action::Movable
+      include MoveType::StandardWalking
 
       attr_reader :name, :interactions, :max_hp, :side, :speed
       attr_accessor :hp
-
-      # TODO
-      # @see Tarona::Action::Movable
-      def move_cost(from, to)
-        1
-      end
 
       def raw
         result = super

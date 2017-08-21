@@ -35,10 +35,11 @@ map:
           hexes:
             :even_row: [[0, 0], [-1, 1], [0, 1]]
             :odd_row: [[0, 0], [0, 1], [1, 1]]
-          max_energy: 10
+          max_energy: 600
           max_hp: 100
           hp: 100
           speed: 2
+          move_speed: 16
           interactions:
             hit: &hit !ruby/object:Tarona::Game::Attack
               name: attacks/hit
@@ -143,10 +144,11 @@ map:
           hexes:
             :even_row: [[0, 0], [-1, 1], [0, 1]]
             :odd_row: [[0, 0], [0, 1], [1, 1]]
-          max_energy: 150
+          max_energy: 600
           max_hp: 100
           hp: 100
           speed: 2
+          move_speed: 16
           interactions:
             hit: *hit
     - :g: *sand
