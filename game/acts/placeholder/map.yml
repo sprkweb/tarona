@@ -32,9 +32,11 @@ map:
             - :movable
             - :user_controlled
             - :mortal
+            - :regen_energy
           hexes:
             :even_row: [[0, 0], [-1, 1], [0, 1]]
             :odd_row: [[0, 0], [0, 1], [1, 1]]
+          regen_energy: 200
           max_energy: 600
           max_hp: 100
           hp: 100

@@ -25,6 +25,7 @@ module Tarona
         provide_movement
         provide_interactions
         provide_death
+        provide_energy_regen
       end
 
       def init_tick_counter
@@ -70,6 +71,14 @@ module Tarona
           landscape: @landscape,
           entities_index: @entities_index,
           io: @act.io
+        )
+      end
+
+      def provide_energy_regen
+        RegenEnergy.call(
+          tick_counter: @tick_counter,
+          landscape: @landscape,
+          entities_index: @entities_index
         )
       end
 

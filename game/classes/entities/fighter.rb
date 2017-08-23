@@ -18,11 +18,13 @@ module Tarona
     #     Entities with same side are allies.
     # @!attribute [r] speed
     #   @return [Integer] how much actions can it do in a row.
+    # @!attribute [r] regen_energy
+    #   @see Tarona::Game::RegenEnergy
     class Fighter < Tarona::Action::Entity
       include Tarona::Action::Workable
       include MoveType::StandardWalking
 
-      attr_reader :name, :interactions, :max_hp, :side, :speed
+      attr_reader :name, :interactions, :max_hp, :side, :speed, :regen_energy
       attr_accessor :hp
 
       def raw
