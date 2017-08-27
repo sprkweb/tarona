@@ -35,6 +35,8 @@ RSpec.describe Tarona::Game::StandardRules do
       empty_command.call(*args)
     end
     allow(Tarona::Game::Death).to receive(:call)
+    allow(Tarona::Game::RegenEnergy).to receive(:call)
+    allow(Tarona::Game::SkipTick).to receive(:call)
     allow(subj.tick_counter).to receive(:whose) do |num|
       case num
       when 11 then :just_entity

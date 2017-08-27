@@ -1,32 +1,26 @@
 describe('HUD.Generator', function() {
-  var realEntityInfo, realHighlightHexes;
+  var realParts;
   beforeAll(function() {
-    realEntityInfo = HUD.EntityInfo;
-    realHighlightHexes = HUD.HighlightHexes;
+    realParts = HUD.PARTS;
   });
   afterAll(function() {
-    HUD.EntityInfo = realEntityInfo;
-    HUD.HighlightHexes = realHighlightHexes;
+    HUD.PARTS = realParts;
   });
 
-  var env, data, essence, area, parts, partsWithElems, partsWithoutElems;
+  var area;
   beforeEach(function() {
     area = document.createElement('div');
-    env = { area: area };
-    data = {};
-    essence = {};
-    partsWithElems = ['EntityInfo'];
-    partsWithoutElems = ['HighlightHexes'];
-    parts = partsWithoutElems.concat(partsWithElems);
-    partsWithElems.forEach(function(part) {
-      var elem = document.createElement('div');
-      elem.innerHTML = part;
-      spyOn(HUD, part).and.returnValue(elem);
-    });
-    partsWithoutElems.forEach(function(part) {
-      spyOn(HUD, part).and.returnValue('foo');
-    });
-    HUD.Generator(env, data, essence);
+    HUD.PARTS = [
+      function() {
+        var elem = document.createElement('div');
+        elem.innerHTML = 'Content';
+        return elem;
+      },
+      function() {
+        return 'foo';
+      }
+    ];
+    HUD.Generator({ area: area }, {}, {});
   });
 
   it('creates HUD container', function() {
@@ -36,17 +30,9 @@ describe('HUD.Generator', function() {
     expect(container.className).toEqual('hud');
   });
 
-  it('calls its parts', function() {
-    parts.forEach(function(part) {
-      expect(HUD[part]).toHaveBeenCalledWith(env, data, essence);
-    });
-  });
-
   it('appends returned Elements from parts to the container', function() {
     var container = area.childNodes[0];
-    expect(partsWithElems.length).toEqual(container.childNodes.length)
-    partsWithElems.forEach(function(part, num) {
-      expect(container.childNodes[num].innerHTML).toEqual(part);
-    });
+    expect(container.childNodes.length).toEqual(1);
+    expect(container.childNodes[0].innerHTML).toEqual('Content');
   });
 });

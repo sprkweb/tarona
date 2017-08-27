@@ -20,16 +20,8 @@ var HUD = {
       return container;
     };
 
-    var parts = [
-      HUD.EntityInfo,
-      HUD.HighlightHexes,
-
-      HUD.Space,
-
-      HUD.SkipTick
-    ];
     var container = createContainer(env);
-    parts.forEach(function(part) {
+    HUD.PARTS.forEach(function(part) {
       var partElem = part(env, data, essence);
       if (partElem instanceof Element) container.appendChild(partElem);
     });
@@ -189,3 +181,12 @@ var HUD = {
     return button;
   }
 };
+
+HUD.PARTS = [
+  HUD.EntityInfo,
+  HUD.HighlightHexes,
+
+  HUD.Space,
+
+  HUD.SkipTick
+];

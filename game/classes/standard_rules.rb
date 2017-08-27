@@ -17,6 +17,7 @@ module Tarona
 
       private
 
+      # TODO: Refactor
       def process
         @landscape = @session[:act_inf][:landscape]
         @entities_index = @session[:act_inf][:entities_index]
