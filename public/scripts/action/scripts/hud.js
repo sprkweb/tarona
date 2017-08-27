@@ -20,12 +20,25 @@ var HUD = {
       return container;
     };
 
-    var parts = [HUD.EntityInfo, HUD.HighlightHexes];
+    var parts = [
+      HUD.EntityInfo,
+      HUD.HighlightHexes,
+
+      HUD.Space,
+
+      HUD.SkipTick
+    ];
     var container = createContainer(env);
     parts.forEach(function(part) {
       var partElem = part(env, data, essence);
       if (partElem instanceof Element) container.appendChild(partElem);
     });
+  },
+
+  Space: function() {
+    var space = document.createElement('div');
+    space.classList.add('hud-space');
+    return space;
   },
 
   /**
@@ -165,5 +178,14 @@ var HUD = {
       env.io.remove_listener('tick_start', requestMovementPotential);
       env.io.remove_listener('movement_potential_show', showMovementPotential);
     });
+  },
+
+  SkipTick: function(env, data) {
+    var button = document.createElement('button');
+    button.innerHTML = data.subject.i18n['hud/skip_tick'];
+    button.addEventListener('click', function() {
+      env.io.happen('skip_tick_request');
+    });
+    return button;
   }
 };

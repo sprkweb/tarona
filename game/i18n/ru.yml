@@ -30,6 +30,8 @@ entity_info/health: Здоровье
 entity_info/energy: Энергия
 # Названия атак
 attacks/hit: Удар
+# Названия элементов интерфейса
+hud/skip_tick: Пропустить ход
 # Названия людей
 people/me: Я
 people/enemy: Враг

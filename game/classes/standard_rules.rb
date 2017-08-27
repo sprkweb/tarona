@@ -39,6 +39,7 @@ module Tarona
             tick_counter.tick
           end
         end
+        SkipTick.call tick_counter: @tick_counter, act: @act, session: @session
       end
 
       def provide_movement
