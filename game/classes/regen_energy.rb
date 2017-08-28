@@ -1,6 +1,5 @@
 module Tarona
   module Game
-    # TODO: spec
     # Command which regenerates energy for entities with tag `:regen_energy`
     # and attribute with the same name (it shows how much energy must
     # be regenerated).
