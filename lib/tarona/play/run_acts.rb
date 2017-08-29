@@ -41,8 +41,8 @@ module Tarona
       def wait_for_next_act
         blocker = new_blocker
         @current_act.on_first :end do |next_act|
-          unblock(blocker)
           @next_act = @acts[next_act]
+          unblock(blocker)
         end
         yield if block_given?
         block_execution(blocker)
