@@ -25,7 +25,7 @@ describe('HUD.TickNum', function() {
   it('has translated label', function() {
     var label = container.childNodes[0].childNodes[0];
     expect(label.tagName).toEqual('SPAN');
-    expect(label.innerHTML).toEqual('foo:');
+    expect(label.innerHTML).toEqual('foo: ');
   });
 
   it('shows tick number', function() {
@@ -36,14 +36,14 @@ describe('HUD.TickNum', function() {
 
   it('updates tick number after new tick', function() {
     env.io.happen('tick_start', { num: 17 });
-      var num = container.childNodes[0].childNodes[1];
+    var num = container.childNodes[0].childNodes[1];
     expect(num.innerHTML).toEqual('17');
   });
 
   it('does not update tick number after act is ended', function() {
     env.display.happen('before_act');
     env.io.happen('tick_start', { num: 17 });
-      var num = container.childNodes[0].childNodes[1];
+    var num = container.childNodes[0].childNodes[1];
     expect(num.innerHTML).toEqual('12');
   });
 });

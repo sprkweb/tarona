@@ -8,7 +8,9 @@ describe('HUD.EntityInfo', function() {
       display: Events.addEventsTo({})
     };
     data = {
-      subject: { i18n: { entity_info: { health: 'bar', energy: 'baz' } } }
+      subject: {
+        i18n: { 'entity_info/health': 'bar', 'entity_info/energy': 'baz' }
+      }
     };
     entity = { id: 'foo' };
     essence = Events.addEventsTo({ focused: entity });
@@ -43,7 +45,7 @@ describe('HUD.EntityInfo', function() {
   });
 
   var spanWithText = function(elem, text) {
-    return !!((elem.tagName == 'SPAN') && (elem.innerHTML = text));
+    return !!((elem.tagName == 'SPAN') && (elem.innerHTML == text));
   };
 
   it('shows entity information when it is received', function() {
@@ -63,7 +65,7 @@ describe('HUD.EntityInfo', function() {
     env.io.happen('entity_info_show', params);
     var children = container.childNodes;
     expect(children[1].tagName).toEqual('P');
-    expect(spanWithText(children[1].childNodes[0], 'bar')).toBe(true);
+    expect(spanWithText(children[1].childNodes[0], 'bar: ')).toBe(true);
     expect(spanWithText(children[1].childNodes[1], '2/3')).toBe(true);
   });
 
@@ -71,7 +73,7 @@ describe('HUD.EntityInfo', function() {
     env.io.happen('entity_info_show', params);
     var children = container.childNodes;
     expect(children[2].tagName).toEqual('P');
-    expect(spanWithText(children[2].childNodes[0], 'baz')).toBe(true);
+    expect(spanWithText(children[2].childNodes[0], 'baz: ')).toBe(true);
     expect(spanWithText(children[2].childNodes[1], '5/8')).toBe(true);
   });
 
@@ -83,7 +85,7 @@ describe('HUD.EntityInfo', function() {
     expect(children[0].tagName).toEqual('P');
     expect(children[0].innerHTML).toEqual('cba');
     expect(children[1].tagName).toEqual('P');
-    expect(spanWithText(children[1].childNodes[0], 'baz')).toBe(true);
+    expect(spanWithText(children[1].childNodes[0], 'baz: ')).toBe(true);
     expect(spanWithText(children[1].childNodes[1], '1/9')).toBe(true);
   });
 

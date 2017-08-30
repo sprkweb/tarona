@@ -177,7 +177,7 @@ var HUD = {
     container.classList.add('info_list');
     var elem = container.appendChild(document.createElement('p'));
     var label = elem.appendChild(document.createElement('span'));
-    label.innerHTML = data.subject.i18n['hud/tick_num'] + ':';
+    label.innerHTML = data.subject.i18n['hud/tick_num'] + ': ';
     var num = elem.appendChild(document.createElement('span'));
 
     num.innerHTML = data.subject.tick;
