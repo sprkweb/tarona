@@ -45,6 +45,12 @@ module Tarona
         @rules = Game::StandardRules.call act: self, session: @tk.session
         Game::HudSupport.call act: self, session: @tk.session
       end
+
+      def display_format
+        result = super
+        result[:tick] = @tk.session[:act_inf][:tick]
+        result
+      end
     end
   end
 end

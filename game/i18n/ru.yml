@@ -32,6 +32,7 @@ entity_info/energy: Энергия
 attacks/hit: Удар
 # Названия элементов интерфейса
 hud/skip_tick: Пропустить ход
+hud/tick_num: Мгновение
 # Названия людей
 people/me: Я
 people/enemy: Враг

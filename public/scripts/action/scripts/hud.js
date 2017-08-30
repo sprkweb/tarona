@@ -172,6 +172,26 @@ var HUD = {
     });
   },
 
+  TickNum: function(env, data) {
+    var container = document.createElement('div');
+    container.classList.add('info_list');
+    var elem = container.appendChild(document.createElement('p'));
+    var label = elem.appendChild(document.createElement('span'));
+    label.innerHTML = data.subject.i18n['hud/tick_num'] + ':';
+    var num = elem.appendChild(document.createElement('span'));
+
+    num.innerHTML = data.subject.tick;
+    var updateTickDisplay = function(inf) {
+      num.innerHTML = inf.num;
+    };
+    env.io.on('tick_start', updateTickDisplay);
+    env.display.on('before_act', function() {
+      env.io.remove_listener('tick_start', updateTickDisplay);
+    });
+
+    return container;
+  },
+
   SkipTick: function(env, data) {
     var button = document.createElement('button');
     button.innerHTML = data.subject.i18n['hud/skip_tick'];
@@ -183,10 +203,13 @@ var HUD = {
 };
 
 HUD.PARTS = [
-  HUD.EntityInfo,
   HUD.HighlightHexes,
+
+  // Visible parts
+  HUD.EntityInfo,
 
   HUD.Space,
 
+  HUD.TickNum,
   HUD.SkipTick
 ];

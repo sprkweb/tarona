@@ -62,4 +62,23 @@ RSpec.describe Tarona::Game::StandardAction do
     expect(Tarona::Game::HudSupport).to have_received(:call)
       .with(act: act, session: params[:tk].session)
   end
+
+  it 'includes additional data in the client notification' do
+    allow(tk).to receive(:session).and_return(
+      act_inf: {
+        tick: 3,
+        landscape: Struct.new(:raw).new([]),
+        entities_index: {}
+      }
+    )
+    expect(params[:io]).to receive(:happen).with(
+      :act_start,
+      hash_including(
+        subject: hash_including(
+          tick: 3
+        )
+      )
+    )
+    test_act.call params
+  end
 end
