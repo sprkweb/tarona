@@ -48,18 +48,28 @@ PlayerInteract.EntityInteraction = function(env, data, initiator, target) {
   this._request = function(env, initiator, target) {
     var message = this._createAskingPopup(initiator, target);
     if (message) {
-      message.on('close', function(formData) {
-        var interactionId = (formData ? formData.clicked : null);
-        if (interactionId) {
-          env.io.happen('interaction_request',
-            {
-              from_entity: initiator.id,
-              target: target.id,
-              interaction_id: interactionId
-            });
-        }
-      });
+      message.on('close', this._sendInteractionRequest);
+      // TODO: I do not know how to test it automatically :/
+      setTimeout(function() {
+        var binding;
+        binding = env.keybindings.bind(document, 'interact:press', function() {
+          message.close();
+          binding.remove();
+        });
+      }, 0);
       message.show();
+    }
+  };
+
+  this._sendInteractionRequest = function(formData) {
+    var interactionId = (formData ? formData.clicked : null);
+    if (interactionId) {
+      env.io.happen('interaction_request',
+        {
+          from_entity: initiator.id,
+          target: target.id,
+          interaction_id: interactionId
+        });
     }
   };
 
