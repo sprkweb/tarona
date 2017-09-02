@@ -5,15 +5,21 @@ module Tarona
     end
 
     get '/' do
-      content = erb :menu, locals: { menu_items: [
-        ['/play', tk.i18n['menu/continue']]
-      ] }
+      legal = ''
+      File.read('LICENSE').each_line do |line|
+        next unless line.start_with?('Copyright')
+        legal = line.gsub(/\(c\)/, '&copy;')
+        break
+      end
       page_options = {
         title: tk.i18n['game_name'],
-        content: content,
+        legal: legal,
+        menu_items: [
+          ['/play', tk.i18n['menu/continue']]
+        ],
         styles: ['styles/main']
       }
-      erb :page, layout: :index, locals: { options: page_options }
+      erb :main_menu, layout: :index, locals: { options: page_options }
     end
 
     get '/play' do

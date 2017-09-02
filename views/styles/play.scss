@@ -2,8 +2,7 @@
 
 @mixin ui {
   @include shadow(0 0 5px 0 rgb(75, 75, 75));
-  background-color: rgb(75, 75, 75);
-  color: #ffffff;
+  @include inverse;
 }
 
 .page {
@@ -14,8 +13,10 @@
 }
 
 #text {
-  width: 50%;
-  margin: 2em auto;
+  @include inverse;
+  box-sizing: border-box;
+  grid-column: 1 / span 2;
+  padding: 2em 25%;
 }
 
 #area {

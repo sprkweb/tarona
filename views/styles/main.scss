@@ -27,6 +27,11 @@ $link-color: #5DA130;
   border-radius: $radius;
 }
 
+@mixin inverse {
+  background-color: rgb(75, 75, 75);
+  color: #ffffff;
+}
+
 @mixin bent($shadow-color, $color, $depth) {
   background-color: $color;
   @include shadow(0 $depth 0 0 $shadow-color);
@@ -46,6 +51,14 @@ $link-color: #5DA130;
     margin-top: $depth;
     margin-bottom: 0;
   }
+}
+
+@mixin standard_button {
+  @include rounded(2px);
+  @include button(rgb(210, 210, 210), rgb(230, 230, 230), 3px);
+  font-size: $font-size * 0.9;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
 }
 
 html, body {
@@ -142,11 +155,7 @@ nav.menu ul {
 }
 
 button, input[type="submit"], input[type="button"] {
-  @include rounded(2px);
-  @include button(rgb(210, 210, 210), rgb(230, 230, 230), 3px);
-  font-size: $font-size * 0.9;
-  padding: 0.4em 0.8em;
-  cursor: pointer;
+  @include standard_button;
 }
 
 input[type="text"], textarea {
@@ -167,5 +176,46 @@ input[type="text"], textarea {
 
   li {
     cursor: pointer;
+  }
+}
+
+.main_menu {
+  @include inverse;
+
+  // Yes, I know that grid is not needed here. It is for future.
+  display: grid;
+  height: 100%;
+  grid-template-rows: auto 1fr auto;
+  box-sizing: border-box;
+
+  header, footer, nav {
+    padding: 3em;
+  }
+
+  header, footer {
+    grid-column: 1 / span 2;
+  }
+
+  nav {
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      li a {
+        @include standard_button;
+        font-size: $font-size;
+        color: $text-color;
+
+        &:hover, &:active, &focus {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 72px;
   }
 }

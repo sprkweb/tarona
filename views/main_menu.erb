@@ -1,0 +1,17 @@
+<div class="main_menu">
+  <header>
+    <h1><%= options[:title] %></h1>
+  </header>
+
+  <nav>
+    <ul>
+    <% options[:menu_items].each do |item| %>
+      <li><a href="<%= item[0] %>"><%= item[1] %></a></li>
+    <% end %>
+    </ul>
+  </nav>
+
+  <footer>
+    <%= options[:legal] %>
+  </footer>
+</div>
