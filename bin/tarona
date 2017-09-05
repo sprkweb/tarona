@@ -4,3 +4,49 @@ Thread.abort_on_exception = true
 
 require_relative '../lib/tarona'
 require 'game/game'
+
+toolkit = Tarona::Toolkit
+Tarona::WebServer.tk = toolkit.new
+doorman = Tarona::Doorman.new(
+  io: Tarona::WebSocket,
+  server: Tarona::WebServer,
+  game: Tarona::Play,
+  game_options: {
+    acts: {
+      intro: Tarona::Introduction,
+      pholder: Tarona::Placeholder,
+      the_end: Tarona::TheEnd
+    },
+    first_act: :intro,
+    tk: toolkit
+  }
+)
+
+ENV['RACK_ENV'] = 'production'
+rack_options = {
+  app: doorman,
+  server: :puma
+}
+rack_options[:Port] = ENV['PORT'] if ENV['PORT']
+rack_options[:Host] = ENV['IP'] if ENV['IP']
+
+def open_in_browser(uri)
+  success = false
+  if ENV['OS'] == 'Windows_NT'
+    # Windows?
+    success = system "start #{uri}"
+  else
+    # Unix?
+    success = system "xdg-open #{uri}"
+  end
+  unless success
+    puts 'Can not find default browser. Open http://localhost:9292 manually'
+  end
+end
+
+Rack::Server.new(rack_options).start do |launcher|
+  # Puma-specific code
+  launcher.events.on_booted do
+    open_in_browser 'http://localhost:9292'
+  end
+end
