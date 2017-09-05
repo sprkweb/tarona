@@ -1,6 +1,6 @@
 describe('PlayerInteract.EntityInteraction', function() {
   var subj, env, io, area, listener, message, initiator, target, interactions,
-    data;
+    data, keybindings;
 
   var realPopUp;
   beforeAll(function() {
@@ -20,7 +20,8 @@ describe('PlayerInteract.EntityInteraction', function() {
     listener = jasmine.createSpy();
     io = Events.addEventsTo({});
     area = {};
-    env = { io: io, area: area };
+    keybindings = { bind: jasmine.createSpy('keybindings#bind') }
+    env = { io: io, area: area, keybindings: keybindings };
     subj = PlayerInteract.EntityInteraction;
     message = Events.addEventsTo({
       show: jasmine.createSpy('message#show')
