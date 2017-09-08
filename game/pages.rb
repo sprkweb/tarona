@@ -15,11 +15,18 @@ module Tarona
         title: tk.i18n['game_name'],
         legal: legal,
         menu_items: [
-          ['/play', tk.i18n['menu/continue']]
+          ['/play', tk.i18n['menu/continue']],
+          ['/new_game', tk.i18n['menu/new_game']]
         ],
         styles: ['styles/main']
       }
       erb :main_menu, layout: :index, locals: { options: page_options }
+    end
+
+    get '/new_game' do
+      erb(:index, locals: {
+        options: { title: '', scripts: { before: ['scripts/new_game.js'] } }
+      }) {}
     end
 
     get '/play' do
