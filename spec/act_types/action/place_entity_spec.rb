@@ -185,4 +185,42 @@ RSpec.describe Tarona::Action::PlaceEntity do
       expect(modul.find(landscape, entities_index, :bar)).to be entity2
     end
   end
+
+  describe '#distance' do
+    entity_class = Struct.new(:id, :hexes)
+    let :entity3 do
+      entity_class.new(
+        :entity3,
+        even_row: [[0, 0], [0, -1], [1, -2]],
+        odd_row: [[0, 0], [1, -1], [1, -2]]
+      )
+    end
+    let :entity4 do
+      entity_class.new(
+        :entity4,
+        even_row: [[0, 0], [0, 1]], odd_row: [[0, 0], [1, 1]]
+      )
+    end
+    let :entity5 do
+      entity_class.new(
+        :entity5,
+        even_row: [[0, 0], [-1, 0]], odd_row: [[0, 0], [-1, 0]]
+      )
+    end
+
+    let(:index) { { entity3: [3, 4], entity4: [3, 3], entity5: [6, 0] } }
+
+    it 'returns distance between two nearest parts of entities' do
+      expect(modul.distance(index, entity3, entity5)).to eq(2)
+    end
+
+    it 'returns 1 when they stand alongside' do
+      index[:entity4] = [2, 2]
+      expect(modul.distance(index, entity3, entity4)).to eq(1)
+    end
+
+    it 'returns 0 when entities are on the same place' do
+      expect(modul.distance(index, entity3, entity4)).to eq(0)
+    end
+  end
 end

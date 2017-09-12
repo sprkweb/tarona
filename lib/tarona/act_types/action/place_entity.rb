@@ -83,6 +83,25 @@ module Tarona
         return nil unless place && place[:e]
         place[:e].find { |x| x.id == id }
       end
+
+      # Finds distance between the two nearest parts of two entities.
+      # @param first [Entity] first entity
+      # @param sec [Entity] second entity
+      # @return [Integer, nil] distance. If the parts are on the same place,
+      #   then 0; if they have one hex between, then 2, etc.
+      #   Nil if the distance is not found.
+      def distance(entities_index, first, sec)
+        entity1_parts = places_taken first, entities_index[first.id]
+        entity2_parts = places_taken sec, entities_index[sec.id]
+        min_dist = nil
+        entity1_parts.each do |entity1_part|
+          entity2_parts.each do |entity2_part|
+            dist = Cartographer.distance(entity1_part, entity2_part)
+            min_dist = dist if min_dist.nil? || dist < min_dist
+          end
+        end
+        min_dist
+      end
     end
   end
 end
