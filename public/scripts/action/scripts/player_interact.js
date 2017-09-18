@@ -97,9 +97,7 @@ PlayerInteract.EntityInteraction = function(env, data, initiator, target) {
 
   this._available = function(initiator, target) {
     return _.pick(initiator.options.interactions, function(interaction) {
-      return (interaction.distance >= Action.HexGrid.distance(
-          initiator.coordinates, target.coordinates
-        ));
+      return (interaction.distance >= initiator.distance(target));
     });
   };
 

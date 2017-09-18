@@ -12,7 +12,11 @@ RSpec.describe Tarona::Game::Interaction do
   let(:target) { double 'target' }
   before :each do
     allow(target).to receive(:id).and_return(:target)
+    allow(target).to receive(:hexes)
+      .and_return(even_row: [[0, 0], [1, 0]], odd_row: [[0, 0], [1, 0]])
     allow(owner).to receive(:id).and_return(:owner)
+    allow(owner).to receive(:hexes)
+      .and_return(even_row: [[0, 0]], odd_row: [[0, 0]])
   end
 
   describe '#new' do
@@ -53,6 +57,11 @@ RSpec.describe Tarona::Game::Interaction do
 
     it 'is true when target is at maximal distance' do
       session[:act_inf][:entities_index][:target] = [4, 2]
+      expect(subj.applicable?(session, target)).to be true
+    end
+
+    it 'is true when part of target is at maximal distance' do
+      session[:act_inf][:entities_index][:target] = [3, 2]
       expect(subj.applicable?(session, target)).to be true
     end
   end

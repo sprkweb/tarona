@@ -116,4 +116,42 @@ describe('Action.Entity', function() {
       expect(entity.hexes([3, 2])).toEqual([[3, 2], [3, 3]]);
     });
   });
+
+  describe('#distance', function() {
+    var entity2, entity3, entity4;
+    beforeEach(function() {
+      entity2 = new Action.Entity(_.extend(_.clone(options), {
+        place: [3, 4],
+        hexes: {
+          even_row: [[0, 0], [0, -1], [1, -2]],
+          odd_row: [[0, 0], [1, -1], [1, -2]]
+        }
+      }));
+      entity3 = new Action.Entity(_.extend(_.clone(options), {
+        place: [3, 3],
+        hexes: {
+          even_row: [[0, 0], [0, 1]], odd_row: [[0, 0], [1, 1]]
+        }
+      }));
+      entity4 = new Action.Entity(_.extend(_.clone(options), {
+        place: [6, 0],
+        hexes: {
+          even_row: [[0, 0], [-1, 0]], odd_row: [[0, 0], [-1, 0]]
+        }
+      }));
+    });
+
+    it('returns distance between two nearest parts of entities', function() {
+      expect(entity2.distance(entity4)).toEqual(2);
+    });
+
+    it('returns 1 when they stand alongside', function() {
+      entity3.coordinates = [2, 2];
+      expect(entity2.distance(entity3)).toEqual(1);
+    });
+
+    it('returns 0 when entities are on the same place', function() {
+      expect(entity2.distance(entity3)).toEqual(0);
+    });
+  });
 });

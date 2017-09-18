@@ -34,9 +34,8 @@ module Tarona
       # @return [TrueClass,FalseClass] whether the interaction can be applied
       def applicable?(session, entity)
         @distance.zero? ||
-          (@distance >= Tarona::Action::Cartographer.distance(
-            session[:act_inf][:entities_index][@owner.id],
-            session[:act_inf][:entities_index][entity.id]
+          (@distance >= Tarona::Action::PlaceEntity.distance(
+            session[:act_inf][:entities_index], @owner, entity
           ))
       end
 

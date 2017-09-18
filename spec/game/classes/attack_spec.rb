@@ -15,13 +15,17 @@ RSpec.describe Tarona::Game::Attack do
     )
   end
 
-  target_class = Struct.new :id do
+  target_class = Struct.new :id, :hexes do
     attr_accessor :hp
   end
-  let(:target) { target_class.new :target }
+  let :target do
+    target_class.new :target, even_row: [[0, 0]], odd_row: [[0, 0]]
+  end
   before :each do
     target.hp = 100
     allow(owner).to receive(:id).and_return(:owner)
+    allow(owner).to receive(:hexes)
+      .and_return(even_row: [[0, 0]], odd_row: [[0, 0]])
   end
 
   it 'is interaction' do

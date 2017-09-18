@@ -45,7 +45,7 @@ map:
           interactions:
             hit: &hit !ruby/object:Tarona::Game::Attack
               name: attacks/hit
-              distance: 2
+              distance: 1
               owner: *man
               damage: 34
     - :g: *grass

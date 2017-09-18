@@ -30,8 +30,10 @@ describe('PlayerInteract.EntityInteraction', function() {
       abc: { distance: 3, name: 'Qwe' },
       cba: { distance: 5, name: 'Ewq' }
     };
-    initiator = { id: 'foo', coordinates: [2, 3], options:
-      { interactions: interactions } };
+    initiator = {
+      id: 'foo', coordinates: [2, 3], options: { interactions: interactions },
+      distance: function(x) { if (x === target) return 3; }
+    };
     target = { id: 'bar', coordinates: [3, 3] };
     data = { subject: { i18n: { Qwe: 'Foo' } } };
   });
@@ -71,7 +73,7 @@ describe('PlayerInteract.EntityInteraction', function() {
   });
 
   it('does not show interactions with too short maximal distance', function() {
-    target = { id: 'bar', coordinates: [5, 5] };
+    initiator.distance = function() { return 4; };
     subj(env, data, initiator, target);
     var content = document.createElement('div');
     content.innerHTML = InteractivePopUp.constructor.calls.argsFor(0)[1];
@@ -81,7 +83,7 @@ describe('PlayerInteract.EntityInteraction', function() {
   });
 
   it('does not show popup when no interactions is applicable', function() {
-    target = { id: 'bar', coordinates: [7, 7] };
+    initiator.distance = function() { return 6; };
     subj(env, data, initiator, target);
     expect(InteractivePopUp.constructor).not.toHaveBeenCalled();
   });

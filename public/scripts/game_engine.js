@@ -768,6 +768,26 @@ var Action = {
     };
 
     /**
+     * @param {Action.Entity} target_entity
+     * @returns {number|null} distance from this to target entity or null
+     */
+    this.distance = function(target_entity) {
+      // TODO: fixme (see tests)
+      var entity1_parts = this.hexes(this.coordinates);
+      var entity2_parts = target_entity.hexes(target_entity.coordinates);
+      var min_dist = null;
+      entity1_parts.forEach(function(entity1_part) {
+        entity2_parts.forEach(function(entity2_part) {
+          var dist = Action.HexGrid.distance(entity1_part, entity2_part);
+          if ((min_dist === null) || (dist < min_dist)) {
+            min_dist = dist;
+          };
+        });
+      });
+      return min_dist;
+    };
+
+    /**
      * @see arguments given
      * @type string
      */
