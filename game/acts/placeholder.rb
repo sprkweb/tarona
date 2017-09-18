@@ -10,9 +10,13 @@ module Tarona
     end
 
     def set_victory_conditions
-      @io.on :remove do |msg|
-        happen :end, :the_end if msg[:entity_id] == 'enemy_man'
+      check_if_victory = proc do |msg|
+        if msg[:entity_id] == 'enemy_man'
+          happen :end, :the_end
+          @io.remove_listener(:remove, &check_if_victory)
+        end
       end
+      @io.on(:remove, &check_if_victory)
     end
   end
 end
