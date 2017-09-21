@@ -41,15 +41,29 @@ module Tarona
         end
       end
 
+      def display_format
+        result = super
+        result[:tick] = @tk.session[:act_inf][:tick]
+        result
+      end
+
+      protected
+
+      def init_act
+        super
+        catalyst = create_catalyst @tk.session[:act_inf][:landscape]
+        @tk.session[:act_inf][:catalyst] = catalyst
+      end
+
       def set_listeners
         @rules = Game::StandardRules.call act: self, session: @tk.session
         Game::HudSupport.call act: self, session: @tk.session
       end
 
-      def display_format
-        result = super
-        result[:tick] = @tk.session[:act_inf][:tick]
-        result
+      private
+
+      def create_catalyst(landscape)
+        Action::Catalyst.new Action::Catalyst::PlacesTaken, landscape
       end
     end
   end

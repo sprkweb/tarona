@@ -44,7 +44,7 @@ module Tarona
       end
 
       def provide_movement
-        catalyst = create_entities_catalyst
+        catalyst = @session[:act_inf][:catalyst]
         @mobilize = Action::Mobilize.call(
           act: @act,
           map: @landscape,
@@ -94,11 +94,6 @@ module Tarona
 
       def find_entity(id)
         Action::PlaceEntity.find @landscape, @entities_index, id
-      end
-
-      def create_entities_catalyst
-        places_taken_method = Action::PlaceEntity.method(:places_taken)
-        Action::Catalyst.new(places_taken_method, @landscape)
       end
 
       def can_entity_act?(entity_id)

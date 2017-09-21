@@ -4,6 +4,15 @@ module Tarona
     #
     # @see Tarona::Action::FindPath
     class Catalyst
+      # Just a wrapper of a method from another module.
+      # It is needed because PlaceEntity.method(:places_taken) can not be
+      # saved inside YAML file.
+      module PlacesTaken
+        def call(*args)
+          PlaceEntity.places_taken(*args)
+        end
+      end
+
       # Initializes an instance of the catalyst for current act.
       # @param get_places [#call] any object with method `#call` which returns
       #   an array of coordinates (`[[x, y], ...]`) which are places

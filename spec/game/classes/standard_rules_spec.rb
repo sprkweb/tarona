@@ -3,9 +3,17 @@ RSpec.describe Tarona::Game::StandardRules do
     Tarona::Action::Landscape.new(Array.new(10) { Array.new(10) { {} } })
   end
   let(:entities_index) { {} }
+  let(:catalyst_inst) { double 'catalyst_inst' }
   let :session do
-    { act_inf: { landscape: landscape, entities_index: entities_index } }
+    {
+      act_inf: {
+        landscape: landscape,
+        entities_index: entities_index,
+        catalyst: catalyst_inst
+      }
+    }
   end
+
   let(:io) { double 'io' }
   let(:act) { double 'act' }
   let(:subj) { described_class.call act: act, session: session }
@@ -14,8 +22,6 @@ RSpec.describe Tarona::Game::StandardRules do
   let(:just_entity) { entity_class.new(:just_entity, [], nil) }
   let(:ai_entity) { entity_class.new(:ai_entity, [], double('ai')) }
   let(:user_entity) { entity_class.new(:user_entity, [:user_controlled], nil) }
-
-  let(:catalyst_inst) { double 'catalyst_inst' }
   empty_command = Class.new(Tardvig::Command) do
     include Tardvig::Events
     def process; end
@@ -27,7 +33,6 @@ RSpec.describe Tarona::Game::StandardRules do
       just_entity: place, ai_entity: place, user_entity: place
     )
     allow(act).to receive(:io).and_return(io)
-    allow(Tarona::Action::Catalyst).to receive(:new).and_return(catalyst_inst)
     allow(Tarona::Action::Mobilize).to receive(:call) do |*args|
       empty_command.call(*args)
     end

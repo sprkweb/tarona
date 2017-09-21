@@ -63,12 +63,12 @@ module Tarona
       }
     end
 
+    protected
+
     # You can redefine this method in order to set needed listeners.
     # It is called after initialization of session, but before the action.
     def set_listeners
     end
-
-    private
 
     def init_act
       c = self.class
@@ -77,6 +77,8 @@ module Tarona
         entities_index: c.subject[:entities_index].call
       }
     end
+
+    private
 
     def first_run?
       @tk.session[:act_inf] == {}
