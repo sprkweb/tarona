@@ -63,7 +63,7 @@ RSpec.describe Tarona::Game::StandardRules do
       session[:act_inf][:tick] = 11
       expect(subj.tick_counter).to receive(:whose)
         .with(12).and_return(:ai_entity)
-      expect(ai_entity.ai).to receive(:call).with(ai_entity, session) do
+      expect(ai_entity.ai).to receive(:call).with(act, ai_entity, session) do
         expect(session[:act_inf][:tick]).to eq(12)
       end
       subj.tick_counter.tick

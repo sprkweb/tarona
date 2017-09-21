@@ -23,6 +23,7 @@ module Tarona
     #     Each time the entity "thinks" (its turn is come), the `#call` method
     #     of its AI must be called with arguments:
     #
+    #     - `act`
     #     - `entity` - the entity itself;
     #     - `session` - see {Tarona::Action}.
     # @!attribute [r] tags

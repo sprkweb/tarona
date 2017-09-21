@@ -36,7 +36,7 @@ module Tarona
           id = @tick_counter.whose ev[:num]
           entity = find_entity id
           if entity.ai
-            entity.ai.call entity, @session
+            entity.ai.call @act, entity, @session
             tick_counter.tick
           end
         end
