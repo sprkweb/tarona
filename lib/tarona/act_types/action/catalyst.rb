@@ -8,6 +8,8 @@ module Tarona
       # It is needed because PlaceEntity.method(:places_taken) can not be
       # saved inside YAML file.
       module PlacesTaken
+        module_function
+
         def call(*args)
           PlaceEntity.places_taken(*args)
         end
