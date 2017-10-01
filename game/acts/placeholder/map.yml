@@ -40,10 +40,10 @@ map:
           max_energy: 600
           max_hp: 100
           hp: 100
-          speed: 2
+          speed: 1
           move_speed: 16
           interactions:
-            hit: &hit !ruby/object:Tarona::Game::Attack
+            hit: !ruby/object:Tarona::Game::Attack
               name: attacks/hit
               distance: 1
               owner: *man
@@ -140,19 +140,27 @@ map:
           id: enemy_man
           template: man
           name: people/enemy
+          ai: !ruby/module 'Tarona::Game::AI::Standard'
           side: enemy
           tags:
             - :mortal
+            - :movable
+            - :regen_energy
           hexes:
             :even_row: [[0, 0], [-1, 1], [0, 1]]
             :odd_row: [[0, 0], [0, 1], [1, 1]]
+          regen_energy: 200
           max_energy: 600
           max_hp: 100
           hp: 100
-          speed: 2
+          speed: 1
           move_speed: 16
           interactions:
-            hit: *hit
+            hit: !ruby/object:Tarona::Game::Attack
+              name: attacks/hit
+              distance: 1
+              owner: *enemy_man
+              damage: 34
     - :g: *sand
       :e: [*enemy_man]
     - :g: *sand
