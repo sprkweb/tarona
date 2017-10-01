@@ -15,9 +15,8 @@ module Tarona
       def self.inherited(subclass)
         sources_cache = nil
         sources = proc do
-          sources_cache ||= YAML.load(
-            File.read("game/acts/#{subclass.name}/map.yml")
-          )
+          sources_cache ||= File.read("game/acts/#{subclass.name}/map.yml")
+          YAML.load(sources_cache)
         end
         subclass.subject(
           landscape: proc { Landscape.new(sources.call['map']) },

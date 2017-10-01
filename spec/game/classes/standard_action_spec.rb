@@ -21,7 +21,7 @@ RSpec.describe Tarona::Game::StandardAction do
       empty_command.new(*args)
     end
     allow(File).to receive(:read)
-      .and_return("map: \n  - - {}\nentities: :baz")
+      .and_return("map: \n  - - {}\nentities: baz")
     test_act = Class.new(described_class) do
       name :foo
     end
@@ -47,7 +47,21 @@ RSpec.describe Tarona::Game::StandardAction do
     expect(Tarona::Action::Landscape).to receive(:new)
       .with([[{}]]).and_return(:map)
     expect(test_act.subject[:landscape].call).to be :map
-    expect(test_act.subject[:entities_index].call).to be :baz
+    expect(test_act.subject[:entities_index].call).to eq 'baz'
+  end
+
+  it 'always returns a new copy of subject' do
+    old_obj = nil
+    expect(Tarona::Action::Landscape).to receive(:new).twice do |arg|
+      if old_obj
+        expect(old_obj).not_to be(arg)
+      else
+        old_obj = arg
+      end
+    end
+    2.times { test_act.subject[:landscape].call }
+    index = test_act.subject[:entities_index]
+    expect(index.call).not_to be(index.call)
   end
 
   it 'calls StandardRules' do
