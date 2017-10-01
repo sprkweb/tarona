@@ -772,7 +772,6 @@ var Action = {
      * @returns {number|null} distance from this to target entity or null
      */
     this.distance = function(target_entity) {
-      // TODO: fixme (see tests)
       var entity1_parts = this.hexes(this.coordinates);
       var entity2_parts = target_entity.hexes(target_entity.coordinates);
       var min_dist = null;
