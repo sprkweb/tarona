@@ -463,6 +463,12 @@ function InteractivePopUp(area, content, options) {
   };
 }
 
+var Animate = (
+  (typeof environment !== "undefined") && (environment === 'test') ?
+  function() {} :
+  Velocity
+);
+
 /**
  * Generator of text acts for Display
  * @see Display
@@ -708,10 +714,14 @@ var Action = {
      * Changes entity's coordinates and moves its visualization.
      *
      * @param {Action.Coordinates} coordinates - entity will be placed there.
+     * @param {Boolean} do_animate - whether it must be animated
      */
-    this.move = function(coordinates) {
+    this.move = function(coordinates, do_animate) {
       if (coordinates) {
-        this.changePlace(Action.HexGrid.coords2px(coordinates, this.hex));
+        this.changePlace(
+          Action.HexGrid.coords2px(coordinates, this.hex),
+          do_animate
+        );
         this.coordinates = coordinates;
       }
     };
@@ -729,11 +739,20 @@ var Action = {
      * coordinates in pixels.
      *
      * @param {Action.Coordinates} place - entity will be placed here (pixels)
+     * @param {Boolean} do_animate - whether it must be animated
      */
-    this.changePlace = function(place) {
+    this.changePlace = function(place, do_animate) {
       if (place) {
-        this.elem.setAttribute('x', place[0]);
-        this.elem.setAttribute('y', place[1])
+        if (do_animate) {
+          Animate(this.elem,
+            { x: place[0], y: place[1] },
+            { duration: 300, easing: "easeInOutCubic" }
+          );
+        }
+        else {
+          this.elem.setAttribute('x', place[0]);
+          this.elem.setAttribute('y', place[1]);
+        }
       }
     };
 

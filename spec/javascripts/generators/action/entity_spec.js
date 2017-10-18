@@ -53,9 +53,11 @@ describe('Action.Entity', function() {
   });
 
   describe('#move', function() {
-    var new_place;
+    var new_place, x, y;
     beforeEach(function() {
       new_place = [5, 6];
+      x = 142.89419162443235;
+      y = 150;
     });
 
     it('changes entity\'s coordinates', function() {
@@ -65,8 +67,19 @@ describe('Action.Entity', function() {
 
     it('moves entity\'s element to the new place', function() {
       entity.move(new_place);
-      expect(entity.elem.getAttribute('x')).toEqual('142.89419162443235');
-      expect(entity.elem.getAttribute('y')).toEqual('150');
+      expect(entity.elem.getAttribute('x')).toEqual(x + "");
+      expect(entity.elem.getAttribute('y')).toEqual(y + "");
+    });
+
+    it('can animate movement when second argument is true', function() {
+      original_animate = Animate;
+      Animate = jasmine.createSpy();
+      entity.move(new_place, true);
+      expect(Animate).toHaveBeenCalledWith(entity.elem,
+        jasmine.objectContaining({ x: x, y: y }),
+        jasmine.any(Object)
+      );
+      Animate = original_animate;
     });
   });
 
@@ -93,6 +106,17 @@ describe('Action.Entity', function() {
       entity.changePlace(new_position);
       expect(entity.elem.getAttribute('x')).toEqual('50');
       expect(entity.elem.getAttribute('y')).toEqual('65');
+    });
+
+    it('can animate movement when second argument is true', function() {
+      original_animate = Animate;
+      Animate = jasmine.createSpy();
+      entity.changePlace(new_position, true);
+      expect(Animate).toHaveBeenCalledWith(entity.elem,
+        jasmine.objectContaining({ x: 50, y: 65 }),
+        jasmine.any(Object)
+      );
+      Animate = original_animate;
     });
   });
 

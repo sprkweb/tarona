@@ -36,6 +36,7 @@ module Tarona
         scripts: {
           after: [
             'vendor/underscore/underscore-min.js',
+            'vendor/velocity/velocity.min.js',
             'scripts/game_engine.js',
             ('scripts?' +
               %w[

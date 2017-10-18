@@ -22,7 +22,7 @@ function MoveEntity(env, _data, essence) {
     var prev_coords = entity.coordinates;
     essence.entities_grid.remove(prev_coords, entity);
     essence.entities_grid.add(inf.to, entity);
-    entity.move(inf.to);
+    entity.move(inf.to, true);
   };
 
   this._removeEntity = function(inf) {

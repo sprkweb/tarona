@@ -43,9 +43,9 @@ function Runner() {
   this.display.env.keybindings = this.keybindings;
 }
 
-if (typeof environment === 'undefined') {
-  var environment = 'production';
-}
+var environment = (
+  (typeof environment === 'undefined') ? 'production' : environment
+);
 
 if (environment !== 'test') {
   new Runner();

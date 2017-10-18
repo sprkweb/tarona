@@ -33,7 +33,7 @@ describe('MoveEntity', function() {
     listener[1]({ to: [5, 6], entity_id: 'deadbeef' });
     expect(essence.entities_grid.remove).toHaveBeenCalledWith([3, 2], entity);
     expect(essence.entities_grid.add).toHaveBeenCalledWith([5, 6], entity);
-    expect(entity.move).toHaveBeenCalledWith([5, 6]);
+    expect(entity.move).toHaveBeenCalledWith([5, 6], true);
   });
 
   it('does not move entity without target', function() {
