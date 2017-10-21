@@ -25,13 +25,26 @@ module Tarona
         init_tick_counter
         provide_movement
         provide_interactions
+
+        # The order of actions during each tick (TODO: make a better system):
+        # Listeners which are called before the end of the tick:
+        # (if you want to add a new one, use the tick_start event and consider
+        # that the current tick is `num-1`)
         provide_death
+        # Listeners which are called after the start of the new tick, before
+        # any actions:
         provide_energy_regen
+        # The action itself:
+        provide_ai_starter
       end
 
       def init_tick_counter
         @tick_counter = TickCounter.new @session
         @tick_counter.candidates.concat activity_candidates
+        SkipTick.call tick_counter: @tick_counter, act: @act, session: @session
+      end
+
+      def provide_ai_starter
         @tick_counter.on :tick_start do |ev|
           id = @tick_counter.whose ev[:num]
           entity = find_entity id
@@ -40,7 +53,6 @@ module Tarona
             tick_counter.tick
           end
         end
-        SkipTick.call tick_counter: @tick_counter, act: @act, session: @session
       end
 
       def provide_movement

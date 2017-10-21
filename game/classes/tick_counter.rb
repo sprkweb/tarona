@@ -30,13 +30,15 @@ module Tarona
       # Decides which entity acts at the tick.
       # The entity is always from the {#candidates} list.
       # @param tick_num [Integer] number of the tick
-      # @return [Object] entity id
+      # @return [Object, nil] entity id
       def whose(tick_num)
         cycle = []
         candidates.each do |entity|
+          next unless @session[:act_inf][:entities_index][entity.id]
           speed = (entity.respond_to?(:speed) ? entity.speed : 1)
           cycle.concat(Array.new(speed) { entity })
         end
+        return nil if cycle.empty?
         cycle_start = tick_num / cycle.length * cycle.length + 1
         cycle[tick_num - cycle_start].id
       end

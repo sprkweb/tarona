@@ -54,9 +54,16 @@ RSpec.describe Tarona::Game::TickCounter do
 
   describe '#whose' do
     entity_struct = Struct.new(:id, :speed)
-    let(:entity) { entity_struct.new(:foo, 2) }
-    let(:entity2) { entity_struct.new(:bar, 0) }
-    let(:entity3) { Struct.new(:id).new(:baz) }
+    let(:entity) { entity_struct.new(:entity, 2) }
+    let(:entity2) { entity_struct.new(:entity2, 0) }
+    let(:entity3) { Struct.new(:id).new(:entity3) }
+
+    before :each do
+      session[:act_inf][:entities_index] = {}
+      [:entity, :entity2, :entity3].each do |e|
+        session[:act_inf][:entities_index][e] = send e
+      end
+    end
 
     it 'always returns the candidate\'s id when it is only candidate' do
       subj.candidates << entity
@@ -69,6 +76,14 @@ RSpec.describe Tarona::Game::TickCounter do
       expect(subj.whose(2)).to eq(entity.id)
       expect(subj.whose(3)).to eq(entity3.id)
       expect(subj.whose(4)).to eq(entity.id)
+    end
+
+    it 'does not chooses candidates which are not in index' do
+      session[:act_inf][:entities_index].delete :entity
+      subj.candidates.concat [entity, entity2, entity3]
+      expect(subj.whose(1)).to eq(entity3.id)
+      expect(subj.whose(2)).to eq(entity3.id)
+      expect(subj.whose(3)).to eq(entity3.id)
     end
   end
 end
