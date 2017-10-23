@@ -26,6 +26,10 @@ make_task :js_spec, 'Running JavaScript specs' do
   sh NODEJS_BIN_PATH + 'testem ci -l PhantomJS'
 end
 
+make_task :js_spec_browse, 'Running JavaScript specs in browser' do
+  sh NODEJS_BIN_PATH + 'testem'
+end
+
 make_task :doc, 'Generating documentation' do
   sh 'bundle exec yard'
 end
