@@ -12,7 +12,7 @@
   }
 }
 
-#text {
+#text, #form {
   @include inverse;
   box-sizing: border-box;
   grid-column: 1 / span 2;

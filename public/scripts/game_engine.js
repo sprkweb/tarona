@@ -487,6 +487,61 @@ function TextGenerator(env, data) {
   env.area.addEventListener('click', heRead);
 }
 
+var Form = {
+  /**
+   * Generator of acts with forms for Display
+   * @see Display
+   */
+  Generator: function(env, data) {
+    var container = env.area.appendChild(document.createElement('div'));
+    container.setAttribute('id', 'form');
+    container.innerHTML = data.subject;
+
+    Form.WaitForInput(container, Form.GetData, function(formData) {
+      env.io.happen('form_filled', formData);
+    });
+  },
+
+  /**
+   * Waits until one of buttons inside the given form is pressed, then gets
+   * all data from the form and gives it to callback.
+   *
+   * @param elem {Element} - form element.
+   * @param getData {function} - function which receives form element and
+   *   returns its data as an object.
+   * @param callback {function} - function which is called after user clicked
+   *   a button. Its argument is object containing form data and property
+   *   'clicked' (name of the clicked button).
+   */
+  WaitForInput: function(elem, getData, callback) {
+    var formFilled = function(event) {
+      var formData = getData(elem);
+      var button = event.target.name;
+      if (button) formData.clicked = button;
+      callback(formData);
+    };
+    var buttons = elem.querySelectorAll('button, input[type="button"]');
+    for (var j = 0; j < buttons.length; ++j)
+        buttons[j].onclick = formFilled;
+  },
+
+  /**
+   * Gets all data from a form. Form parts' DOM objects must have
+   * #name and #value methods.
+   *
+   * @return {object} pairs field_name => field_value
+   */
+  GetData: function(formElem) {
+    var formData = {};
+    var nodes = formElem.querySelectorAll('[name]');
+    for (var i = 0; i < nodes.length; ++i) {
+      if (nodes[i].name && nodes[i].value)
+        formData[nodes[i].name] = nodes[i].value;
+    }
+    return formData;
+  }
+}
+
 /**
  * Object containing some W3 specifications of namespaces.
  * @namespace
