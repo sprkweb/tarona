@@ -58,7 +58,7 @@ module Tarona
       # @return content of the object expressed through common standard types.
       #   It is hash with those keys: `id`, `svg_id` (#template), `hexes`.
       def raw
-        { id: @id, svg_id: @template, hexes: @hexes }
+        { id: id, svg_id: template, hexes: hexes }
       end
     end
   end

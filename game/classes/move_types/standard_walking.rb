@@ -13,13 +13,15 @@ module Tarona
 
         # @return [Hash] pairs: ground type => cost
         def costs_table
-          {
+          @costs_table ||= Hash.new(15).merge(
             'stone' => 15,
             'ground' => 17,
             'grass' => 19,
+            'hill' => 25,
             'sand' => 21,
-            'water' => 45
-          }
+            'water' => 45,
+            'abyss' => 65_000
+          )
         end
       end
     end

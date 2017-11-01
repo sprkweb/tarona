@@ -6,7 +6,7 @@ module Tarona
     end
 
     def next_act
-      :pholder
+      :training
     end
   end
 end

@@ -17,7 +17,7 @@ module Tarona
       attr_writer :energy
 
       def energy
-        @energy ||= @max_energy
+        @energy ||= max_energy
       end
 
       # Remove some energy from the entity.
@@ -42,8 +42,8 @@ module Tarona
       #   If `nil` is given, restore all energy.
       # @return [Integer] how much energy does entity have now
       def relax(how_much = nil)
-        if how_much.nil? || (energy + how_much > @max_energy)
-          @energy = @max_energy
+        if how_much.nil? || (energy + how_much > max_energy)
+          @energy = max_energy
         else
           @energy += how_much
         end
