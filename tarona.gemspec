@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 Fantasy strategic game about society management.
 DOC
   s.homepage = 'https://github.com/sprkweb/tarona'
-  s.author = 'Vadim Saprykin'
+  s.authors = ['Vadim Saprykin', 'Leonid Marychev']
   s.email = 'sprkweb@ya.ru'
   s.files = Dir[
       'bin/**/*',
