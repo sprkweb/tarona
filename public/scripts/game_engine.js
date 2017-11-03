@@ -428,38 +428,22 @@ function InteractivePopUp(area, content, options) {
   var super_show = this.show;
   this.show = function() {
     super_show.call(this);
-    this._waitForSubmit();
-  };
-
-  this._waitForSubmit = function () {
     this._form = this.elem.getElementsByTagName('form')[0];
-    var buttons = this._form.querySelectorAll('button, input[type="button"]');
-    for (var j = 0; j < buttons.length; ++j)
-      buttons[j].onclick = this._handleSubmit;
-  };
-
-  var self = this;
-  this._handleSubmit = function (event) {
-    var formData = {};
-    var nodes = self._form.querySelectorAll('[name]');
-    for (var i = 0; i < nodes.length; ++i) {
-      if (nodes[i].name && nodes[i].value)
-        formData[nodes[i].name] = nodes[i].value;
-    }
-    var button = event.target.name;
-    if (button) formData.clicked = button;
-    /**
-     * The event which happens when the popup is closed.
-     * When it is closed because its form is filled and its button is pressed,
-     * form data is passed as an argument for the event.
-     * Keys are the 'name' attributes of *all* form fields and values are their
-     * contents.
-     * Also, it has the 'clicked' key which contents name of the clicked
-     * button.
-     * @event InteractivePopUp#event:close
-     * @type {?object}
-     */
-    self.happen('close', formData);
+    var self = this;
+    Form.WaitForInput(this._form, Form.GetData, function(formData) {
+      /**
+       * The event which happens when the popup is closed.
+       * When it is closed because its form is filled and its button is pressed,
+       * form data is passed as an argument for the event.
+       * Keys are the 'name' attributes of *all* form fields and values
+       * are their contents.
+       * Also, it has the 'clicked' key which contents name of the clicked
+       * button.
+       * @event InteractivePopUp#event:close
+       * @type {?object}
+       */
+      self.happen('close', formData);
+    });
   };
 }
 
