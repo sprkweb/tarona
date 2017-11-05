@@ -9,7 +9,7 @@ function MoveEntity(env, _data, essence) {
   this._init = function() {
     env.io.on('move', self._moveEntity);
     env.io.on('remove', self._removeEntity);
-    env.display.on('before_act', function() {
+    env.display.on_first('before_act', function() {
       env.io.remove_listener('move', self._moveEntity);
       env.io.remove_listener('remove', self._removeEntity);
     });

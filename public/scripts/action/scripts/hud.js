@@ -50,7 +50,7 @@ var HUD = {
       essence.on('focusChange', requestInfo);
       env.io.on('tick_start', requestInfo);
       env.io.on('entity_info_show', showInfo);
-      env.display.on('before_act', function() {
+      env.display.on_first('before_act', function() {
         essence.remove_listener('focusChange', requestInfo);
         env.io.remove_listener('entity_info_show', showInfo);
       });
@@ -162,7 +162,7 @@ var HUD = {
     };
     env.io.on('movement_potential_show', showMovementPotential);
 
-    env.display.on('before_act', function() {
+    env.display.on_first('before_act', function() {
       essence.remove_listener('focusChange', highlightNewFocus);
       env.io.remove_listener('move', move_highlight);
 
@@ -185,7 +185,7 @@ var HUD = {
       num.innerHTML = inf.num;
     };
     env.io.on('tick_start', updateTickDisplay);
-    env.display.on('before_act', function() {
+    env.display.on_first('before_act', function() {
       env.io.remove_listener('tick_start', updateTickDisplay);
     });
 
