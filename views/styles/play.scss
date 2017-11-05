@@ -142,6 +142,10 @@
 
   .message_content {
     width: 100%;
+
+    h1, h2, h3, h4 {
+      margin: 0 0 0.5em 0;
+    }
   }
 
   .close {

@@ -51,7 +51,7 @@ describe('JS Engine runner', function() {
     expect(runner.display.env).toEqual({
       area_selector: '#area',
       io: runner.messenger,
-      scripts: [MoveEntity, PlayerInteract, FovOperator, HUD.Generator],
+      scripts: jasmine.any(Object),
       display: runner.display,
       keybindings: runner.keybindings
     });

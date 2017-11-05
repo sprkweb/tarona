@@ -34,7 +34,9 @@ function Runner() {
   this.display = new Display({
     area_selector: '#area',
     io: this.messenger,
-    scripts: [MoveEntity, PlayerInteract, FovOperator, HUD.Generator]
+    scripts: [
+      MoveEntity, PlayerInteract, FovOperator, HUD.Generator, ViewScripts
+    ]
   });
   this.display.addGenerator('text', TextGenerator);
   this.display.addGenerator('action', Action.Generator);

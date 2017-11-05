@@ -1,4 +1,5 @@
 require 'game/module'
+require 'game/classes/view_scripts'
 require 'game/classes/interaction'
 require 'game/classes/interactions_judge'
 require 'game/classes/attack'

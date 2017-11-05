@@ -39,12 +39,9 @@ module Tarona
             'vendor/velocity/velocity.min.js',
             'scripts/game_engine.js',
             ('scripts?' +
-              %w[
-                action/scripts/move_entity.js
-                action/scripts/fov_operator.js
-                action/scripts/player_interact.js
-                action/scripts/hud.js
-              ].map { |x| "s[]=#{x}" }.join('&')
+              (Dir.chdir 'public/scripts' do
+                Dir['action/scripts/*.js'].map { |x| "s[]=#{x}" }.join('&')
+              end)
             ),
             'scripts/runner.js'
           ]
