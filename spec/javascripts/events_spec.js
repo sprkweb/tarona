@@ -86,4 +86,15 @@ describe('Events', function() {
       expect(listener).toHaveBeenCalledWith(my_data);
     });
   });
+
+  describe('#on_first', function() {
+    it('binds listeners which delete themselves after execution', function () {
+      listener = jasmine.createSpy('listener');
+      subject.on_first('my_event', listener);
+      subject.happen('my_event');
+      expect(subject.listeners('my_event')).toEqual([]);
+      subject.happen('my_event');
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+  });
 });

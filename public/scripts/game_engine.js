@@ -16,6 +16,18 @@ var Events = {
     this.listeners(event).push(listener);
   },
   /**
+   * Same as #on, but the listener executed only when the event is happened
+   * first time.
+   */
+  on_first: function (event, listener) {
+    var self = this;
+    var wrapped_listener = function(arg) {
+      self.remove_listener(event, wrapped_listener);
+      listener(arg);
+    };
+    self.on(event, wrapped_listener);
+  },
+  /**
    * Detachs the given listener from the given event of the object.
    * It detachs all the listeners from the event when the listener is not given.
    *
