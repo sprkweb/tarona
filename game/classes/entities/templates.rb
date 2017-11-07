@@ -3,7 +3,7 @@ module Tarona
     # Classes with preset properties for some type of entities.
     module Templates
       class DidorianSoldier < Tarona::Game::Fighter
-        def template() 'man' end
+        def template() 'soldier' end
         def name() 'people/didorian_soldier' end
         def side() 'player' end
         def regen_energy() 200 end

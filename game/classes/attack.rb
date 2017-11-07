@@ -22,7 +22,7 @@ module Tarona
       # @return [TrueClass,FalseClass] whether the attack is applied
       def apply(session, entity)
         return false unless applicable?(session, entity)
-        entity.hp -= @damage
+        entity.hp -= @damage if entity.respond_to?(:hp)
         true
       end
     end

@@ -15,7 +15,7 @@ ground_types:
 entities_objects:
   - &hero !ruby/object:Tarona::Game::Fighter
     id: hero
-    template: man
+    template: hero
     name: people/me
     side: player
     tags:
@@ -33,11 +33,11 @@ entities_objects:
     speed: 1
     move_speed: 16
     interactions:
-      hit: !ruby/object:Tarona::Game::Attack
-        name: attacks/hit
-        distance: 1
+      lazer_rifle_shoot: !ruby/object:Tarona::Game::Attack
+        name: attacks/lazer_rifle_shoot
+        distance: 5
         owner: *hero
-        damage: 34
+        damage: 50
 
   - &didorian_soldier1 !ruby/object:Tarona::Game::Templates::DidorianSoldier
     # ai: !ruby/module 'Tarona::Game::AI::Standard'=

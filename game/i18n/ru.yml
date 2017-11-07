@@ -41,7 +41,7 @@ game/the_end: >
 entity_info/health: Здоровье
 entity_info/energy: Энергия
 # Названия атак
-attacks/hit: Удар
+attacks/lazer_rifle_shoot: Выстрелить (Лазерная винтовка)
 # Названия элементов интерфейса
 hud/skip_tick: Отдохнуть
 hud/tick_num: Мгновение

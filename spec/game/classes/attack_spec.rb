@@ -39,6 +39,12 @@ RSpec.describe Tarona::Game::Attack do
       expect(target.hp).to eq(66)
     end
 
+    it 'returns true for entity without HP, but does nothing' do
+      session[:act_inf][:entities_index][:wall] = [5, 6]
+      wall = Struct.new(:id, :hexes).new(:wall, target.hexes)
+      expect(subj.apply(session, wall)).to be true
+    end
+
     it 'returns false when enemy is too far' do
       session[:act_inf][:entities_index][:target] = [5, 8]
       expect(subj.apply(session, target)).to be false
