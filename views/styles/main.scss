@@ -4,7 +4,8 @@
 $font: 'Fira Sans', sans-serif;
 $font-size: 16px;
 $line-height: 1.5;
-$text-color: #414A4C;
+$text-color: #4B4B4B;
+$bg-color: #ffffff;
 $link-color: #5DA130;
 
 @mixin flexbox {
@@ -28,37 +29,26 @@ $link-color: #5DA130;
 }
 
 @mixin inverse {
-  background-color: rgb(75, 75, 75);
-  color: #ffffff;
-}
-
-@mixin bent($shadow-color, $color, $depth) {
-  background-color: $color;
-  @include shadow(0 $depth 0 0 $shadow-color);
-}
-
-@mixin button($shadow-color, $color, $depth) {
-  @include bent($shadow-color, $color, $depth);
-  line-height: 1;
-  position: relative;
-  border: 0 none;
-  margin-top: 0;
-  margin-bottom: $depth;
-
-  &:active {
-    background-color: $shadow-color;
-    @include shadow(none);
-    margin-top: $depth;
-    margin-bottom: 0;
-  }
+  background-color: $text-color;
+  color: $bg-color;
 }
 
 @mixin standard_button {
-  @include rounded(2px);
-  @include button(rgb(210, 210, 210), rgb(230, 230, 230), 3px);
   font-size: $font-size * 0.9;
+  line-height: 1;
   padding: 0.4em 0.8em;
+
   cursor: pointer;
+
+  border: 1px solid $bg-color;
+  color: $bg-color;
+  background: $text-color;
+  transition: all 0.3s;
+
+  &:active, &:hover, &:focus {
+    color: $text-color;
+    background: $bg-color;
+  }
 }
 
 html, body {
@@ -208,8 +198,6 @@ input[type="text"], textarea {
         a {
           @include standard_button;
           display: inline-block;
-          font-size: $font-size;
-          color: $text-color;
           text-decoration: none !important;
         }
       }
