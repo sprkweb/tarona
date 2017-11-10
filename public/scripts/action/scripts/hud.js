@@ -172,6 +172,22 @@ var HUD = {
     });
   },
 
+  HoveredHex: function(_env, data, essence) {
+    var container = document.createElement('div');
+    var elem = container.appendChild(document.createElement('p'));
+    var label = elem.appendChild(document.createElement('span'));
+    label.innerHTML = data.subject.i18n['hud/hovered_hex'] + ': ';
+    var num = elem.appendChild(document.createElement('span'));
+    num.innerHTML = 'N; N';
+
+    container.classList.add('info_list');
+    essence.on('hoverHex', function(ev) {
+      if (ev.now == null) return;
+      num.innerHTML = ev.now[0] + '; ' + ev.now[1];
+    });
+    return container;
+  },
+
   TickNum: function(env, data) {
     var container = document.createElement('div');
     container.classList.add('info_list');
@@ -210,6 +226,7 @@ HUD.PARTS = [
 
   HUD.Space,
 
+  HUD.HoveredHex,
   HUD.TickNum,
   HUD.SkipTick
 ];

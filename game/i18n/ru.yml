@@ -45,6 +45,7 @@ attacks/lazer_rifle_shoot: Выстрелить (Лазерная винтовк
 # Названия элементов интерфейса
 hud/skip_tick: Отдохнуть
 hud/tick_num: Мгновение
+hud/hovered_hex: Координаты
 # Названия людей
 people/me: Я
 people/didorian_soldier: Солдат-дидорианец
