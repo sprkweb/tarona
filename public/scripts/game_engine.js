@@ -1015,6 +1015,60 @@ var Action = {
       var x = coords[0], y = coords[1];
       return (this.grid[x] ? this.grid[x][y] : []) || [];
     };
+  },
+
+  /**
+   * Some useful methods for manipulations with positions of entities,
+   * including visual position.
+   * @namespace
+   */
+  PlaceEntity: {
+    /**
+     * Adds entity to the act.
+     * @param {object} entity_inf - entity's properties (see its constructor)
+     *   and id.
+     * @param {Action.Coordinates} place - coordinates of the center of the
+     *   entity
+     * @param {object} essence - see {@link Action.Generator}
+     */
+    add: function(entity_inf, place, essence) {
+      if (!place || !entity_inf.id) return;
+      entity = new Action.Entity(_.extend(entity_inf, {
+       place: place,
+       hex: essence.hex
+      }));
+      essence.entities[entity_inf.id] = entity;
+      essence.entitiesElem.appendChild(entity.elem);
+      essence.entities_grid.add(place, entity);
+    },
+
+    /**
+     * Moves entity to another place.
+     * @param {object} entity_id - id property of the entity
+     * @param {Action.Coordinates} to - target place
+     * @param {object} essence - see {@link Action.Generator}
+     */
+    move: function(entity_id, to, essence) {
+      var entity = essence.entities[entity_id];
+      if (!(entity && to)) return;
+      var prev_coords = entity.coordinates;
+      essence.entities_grid.remove(prev_coords, entity);
+      essence.entities_grid.add(to, entity);
+      entity.move(to, true);
+    },
+
+    /**
+     * Remove the entity from the act.
+     * @param {object} entity_id - id property of the entity
+     * @param {object} essence - see {@link Action.Generator}
+     */
+    remove: function(entity_id, essence) {
+      var entity = essence.entities[entity_id];
+      if (!entity) return;
+      essence.entities_grid.remove(entity.coordinates, entity);
+      entity.remove();
+      delete essence.entities[entity_id];
+    }
   }
 };
 
@@ -1125,13 +1179,12 @@ Action.Generator = function(env, data) {
       entity = entities[entity_data.id];
     }
     else {
-      entity = new Action.Entity(_.extend(entity_data, {
-        place: center_coords,
+      Action.PlaceEntity.add(entity_data, center_coords, {
+        entities: entities,
+        entitiesElem: entitiesElem,
+        entities_grid: entities_grid,
         hex: hex
-      }));
-      entities[entity_data.id] = entity;
-      entitiesElem.appendChild(entity.elem);
-      entities_grid.add(center_coords, entity);
+      });
     }
     return entity;
   };
