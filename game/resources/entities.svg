@@ -31,15 +31,12 @@
   </g>
 </symbol>
 
+<symbol id="enemy_soldier" style="overflow:visible">
+  <use xlink:href="#soldier" x="0" y="0" />
+  <path d="M -4,-5 a 4,4 0 0,1 8,0" fill="#ff0000" />
+</symbol>
+
 <symbol id="hero" style="overflow:visible">
-  <g fill="#afafaf" stroke-width="1">
-    <rect width="3" height="14" x="-2" y="13" transform="rotate(10)" />
-    <rect width="3" height="14" x="-1" y="13" transform="rotate(-10)" />
-    <rect width="3" height="14" x="-6" y="3" transform="rotate(15)" />
-    <rect width="3" height="14" x="3" y="3" transform="rotate(-15)" />
-    <rect width="8" height="12" x="-4" y="1" />
-    <circle r="4" cx="0" cy="-5" fill="#ffdead" />
-    <path d="M -4,-5 a 4,4 0 0,1 8,0" fill="#0000ff" />
-    <use xlink:href="#rifle" x="-8" y="2" fill="#000000" stroke="#000000" />
-  </g>
+  <use xlink:href="#soldier" x="0" y="0" />
+  <path d="M -4,-5 a 4,4 0 0,1 8,0" fill="#0000ff" />
 </symbol>

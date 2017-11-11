@@ -49,5 +49,6 @@ hud/hovered_hex: Координаты
 # Названия людей
 people/me: Я
 people/didorian_soldier: Солдат-дидорианец
+people/radl_soldier: Солдат Радлов
 # Названия сущностей
 entity/crystal: Кристалл
