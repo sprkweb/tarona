@@ -38,6 +38,7 @@ entities_objects:
         distance: 5
         owner: *hero
         damage: 50
+        visual_effect: lazer_shot
 
   - &didorian_soldier1 !ruby/object:Tarona::Game::Templates::DidorianSoldier
     # ai: !ruby/module 'Tarona::Game::AI::Standard'=

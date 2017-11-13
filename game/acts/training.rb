@@ -4,6 +4,7 @@ module Tarona
     name :training
     resources << 'game/resources/ground.svg'
     resources << 'game/resources/entities.svg'
+    resources << 'game/resources/effects.svg'
     resources << 'game/resources/mirok.svg'
 
     def process

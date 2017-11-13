@@ -1,0 +1,8 @@
+<filter id="lazer_light">
+  <feFlood />
+  <feComposite in2="SourceAlpha" operator="in" />
+  <feGaussianBlur stdDeviation="1"  result="afterBlur" />
+  <feFlood flood-color="#0069ff" flood-opacity="1" />
+  <feComposite in2="afterBlur" operator="in" />
+  <feMorphology operator="dilate" radius="1" />
+</filter>
