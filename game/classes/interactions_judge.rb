@@ -38,7 +38,7 @@ module Tarona
         return unless to && from && from.respond_to?(:interactions)
         interaction = from.interactions[msg[:interaction_id]]
         return unless allowed?(from, to, interaction)
-        interaction.apply @session, to
+        interaction.apply @session, to, @act.io
         happen :after_interact, from: from, to: to, interaction: interaction
       end
 

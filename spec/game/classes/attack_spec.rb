@@ -3,6 +3,7 @@ RSpec.describe Tarona::Game::Attack do
   let(:name) { 'names/dance_battle' }
   let(:distance) { 2 }
   let(:damage) { 34 }
+  let(:io) { double 'io' }
   let :session do
     { tk: double('tk'), act_inf: { entities_index: { owner: [5, 5] } } }
   end
@@ -35,26 +36,26 @@ RSpec.describe Tarona::Game::Attack do
   describe '#apply' do
     it 'reduces amount of enemy HP' do
       session[:act_inf][:entities_index][:target] = [5, 6]
-      expect(subj.apply(session, target)).to be true
+      expect(subj.apply(session, target, io)).to be true
       expect(target.hp).to eq(66)
     end
 
     it 'returns true for entity without HP, but does nothing' do
       session[:act_inf][:entities_index][:wall] = [5, 6]
       wall = Struct.new(:id, :hexes).new(:wall, target.hexes)
-      expect(subj.apply(session, wall)).to be true
+      expect(subj.apply(session, wall, io)).to be true
     end
 
     it 'returns false when enemy is too far' do
       session[:act_inf][:entities_index][:target] = [5, 8]
-      expect(subj.apply(session, target)).to be false
+      expect(subj.apply(session, target, io)).to be false
       expect(target.hp).to eq(100)
     end
 
     it 'returns true when enemy is within the distance' do
       session[:act_inf][:entities_index][:target] = [5, 7]
       target.hp = 50
-      expect(subj.apply(session, target)).to be true
+      expect(subj.apply(session, target, io)).to be true
       expect(target.hp).to eq(16)
     end
 
@@ -63,7 +64,7 @@ RSpec.describe Tarona::Game::Attack do
       subj = described_class.new(
         owner: owner, name: name, distance: 0, damage: -12
       )
-      expect(subj.apply(session, target)).to be true
+      expect(subj.apply(session, target, io)).to be true
       expect(target.hp).to eq(112)
     end
   end

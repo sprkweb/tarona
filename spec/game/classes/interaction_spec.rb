@@ -2,6 +2,7 @@ RSpec.describe Tarona::Game::Interaction do
   let(:owner) { double 'owner' }
   let(:name) { 'names/dance_battle' }
   let(:distance) { 3 }
+  let(:io) { double 'io' }
   let :session do
     { tk: double('tk'), act_inf: { entities_index: { owner: [5, 5] } } }
   end
@@ -68,7 +69,9 @@ RSpec.describe Tarona::Game::Interaction do
 
   describe '#apply' do
     it 'is abstract' do
-      expect { subj.apply(session, target) }.to raise_error(NotImplementedError)
+      expect do
+        subj.apply(session, target, io)
+      end.to raise_error(NotImplementedError)
     end
   end
 

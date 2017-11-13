@@ -20,7 +20,7 @@ module Tarona
       # @param entity [Tarona::Action::Entity] target of the attack. It must
       #   have the `#hp` attribute available to write and read.
       # @return [TrueClass,FalseClass] whether the attack is applied
-      def apply(session, entity)
+      def apply(session, entity, io)
         return false unless applicable?(session, entity)
         entity.hp -= @damage if entity.respond_to?(:hp)
         true

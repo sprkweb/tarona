@@ -43,7 +43,7 @@ RSpec.describe Tarona::Game::InteractionsJudge do
   end
 
   it 'applies interaction when player requests that' do
-    expect(interaction).to receive(:apply).with(session, target)
+    expect(interaction).to receive(:apply).with(session, target, io)
     io.happen :interaction_request, event_args
   end
 
@@ -98,7 +98,7 @@ RSpec.describe Tarona::Game::InteractionsJudge do
     map.get(*owner_place)[:e] = []
     map.get(*target_place)[:e] = []
     entities_index.merge! me: place, enemy: place
-    expect(interaction).to receive(:apply).with(session, target)
+    expect(interaction).to receive(:apply).with(session, target, io)
     io.happen :interaction_request, event_args
   end
 
@@ -107,7 +107,7 @@ RSpec.describe Tarona::Game::InteractionsJudge do
     expect(owner).to receive(:id).and_return(:alice)
     expect(target).to receive(:id).and_return(:bob)
     expect(owner).to receive(:interactions).and_return look: interaction
-    expect(interaction).to receive(:apply).with(session, target)
+    expect(interaction).to receive(:apply).with(session, target, io)
     io.happen(
       :interaction_request,
       from_entity: :alice, target: :bob, interaction_id: :look

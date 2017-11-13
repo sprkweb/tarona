@@ -42,8 +42,9 @@ module Tarona
       # @abstract raises `NotImplemented`
       # @param session [#[]] information about current game state.
       # @param entity [Tarona::Action::Entity] target of the interaction.
+      # @param io [Tardvig::GameIO]
       # @return [TrueClass,FalseClass] whether the interaction is applied
-      def apply(session, entity)
+      def apply(session, entity, io)
         raise NotImplementedError
       end
 

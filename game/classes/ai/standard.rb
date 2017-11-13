@@ -97,7 +97,7 @@ module Tarona
           return unless enemy && !entity.interactions.empty?
           attack = best_attack entity, session, enemy
           if attack
-            entity.interactions[attack].apply session, enemy
+            entity.interactions[attack].apply session, enemy, act.io
           else
             go_on_offensive act, entity, session, enemy
           end
