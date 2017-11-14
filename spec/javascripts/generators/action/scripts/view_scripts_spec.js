@@ -30,11 +30,22 @@ describe('ViewScripts', function() {
     expect(essence).toHaveBeenCalledWith(env);
   });
 
-  it('removes its listener after the act is ended', function() {
+  it('shows visual effects when it is requested', function() {
+    ViewScripts(env, data, essence);
+    ViewScripts.EFFECTS.foobar = jasmine.createSpy('effect');
+    env.io.happen('show_visual_effect', { name: 'foobar', params: 'baz' });
+    expect(ViewScripts.EFFECTS.foobar)
+      .toHaveBeenCalledWith(env, data, essence, 'baz');
+    delete ViewScripts.EFFECTS.foobar;
+  });
+
+  it('removes its listeners after the act is ended', function() {
     ViewScripts(env, data, essence);
     spyOn(env.io, 'remove_listener');
     env.display.happen('before_act');
     expect(env.io.remove_listener)
       .toHaveBeenCalledWith('view_script', jasmine.any(Function));
+    expect(env.io.remove_listener)
+      .toHaveBeenCalledWith('show_visual_effect', jasmine.any(Function));
   });
 });

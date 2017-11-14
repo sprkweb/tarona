@@ -3,7 +3,9 @@ RSpec.describe Tarona::Game::Attack do
   let(:name) { 'names/dance_battle' }
   let(:distance) { 2 }
   let(:damage) { 34 }
-  let(:io) { double 'io' }
+  let(:visual_effect) { :moonwalk }
+  let(:listener) { proc {} }
+  let(:io) { Object.new.extend(Tardvig::Events) }
   let :session do
     { tk: double('tk'), act_inf: { entities_index: { owner: [5, 5] } } }
   end
@@ -12,7 +14,8 @@ RSpec.describe Tarona::Game::Attack do
       owner: owner,
       name: name,
       distance: distance,
-      damage: damage
+      damage: damage,
+      visual_effect: visual_effect
     )
   end
 
@@ -66,6 +69,20 @@ RSpec.describe Tarona::Game::Attack do
       )
       expect(subj.apply(session, target, io)).to be true
       expect(target.hp).to eq(112)
+    end
+
+    it 'shows visual effect if it is' do
+      session[:act_inf][:entities_index][:target] = [5, 6]
+      expect(Tarona::Game::ViewScripts).to(
+        receive(:show_effect).with(io, :moonwalk, from: [5, 5], to: [5, 6])
+      )
+      subj.apply(session, target, io)
+    end
+
+    it 'does not show visual effect if interaction is not applied' do
+      session[:act_inf][:entities_index][:target] = [5, 8]
+      expect(Tarona::Game::ViewScripts).not_to receive(:show_effect)
+      subj.apply(session, target, io)
     end
   end
 end
