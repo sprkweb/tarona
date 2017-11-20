@@ -5,12 +5,6 @@
   @include inverse;
 }
 
-.page {
-  flex-direction: column;
-  > div {
-    flex-grow: 0;
-  }
-}
 
 #text, #form {
   @include inverse;

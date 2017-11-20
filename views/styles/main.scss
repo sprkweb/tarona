@@ -70,12 +70,6 @@ body {
   }
 }
 
-
-.page {
-  @include flexbox;
-  height: 100%;
-}
-
 .content {
   max-width: 1000px;
   width: 100%;
