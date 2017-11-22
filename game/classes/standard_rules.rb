@@ -31,9 +31,10 @@ module Tarona
         # (if you want to add a new one, use the tick_start event and consider
         # that the current tick is `num-1`)
         provide_death
+        provide_energy_regen
         # Listeners which are called after the start of the new tick, before
         # any actions:
-        provide_energy_regen
+
         # The action itself:
         provide_ai_starter
       end
@@ -45,13 +46,18 @@ module Tarona
       end
 
       def provide_ai_starter
-        @tick_counter.on :tick_start do |ev|
-          id = @tick_counter.whose ev[:num]
-          entity = find_entity id
-          if entity.ai
-            entity.ai.call @act, entity, @session
-            tick_counter.tick
-          end
+        @tick_counter.on(:tick_start) { start_ai }
+        start_ai
+      end
+
+      def start_ai
+        id = @tick_counter.whose
+        entity = find_entity id
+        if !entity
+          tick_counter.tick
+        elsif entity.ai
+          entity.ai.call @act, entity, @session
+          tick_counter.tick
         end
       end
 
@@ -62,7 +68,7 @@ module Tarona
           map: @landscape,
           entities_index: @entities_index,
           catalyst: proc do |entity, to|
-            catalyst.call(entity, to) && can_entity_act?(entity.id)
+            can_entity_act?(entity.id) && catalyst.call(entity, to)
           end
         )
         @mobilize.on(:after_move) { @tick_counter.tick }
@@ -109,7 +115,7 @@ module Tarona
       end
 
       def can_entity_act?(entity_id)
-        @tick_counter.whose(@session[:act_inf][:tick]) == entity_id
+        @tick_counter.whose == entity_id
       end
     end
   end

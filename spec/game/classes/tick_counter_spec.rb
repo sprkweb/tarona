@@ -63,27 +63,46 @@ RSpec.describe Tarona::Game::TickCounter do
       [:entity, :entity2, :entity3].each do |e|
         session[:act_inf][:entities_index][e] = send e
       end
-    end
-
-    it 'always returns the candidate\'s id when it is only candidate' do
-      subj.candidates << entity
-      expect(subj.whose(123)).to eq(entity.id)
+      subj.candidates.concat [entity, entity2, entity3]
     end
 
     it 'sequentially chooses all candidates' do
-      subj.candidates.concat [entity, entity2, entity3]
       expect(subj.whose(1)).to eq(entity.id)
       expect(subj.whose(2)).to eq(entity.id)
+      session[:act_inf][:tick] = 3
       expect(subj.whose(3)).to eq(entity3.id)
+      session[:act_inf][:tick] = 4
       expect(subj.whose(4)).to eq(entity.id)
     end
 
     it 'does not chooses candidates which are not in index' do
       session[:act_inf][:entities_index].delete :entity
-      subj.candidates.concat [entity, entity2, entity3]
       expect(subj.whose(1)).to eq(entity3.id)
+      session[:act_inf][:tick] = 2
       expect(subj.whose(2)).to eq(entity3.id)
+      session[:act_inf][:tick] = 3
       expect(subj.whose(3)).to eq(entity3.id)
+    end
+
+    it 'returns the candidate for current tick if no argument given' do
+      expect(subj.whose).to eq(entity.id)
+      session[:act_inf][:tick] = 2
+      expect(subj.whose).to eq(entity.id)
+      session[:act_inf][:tick] = 3
+      expect(subj.whose).to eq(entity3.id)
+      session[:act_inf][:tick] = 4
+      expect(subj.whose).to eq(entity.id)
+    end
+
+    it 'raises exception if no candidates available' do
+      subj.candidates.delete entity3
+      session[:act_inf][:entities_index].delete :entity
+      expect { subj.whose }.to raise_error('No candidates')
+    end
+
+    it 'raises exception if you request moment from far future' do
+      expect { subj.whose(4) }.to raise_error('Invalid history')
+      expect { subj.whose(123) }.to raise_error('Invalid history')
     end
   end
 end

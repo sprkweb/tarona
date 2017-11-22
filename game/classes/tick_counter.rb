@@ -13,7 +13,8 @@ module Tarona
       # @param session [#[]] information about current game state.
       def initialize(session)
         @session = session
-        @session[:act_inf][:tick] = 1 unless @session[:act_inf][:tick]
+        @session[:act_inf][:tick] ||= 1
+        @session[:act_inf][:ticks_hist] ||= [:nobody]
         @candidates = []
       end
 
@@ -29,18 +30,34 @@ module Tarona
 
       # Decides which entity acts at the tick.
       # The entity is always from the {#candidates} list.
-      # @param tick_num [Integer] number of the tick
+      # @param tick_num [Integer, nil] number of the tick
+      #   (optional, default: current)
       # @return [Object, nil] entity id
-      def whose(tick_num)
+      # @raise [RuntimeError] with message "Invalid history" if you request
+      #   a future tick which is uncertain now,
+      #   or message "No candidates".
+      def whose(tick_num = nil)
+        hist = @session[:act_inf][:ticks_hist]
+        tick_num ||= @session[:act_inf][:tick]
+        raise 'Invalid history' unless hist[tick_num - 1]
+        unless hist[tick_num]
+          cycle = generate_cycle
+          raise 'No candidates' if cycle.empty?
+          hist.concat cycle
+        end
+        hist[tick_num]
+      end
+
+      private
+
+      def generate_cycle
         cycle = []
         candidates.each do |entity|
           next unless @session[:act_inf][:entities_index][entity.id]
           speed = (entity.respond_to?(:speed) ? entity.speed : 1)
-          cycle.concat(Array.new(speed) { entity })
+          cycle.concat(Array.new(speed) { entity.id })
         end
-        return nil if cycle.empty?
-        cycle_start = tick_num / cycle.length * cycle.length + 1
-        cycle[tick_num - cycle_start].id
+        cycle
       end
     end
   end
