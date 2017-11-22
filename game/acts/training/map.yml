@@ -26,8 +26,8 @@ entities_objects:
     hexes:
       :even_row: [[0, 0], [-1, 1], [0, 1]]
       :odd_row: [[0, 0], [0, 1], [1, 1]]
-    regen_energy: 200
-    max_energy: 600
+    regen_energy: 400
+    max_energy: 800
     max_hp: 100
     hp: 100
     speed: 1
@@ -41,17 +41,6 @@ entities_objects:
         visual_effect: lazer_shot
 
   - &didorian_soldier1 !ruby/object:Tarona::Game::Templates::DidorianSoldier
-    # ai: !ruby/module 'Tarona::Game::AI::Standard'=
-    # tags:
-    #   - :mortal
-    #   - :movable
-    #   - :regen_energy=
-    # interactions:
-    #   hit: !ruby/object:Tarona::Game::Attack
-    #     name: attacks/hit
-    #     distance: 1
-    #     owner: *enemy_man
-    #     damage: 34
     id: didorian_soldier1
     hp: 100
   - &didorian_soldier2 !ruby/object:Tarona::Game::Templates::DidorianSoldier

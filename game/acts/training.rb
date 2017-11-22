@@ -53,7 +53,7 @@ module Tarona
     end
 
     def he_shot_crystal?(ev)
-      ev[:from].id == 'hero' && ev[:to].id.start_with?('crystal') &&
+      ev[:from].id == 'hero' && ev[:to].id == 'crystal3' &&
         ev[:interaction] == ev[:from].interactions['lazer_rifle_shoot']
     end
 
@@ -67,6 +67,7 @@ module Tarona
         )
         Action::PlaceEntity.add(act_inf[:landscape], obj, inf[1])
         act_inf[:entities_index][obj.id] = inf[1]
+        rules.tick_counter.candidates << obj
         io.happen :add_entity, entity_inf: obj.raw, place: inf[1]
       end
     end

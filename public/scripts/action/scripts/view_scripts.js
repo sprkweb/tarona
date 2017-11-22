@@ -42,8 +42,13 @@ ViewScripts.EFFECTS = {
     elem.setAttribute('filter', 'url(#lazer_light)');
     essence.field.appendChild(elem);
     Animate(elem, { x2: endPlace[0], y2: endPlace[1] },
-      { duration: 100, easing: 'linear', delay: 50 });
+      { duration: 50, easing: 'linear', delay: 50 });
     Animate(elem, { x1: endPlace[0], y1: endPlace[1] },
-      { duration: 100, easing: 'linear', delay: 100 });
+      { duration: 50, easing: 'linear',
+        complete: function() {
+          essence.field.removeChild(elem);
+        }
+      });
+  },
   }
 };

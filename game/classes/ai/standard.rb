@@ -11,7 +11,7 @@ module Tarona
 
         # @return [Array] list where attacks are sorted: best are first.
         def attacks_priority
-          ['hit']
+          ['lazer_rifle_shoot']
         end
 
         # @yield [found_entity]
@@ -96,6 +96,7 @@ module Tarona
           enemy = find_nearest_enemy entity, session
           return unless enemy && !entity.interactions.empty?
           attack = best_attack entity, session, enemy
+          sleep 0.1
           if attack
             entity.interactions[attack].apply session, enemy, act.io
           else
