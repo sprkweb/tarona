@@ -50,5 +50,29 @@ ViewScripts.EFFECTS = {
         }
       });
   },
+
+  grenade_throw: function(env, data, essence, params) {
+    var grenade = document.createElementNS(NS.SVG, 'use');
+    grenade.setAttributeNS(NS.XLINK, 'href', '#grenade');
+    var beginPlace = Action.HexGrid.coords2px(params.from, essence.hex);
+    var endPlace = Action.HexGrid.coords2px(params.to, essence.hex);
+    grenade.setAttribute('x', beginPlace[0]);
+    grenade.setAttribute('y', beginPlace[1]);
+    grenade.setAttribute('width', '15');
+    grenade.setAttribute('height', '15');
+    essence.field.appendChild(grenade);
+    Animate(grenade, { x: endPlace[0], y: endPlace[1] }, { duration: 300,
+        complete: function() {
+          grenade.setAttributeNS(NS.XLINK, 'href', '#explosion');
+          Animate(grenade, { width: 45, height: 45 }, { duration: 150 });
+          Animate(grenade, { opacity: 0 }, { duration: 200,
+            complete: function() {
+              essence.field.removeChild(grenade);
+            }
+          });
+        }
+      }
+    );
   }
+
 };
