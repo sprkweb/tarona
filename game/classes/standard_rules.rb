@@ -12,8 +12,16 @@ module Tarona
     #   @return [Tarona::Action] current act.
     # @!attribute [r] session
     #   @return [#[]] information about current game state.
+    # @!attribute [r] action_loop
+    #   @return [Thread] thread which runs ticks in a loop
     class StandardRules < Tardvig::Command
-      attr_reader :tick_counter, :mobilize, :interactions_judge
+      attr_reader :tick_counter, :mobilize, :interactions_judge, :action_loop
+
+      # Starts next tick properly. Use this instead of {TickCounter#tick}
+      def next_tick
+        raise 'Not player\'s tick' unless @action_loop.stop?
+        @action_loop.run
+      end
 
       private
 
@@ -26,10 +34,7 @@ module Tarona
         provide_movement
         provide_interactions
 
-        # The order of actions during each tick (TODO: make a better system):
         # Listeners which are called before the end of the tick:
-        # (if you want to add a new one, use the tick_start event and consider
-        # that the current tick is `num-1`)
         provide_death
         provide_energy_regen
         # Listeners which are called after the start of the new tick, before
@@ -42,22 +47,25 @@ module Tarona
       def init_tick_counter
         @tick_counter = TickCounter.new @session
         @tick_counter.candidates.concat activity_candidates
-        SkipTick.call tick_counter: @tick_counter, act: @act, session: @session
+        SkipTick.call act: @act, session: @session
       end
 
       def provide_ai_starter
-        @tick_counter.on(:tick_start) { start_ai }
-        start_ai
+        @action_loop = Thread.new do
+          do_stop = false
+          @act.on(:end) { do_stop = true }
+          @tick_counter.tick { start_ai } until do_stop
+        end
       end
 
       def start_ai
         id = @tick_counter.whose
         entity = find_entity id
-        if !entity
-          tick_counter.tick
-        elsif entity.ai
+        return unless entity
+        if entity.ai
           entity.ai.call @act, entity, @session
-          tick_counter.tick
+        else
+          Thread.stop
         end
       end
 
@@ -71,7 +79,7 @@ module Tarona
             can_entity_act?(entity.id) && catalyst.call(entity, to)
           end
         )
-        @mobilize.on(:after_move) { @tick_counter.tick }
+        @mobilize.on(:after_move) { next_tick }
       end
 
       def provide_interactions
@@ -82,7 +90,7 @@ module Tarona
             can_entity_act? entity.id
           end
         )
-        @interactions_judge.on(:after_interact) { @tick_counter.tick }
+        @interactions_judge.on(:after_interact) { next_tick }
       end
 
       def provide_death

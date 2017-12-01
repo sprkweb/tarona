@@ -36,7 +36,7 @@ RSpec.describe Tarona::Game::Death do
     subj.call
     expect(Tarona::Action::PlaceEntity).to receive(:remove)
       .with(landscape, foo, foo_place)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
     expect(index.keys).to eq [:bar]
   end
 
@@ -46,7 +46,7 @@ RSpec.describe Tarona::Game::Death do
     expect(Tarona::Action::PlaceEntity).to receive(:remove)
       .with(landscape, foo, foo_place)
     expect(io).to receive(:happen).with(:remove, entity_id: :foo)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
   end
 
   it 'kills entities with HP below 0' do
@@ -55,7 +55,7 @@ RSpec.describe Tarona::Game::Death do
     subj.call
     expect(Tarona::Action::PlaceEntity).to receive(:remove)
       .with(landscape, bar, bar_place)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
     expect(index.keys).to eq [:foo]
   end
 
@@ -63,7 +63,7 @@ RSpec.describe Tarona::Game::Death do
     bar.tags << :mortal
     subj.call
     expect(Tarona::Action::PlaceEntity).not_to receive(:remove)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
     expect(index.keys).to eq [:foo, :bar]
   end
 
@@ -71,7 +71,7 @@ RSpec.describe Tarona::Game::Death do
     bar.tags << :mortal
     subj.call
     expect(io).not_to receive(:happen).with(:remove, anything)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
   end
 
   it 'does not kill immortal entities with 0 HP' do
@@ -79,12 +79,12 @@ RSpec.describe Tarona::Game::Death do
     foo.tags.delete :mortal
     subj.call
     expect(Tarona::Action::PlaceEntity).not_to receive(:remove)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
   end
 
   it 'does not kill mortal entities with some HP' do
     subj.call
     expect(Tarona::Action::PlaceEntity).not_to receive(:remove)
-    tick_counter.happen :tick_start
+    tick_counter.happen :tick_end
   end
 end

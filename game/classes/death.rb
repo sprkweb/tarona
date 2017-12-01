@@ -8,7 +8,7 @@ module Tarona
       private
 
       def process
-        @tick_counter.on :tick_start do
+        @tick_counter.on :tick_end do
           check4dead
         end
       end

@@ -11,15 +11,12 @@ module Tarona
       private
 
       def process
-        @tick_counter.on :tick_start do |event|
-          num = event[:num]
-          if num >= 2
-            id = @tick_counter.whose(num - 1)
-            entity = Action::PlaceEntity.find(@landscape, @entities_index, id)
-            if regen?(entity)
-              new_value = entity.energy + entity.regen_energy
-              entity.energy = [entity.max_energy, new_value].min
-            end
+        @tick_counter.on :tick_end do |event|
+          id = @tick_counter.whose event[:num]
+          entity = Action::PlaceEntity.find(@landscape, @entities_index, id)
+          if regen?(entity)
+            new_value = entity.energy + entity.regen_energy
+            entity.energy = [entity.max_energy, new_value].min
           end
         end
       end

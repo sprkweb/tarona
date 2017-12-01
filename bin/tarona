@@ -15,7 +15,7 @@ doorman = Tarona::Doorman.new(
     acts: {
       intro: Tarona::Introduction,
       training: Tarona::Training,
-      the_end: Tarona::TheEnd
+      game_over: Tarona::GameOver
     },
     first_act: :intro,
     tk: toolkit

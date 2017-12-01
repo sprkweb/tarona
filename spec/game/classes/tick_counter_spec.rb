@@ -2,6 +2,10 @@ RSpec.describe Tarona::Game::TickCounter do
   let(:session) { { act_inf: {} } }
   let(:subj) { described_class.new session }
 
+  before :each do
+    allow(subj).to receive(:happen)
+  end
+
   describe '#new' do
     it 'initializes its counter in the session' do
       subj
@@ -43,12 +47,28 @@ RSpec.describe Tarona::Game::TickCounter do
       expect(session[:act_inf][:tick]).to eq(8)
     end
 
-    it 'triggers the event after the new tick is started' do
+    it 'triggers the `:tick_start` event after the new tick is started' do
       session[:act_inf][:tick] = 1
       subj.on :tick_start do
         expect(session[:act_inf][:tick]).to eq 2
       end
       subj.tick
+    end
+
+    it 'triggers the `:tick_end` event' do
+      session[:act_inf][:tick] = 2
+      expect(subj).to receive(:happen).with(:tick_end, num: 2)
+      subj.tick
+    end
+
+    it 'triggers the `:tick_end` event after the tick job is executed' do
+      session[:act_inf][:tick] = 1
+      action_done = false
+      subj.on :tick_end do
+        expect(action_done).to be true
+        expect(session[:act_inf][:tick]).to eq 1
+      end
+      subj.tick { action_done = true }
     end
   end
 

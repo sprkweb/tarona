@@ -15,7 +15,7 @@ RSpec.describe Tarona::Game::StandardRules do
   end
 
   let(:io) { double 'io' }
-  let(:act) { double 'act' }
+  let(:act) { Struct.new(:io).new(io).extend(Tardvig::Events) }
   let(:subj) { described_class.call act: act, session: session }
 
   let(:place) { [4, 0] }
@@ -36,7 +36,6 @@ RSpec.describe Tarona::Game::StandardRules do
       user_entity: place, just_entity: place, ai_entity: place,
       ai_entity2: place
     )
-    allow(act).to receive(:io).and_return(io)
     allow(Tarona::Action::Mobilize).to receive(:call) do |*args|
       empty_command.call(*args)
     end
@@ -69,14 +68,9 @@ RSpec.describe Tarona::Game::StandardRules do
       expect(ai_entity2.ai).to receive(:call).with(act, ai_entity2, session) do
         expect(session[:act_inf][:tick]).to eq(3)
       end
-      subj.tick_counter.tick
-      expect(session[:act_inf][:tick]).to eq(4)
-    end
-
-    it 'does not run AI of entity without AI' do
-      expect(subj.tick_counter).to receive(:whose).and_return(:user_entity)
-      subj.tick_counter.tick
-      expect(session[:act_inf][:tick]).to eq(2)
+      sleep 0.01 until subj.action_loop.stop?
+      subj.next_tick
+      sleep 0.01 until subj.action_loop.stop?
     end
 
     it 'runs AI for first tick too if it is available' do
@@ -84,20 +78,32 @@ RSpec.describe Tarona::Game::StandardRules do
       expect(ai_entity.ai).to receive(:call).with(act, ai_entity, session) do
         expect(session[:act_inf][:tick]).to eq(1)
       end
-      subj
+      sleep 0.01 until subj.action_loop.stop?
       expect(session[:act_inf][:tick]).to eq(2)
     end
 
     it 'skips tick when entity is unavailable' do
-      expect(subj.tick_counter).to receive(:whose).twice do
+      expect(subj.tick_counter).to receive(:whose).at_least(2).times do
         if session[:act_inf][:tick] == 2
           :Kennedy
         else
           :just_entity
         end
       end
-      subj.tick_counter.tick
+      sleep 0.01 until subj.action_loop.stop?
+      subj.next_tick
+      sleep 0.01 until subj.action_loop.stop?
       expect(session[:act_inf][:tick]).to eq(3)
+    end
+
+    it 'does not call AI after act is ended' do
+      expect(ai_entity.ai).not_to receive(:call)
+      sleep 0.01 until subj.action_loop.stop?
+      act.happen :end
+      expect(session[:act_inf][:tick]).to eq(1)
+      subj.next_tick
+      sleep 0.01 until subj.action_loop.stop?
+      expect(session[:act_inf][:tick]).to eq(2)
     end
   end
 
@@ -111,8 +117,12 @@ RSpec.describe Tarona::Game::StandardRules do
     end
 
     it 'starts a new tick after movement' do
-      expect(subj.tick_counter).to receive(:tick)
+      allow(ai_entity.ai).to receive(:call)
+      allow(ai_entity2.ai).to receive(:call)
+      sleep 0.01 until subj.action_loop.stop?
       subj.mobilize.happen :after_move
+      sleep 0.01 until subj.action_loop.stop?
+      expect(session[:act_inf][:tick]).to eq(4)
     end
 
     it 'moves entity when there is its tick' do
@@ -143,8 +153,12 @@ RSpec.describe Tarona::Game::StandardRules do
     end
 
     it 'starts a new tick after interaction' do
-      expect(subj.tick_counter).to receive(:tick)
+      allow(ai_entity.ai).to receive(:call)
+      allow(ai_entity2.ai).to receive(:call)
+      sleep 0.01 until subj.action_loop.stop?
       subj.interactions_judge.happen :after_interact
+      sleep 0.01 until subj.action_loop.stop?
+      expect(session[:act_inf][:tick]).to eq(4)
     end
 
     it 'applies interaction when there is initiator\'s tick' do

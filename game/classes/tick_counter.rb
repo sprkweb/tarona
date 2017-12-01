@@ -23,6 +23,7 @@ module Tarona
       # hash with keys: `:num` - number of the new tick.
       def tick
         yield if block_given?
+        happen :tick_end, num: @session[:act_inf][:tick]
         num = @session[:act_inf][:tick] + 1
         @session[:act_inf][:tick] = num
         happen :tick_start, num: num

@@ -8,6 +8,14 @@ module Tarona
     resources << 'game/resources/mirok.svg'
 
     def process
+      index = @tk.session[:act_inf][:entities_index]
+      game_over ||= proc do
+        unless index['hero']
+          happen :end, :game_over
+          rules.tick_counter.remove_listener(:tick_start, game_over)
+        end
+      end
+      rules.tick_counter.on(:tick_start, &game_over)
       io.on_first :map_shown do
         show_controls_info
         when_he_shot_crystal do
@@ -45,7 +53,7 @@ module Tarona
       judge = rules.interactions_judge
       after_shot = proc do |ev|
         if he_shot_crystal?(ev)
-          judge.remove_listener(:after_interact, &after_shot)
+          judge.remove_listener(:after_interact, after_shot)
           block.call
         end
       end
