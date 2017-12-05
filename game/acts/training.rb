@@ -20,6 +20,10 @@ module Tarona
         show_controls_info
         when_he_shot_crystal do
           add_radls
+          say_to_hide
+          wait_until_hide do |hero_place|
+            act_end hero_place
+          end
         end
       end
     end
@@ -28,7 +32,7 @@ module Tarona
       Game::ViewScripts.run io, <<-SCRIPT.gsub(/^ {10}/, '')
         var openedWins = [];
         var showText = function(text) {
-          var win = new PopUp(env.area, text, { stick_to: 'top-right'});
+          var win = new PopUp(env.area, text, { stick_to: 'top-right' });
           win.show();
           openedWins.push(win);
         };
@@ -68,7 +72,8 @@ module Tarona
     def add_radls
       act_inf = @tk.session[:act_inf]
       radl_class = Game::Templates::RadlSoldier
-      list = [['1', [52, 22]], ['2', [57, 28]]]
+      list = [['1', [52, 22]], ['2', [57, 28]], ['3', [53, 31]],
+        ['4', [58, 21]], ['5', [57, 17]], ['6', [57, 37]], ['7', [55, 40]]]
       list.each do |inf|
         obj = radl_class.new(
           "radl_soldier#{inf[0]}", radl_class::TEMPLATE, hp: radl_class::MAX_HP
@@ -78,6 +83,38 @@ module Tarona
         rules.tick_counter.candidates << obj
         io.happen :add_entity, entity_inf: obj.raw, place: inf[1]
       end
+    end
+
+    def say_to_hide
+      Game::ViewScripts.run io, <<-SCRIPT.gsub(/^ {10}/, '')
+        (new PopUp(env.area, '#{tk.i18n['game/training_hide'].chomp}',
+          { stick_to: 'top-right' })).show();
+      SCRIPT
+    end
+
+    def wait_until_hide(&block)
+      check_if_hid = proc do
+        hero_place = @tk.session[:act_inf][:entities_index]['hero']
+        dist = Action::Cartographer.distance [28, 24], hero_place
+        if dist < 3
+          rules.mobilize.remove_listener(:after_move, check_if_hid)
+          block.call hero_place
+        end
+      end
+      rules.mobilize.on(:after_move, &check_if_hid)
+    end
+
+    def act_end(hero_place)
+      index = @tk.session[:act_inf][:entities_index]
+      landscape = @tk.session[:act_inf][:landscape]
+      hero = Action::PlaceEntity.find landscape, index, 'hero'
+      enemy = Game::AI::Standard.find_nearest_entity hero, @tk.session do |e|
+        e.respond_to?(:side) && e.side != hero.side && e.respond_to?(:hp)
+      end
+      params = { from: index[enemy.id], to: [hero_place[0] - 2, hero_place[1]] }
+      Game::ViewScripts.show_effect io, :grenade_throw, params
+      sleep 0.4
+      happen :end, :to_be_continued
     end
   end
 end
