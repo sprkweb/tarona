@@ -6,7 +6,6 @@ $font-size: 16px;
 $line-height: 1.5;
 $text-color: #4B4B4B;
 $bg-color: #ffffff;
-$link-color: #5DA130;
 
 @mixin flexbox {
   display: -webkit-box;
@@ -63,10 +62,11 @@ body {
 }
 
 .link, a {
-  color: $link-color;
+  @include standard_button;
+  display: inline-block;
   text-decoration: none;
   &:hover, &:active, &:focus {
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 
@@ -88,21 +88,6 @@ p {
   margin: {
     top: 0;
     bottom: 1em;
-  }
-}
-
-nav.menu ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-
-  li a {
-
-    &.disabled, &.disabled:hover {
-      cursor: default;
-      color: $text-color;
-      text-decoration: none;
-    }
   }
 }
 
@@ -163,7 +148,7 @@ input[type="text"], textarea {
   }
 }
 
-.main_menu {
+.menu {
   @include inverse;
 
   // Yes, I know that grid is not needed here. It is for future.
@@ -188,12 +173,6 @@ input[type="text"], textarea {
 
       li {
         margin-bottom: 0.5em;
-
-        a {
-          @include standard_button;
-          display: inline-block;
-          text-decoration: none !important;
-        }
       }
     }
   }
