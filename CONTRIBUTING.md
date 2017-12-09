@@ -39,6 +39,10 @@ Then you should build this project:
 *This process must have access to read and write to the directory of the
 project. Internet connection is also needed for dependency installation.*
 
+If you want to create a portable package, use `jruby`, build the game and run:
+
+    $ rake jruby_bundle
+
 ## Code Style
 Required:
 - BDD (coverage as full as possible). RSpec for Ruby, Jasmine for JS.
