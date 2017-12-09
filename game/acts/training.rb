@@ -112,9 +112,11 @@ module Tarona
         e.respond_to?(:side) && e.side != hero.side && e.respond_to?(:hp)
       end
       params = { from: index[enemy.id], to: [hero_place[0] - 2, hero_place[1]] }
-      Game::ViewScripts.show_effect io, :grenade_throw, params
-      sleep 0.4
-      happen :end, :to_be_continued
+      rules.tick_counter.on_first :tick_start do
+        Game::ViewScripts.show_effect io, :grenade_throw, params
+        sleep 0.4
+        happen :end, :to_be_continued
+      end
     end
   end
 end
