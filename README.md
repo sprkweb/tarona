@@ -1,6 +1,11 @@
 # Tarona
 Strategic game.
 
+> No longer developed.
+> 
+> It was not completed due to my life circumstances. The previous GitHub account 
+> was deleted and this is a restored backup.
+
 ## This file...
 ...is a manual for players with answers to frequently asked questions.
 If you are a developer, you should read the `CONTRIBUTING.md` file.
